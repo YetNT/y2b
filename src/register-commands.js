@@ -17,9 +17,27 @@ const commands = [
                 name: 'num2',
                 description: 'the second number',
                 type: ApplicationCommandOptionType.Number,
+                choices: [
+                    {
+                        name: "one",
+                        value: 1
+                    },
+                    {
+                        name: "two",
+                        value: 2
+                    },
+                    {
+                        name: "three",
+                        value: 3
+                    }
+                ],
                 required: true
             }
         ]
+    },
+    {
+        name: 'embed',
+        description: 'sends embed'
     }
 ];
 

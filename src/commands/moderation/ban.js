@@ -4,14 +4,13 @@ const {
 } = require('discord.js');
 
 module.exports = {
-  deleted: true,
   name: 'ban',
   description: 'Bans a member!!!',
   // devOnly: Boolean,
   // testOnly: Boolean,
   options: [
     {
-      name: 'target-user',
+      name: 'target',
       description: 'The user to ban.',
       required: true,
       type: ApplicationCommandOptionType.Mentionable,
@@ -26,6 +25,6 @@ module.exports = {
   botPermissions: [PermissionFlagsBits.Administrator],
 
   callback: (client, interaction) => {
-    interaction.reply('ban..');
+    interaction.reply(`banned ${interaction.options.get('target').value} with the reason "${interaction.options.get('reason').value}" **(JOKE)**`);
   },
 };

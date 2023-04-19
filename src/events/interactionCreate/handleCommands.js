@@ -14,14 +14,15 @@ module.exports = async (client, interaction) => {
     if (!commandObject) return;
 
     if (commandObject.devOnly) {
-      if (!devs.includes(interaction.member.id)) {
+      if (!devs.includes(interaction.user.id)) {
         interaction.reply({
           content: 'Only developers are allowed to run this command.',
           ephemeral: true,
         });
+        console.log(!devs.includes(interaction.user.id) + " = " + interaction.user.username)
         return;
-      }
-    }
+      };
+    };
 
     if (commandObject.testOnly) {
       if (!(interaction.guild.id === testServer)) {

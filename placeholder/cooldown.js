@@ -5,14 +5,6 @@ const Cooldown = require('../../models/Cooldown')
 module.exports = {
     name:"rob",
     description:"robn some",
-    options: [
-        {
-            name:"victim",
-            description:"robbery",
-            type: ApplicationCommandOptionType.User,
-            required: true
-        }
-    ],
 
     /**
     *
@@ -27,8 +19,8 @@ module.exports = {
             const userId = interaction.user.id
             const cooldown = await Cooldown.findOne({ userId: userId })
 
-            if (cooldown && cooldown.rob) {
-                const remainingTime = cooldown.rob - Date.now()
+            if (cooldown && cooldown.COMMAND_NAME) {
+                const remainingTime = cooldown.COMMAND_NAME - Date.now()
                 if ( remainingTime > 0){
                   interaction.editReply(`You are on cooldown. Please wait ${Math.ceil(remainingTime / 1000)} seconds.`)
                   return;
@@ -36,16 +28,19 @@ module.exports = {
             }
 
             interaction.editReply("Robbing in progress...")
-            const victim = interaction.options.get("victim").user
-            // rob code will go here
+            /*
+            CODE GOES HEREEEEEE
+            
+            make sure you have this command in the models and the cooldown times in millieconds
+            */
 
             if (cooldown) {
-                cooldown.rob = Date.now() + CooldownTimes.rob
+                cooldown.COMMAND_NAME = Date.now() + CooldownTimes.COMMAND_NAME
                 await cooldown.save()
             } else {
                 const newCooldown = new Cooldown({
                     userId: userId,
-                    rob: Date.now() + CooldownTimes.rob
+                    COMMAND_NAME: Date.now() + CooldownTimes.COMMAND_NAME
                 })
                 await newCooldown.save()
             }

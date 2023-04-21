@@ -6,18 +6,12 @@ const cdSchema = new Schema({
         required: true
     },
     rob: {
-        type: Boolean,
-        default: false
+        type: Date,
+        default: new Date(0)
     },
     work: {
-        type: Boolean,
-        default: false
+        type: Date,
+        default: new Date(0)
     }
 })
-
-// left this, you gon have to find a way to impliment this 
-// - past self before 8 PM
-
-// fuck you
-
 module.exports = model('cooldown', cdSchema)

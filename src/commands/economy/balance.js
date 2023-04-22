@@ -1,4 +1,4 @@
-const { Client, ApplicationCommandOptionType, Interaction } = require('discord.js');
+const { Client, ApplicationCommandOptionType, Interaction, EmbedBuilder } = require('discord.js');
 const User = require('../../models/User');
 
 
@@ -40,12 +40,37 @@ module.exports = {
             if (user) {
                 // if the user exists in the database =
                 if (option !== undefined) {
-                    interaction.editReply({
-                        content: ` ${option} has ${user.balance} `,
-                        ephemeral: true
-                    })
+                    interaction.editReply({ embeds: [
+                        new EmbedBuilder()
+                            .setTitle(`${option}'s Balance`)
+                            .setFields(
+                                {
+                                    name:"Balance",
+                                    value: `${user.balance}`
+                                },
+                                {
+                                    name:"Bank",
+                                    value: "Coming Soon!"
+                                }
+                            )
+                            .setColor("DarkGreen")
+                    ]})
                 } else {
-                    interaction.editReply(`You've got ${user.balance}`)
+                    interaction.editReply({ embeds: [
+                        new EmbedBuilder()
+                            .setTitle(`${interaction.user.id}'s Balance`)
+                            .setFields(
+                                {
+                                    name:"Balance",
+                                    value: `${user.balance}`
+                                },
+                                {
+                                    name:"Bank",
+                                    value: "Coming Soon!"
+                                }
+                            )
+                            .setColor("Green")
+                    ]})
                 }
                 
             } else {

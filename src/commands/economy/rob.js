@@ -37,7 +37,7 @@ module.exports = {
 
             interaction.editReply("Robbing in progress...")
             const victim = interaction.options.get("victim").user
-            // rob code will go here
+            // rob code will go here 
 
             if (cooldown) {
                 cooldown.rob = Date.now() + CooldownTimes.rob

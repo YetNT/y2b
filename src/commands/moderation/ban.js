@@ -5,6 +5,7 @@ const {
 
 module.exports = {
   name: 'ban',
+  deleted: true,
   description: 'Bans a member!!!',
   // devOnly: Boolean,
   // testOnly: Boolean,

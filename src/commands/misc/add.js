@@ -5,6 +5,7 @@ const {
 module.exports = {
   name: 'add',
   description: 'Add 2 nums',
+  deleted: true,
   // devOnly: Boolean,
   // testOnly: Boolean,
   options: [

@@ -9,9 +9,9 @@ const userSchema = new Schema({
       type: Number,
       default: 0
    },
-   lastDaily: {
-      type: Date,
-      required: true
+   bank: {
+      type: Number,
+      default: 0
    }
 })
 

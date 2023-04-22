@@ -1,5 +1,6 @@
 const { Client, Interaction } = require('discord.js');
 const User = require('../../models/User');
+const Cooldown = require('../../models/Cooldown')
 
 const dailyAmount = 1000;
 
@@ -28,9 +29,10 @@ module.exports = {
       };
 
       let user = await User.findOne(query);
+      let cooldown = await Cooldown.findOne(query);
 
-      if (user) {
-        const lastDailyDate = user.lastDaily.toDateString();
+      if (cooldown) {
+        const lastDailyDate = cooldown.daily.toDateString();
         const currentDate = new Date().toDateString();
 
         if (lastDailyDate === currentDate) {
@@ -40,15 +42,26 @@ module.exports = {
           return;
         }
         
-        user.lastDaily = new Date();
+        cooldown.daily = new Date();
+
+        await cooldown.save()
+      } else {
+        cooldown = new Cooldown({
+          ...query,
+          daily: new Date(),
+        });
+        await cooldown.save()
+      }
+
+      if (user) {
+        user.balance += dailyAmount;
       } else {
         user = new User({
           ...query,
-          lastDaily: new Date(),
-        });
+          balance: dailyAmount
+        })
       }
-
-      user.balance += dailyAmount;
+      
       await user.save();
 
       interaction.editReply(

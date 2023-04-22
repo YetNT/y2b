@@ -7,8 +7,8 @@ module.exports = async (client) => {
   try {
     const localCommands = getLocalCommands();
     const applicationCommands = await getApplicationCommands(
-      client,
-      testServer
+      client //,
+      // testServer (this will make the commands global again.)
     );
 
     for (const localCommand of localCommands) {

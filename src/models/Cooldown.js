@@ -12,6 +12,10 @@ const cdSchema = new Schema({
     work: {
         type: Date,
         default: new Date(0)
+    },
+    daily: {
+        type: Date,
+        default: new Date(0)
     }
 })
 module.exports = model('cooldown', cdSchema)

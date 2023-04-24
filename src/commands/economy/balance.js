@@ -50,7 +50,7 @@ module.exports = {
                                 },
                                 {
                                     name:"Bank",
-                                    value: "Coming Soon!"
+                                    value: `${user.bank}`
                                 }
                             )
                             .setColor("DarkGreen")
@@ -66,7 +66,7 @@ module.exports = {
                                 },
                                 {
                                     name:"Bank",
-                                    value: "Coming Soon!"
+                                    value: `${user.bank}`
                                 }
                             )
                             .setColor("Green")

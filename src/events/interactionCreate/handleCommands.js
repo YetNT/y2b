@@ -1,7 +1,7 @@
 const path = require('path');
 const { devs, testServer } = require(path.join(__dirname, '..', '..', '..', 'config.json'));
 const getLocalCommands = require(path.join(__dirname, '..', '..', 'utils', 'getLocalCommands'));
-
+const Blacklist = require('../../models/Blacklist')
 
 module.exports = async (client, interaction) => {
   if (!interaction.isChatInputCommand()) return;
@@ -23,6 +23,20 @@ module.exports = async (client, interaction) => {
         });
         console.log(!devs.includes(interaction.user.id) + " = " + interaction.user.username)
         return;
+      };
+    };
+     
+    if (commandObject.blacklist) {
+      const query = {
+         userId: interaction.user.id
+      };
+      let blacklist = await Blacklist.findOne(query)
+      
+      if (blacklist) {
+         if (blacklist.blacklisted === true) {
+            interaction.reply("You've been blacklisted. Reason = " `${blacklist.reason}`)
+         };
+         return;
       };
     };
 

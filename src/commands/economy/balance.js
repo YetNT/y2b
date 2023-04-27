@@ -5,6 +5,7 @@ const User = require('../../models/User');
 module.exports = {
     name:"balance",
     description:"view your or other's balance",
+    blacklist: true,
     options : [
         {
             name:"userid",
@@ -42,7 +43,7 @@ module.exports = {
                 if (option !== undefined) {
                     interaction.editReply({ embeds: [
                         new EmbedBuilder()
-                            .setTitle(`${option}'s Balance`)
+                            .setTitle(`${client.users.cache.get(option).username}'s Balance`)
                             .setFields(
                                 {
                                     name:"Balance",
@@ -58,7 +59,7 @@ module.exports = {
                 } else {
                     interaction.editReply({ embeds: [
                         new EmbedBuilder()
-                            .setTitle(`${interaction.user.id}'s Balance`)
+                            .setTitle(`${interaction.user.username}'s Balance`)
                             .setFields(
                                 {
                                     name:"Balance",

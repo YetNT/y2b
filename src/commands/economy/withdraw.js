@@ -34,7 +34,7 @@ module.exports = {
             }
 
             if (!user.bank) {
-                await interaction.followUp({ content:"You exist in the database but have no money weird", ephemeral: true });
+                await interaction.followUp({ content:"You exist in the database but have no money in your banl weird", ephemeral: true });
                 return;
             }
 

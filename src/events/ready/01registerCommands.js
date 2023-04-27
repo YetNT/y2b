@@ -8,7 +8,7 @@ module.exports = async (client) => {
     const localCommands = getLocalCommands();
     const applicationCommands = await getApplicationCommands(
       client //,
-      // testServer (this will make the commands global again.)
+      // testServer (this will make the commands server side again.)
     );
 
     for (const localCommand of localCommands) {
@@ -51,6 +51,6 @@ module.exports = async (client) => {
       }
     }
   } catch (error) {
-    console.log(`Bruh an error: ${error}`);
+    console.log(`Bruh an error (from file 01registercommands.js): ${error}`);
   }
 };

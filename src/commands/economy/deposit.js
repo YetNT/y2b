@@ -12,6 +12,7 @@ module.exports = {
             type: ApplicationCommandOptionType.Number
         }
     ],
+    blacklist: true,
 
     /**
      * @param {Client} client

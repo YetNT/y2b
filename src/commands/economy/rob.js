@@ -13,6 +13,7 @@ module.exports = {
             required: true
         }
     ],
+    blacklist: true,
 
     /**
     *

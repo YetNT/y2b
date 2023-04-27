@@ -28,15 +28,15 @@ module.exports = async (client, interaction) => {
      
     if (commandObject.blacklist) {
       const query = {
-         userId: interaction.user.id
+        userId: interaction.user.id
       };
       let blacklist = await Blacklist.findOne(query)
       
       if (blacklist) {
-         if (blacklist.blacklisted === true) {
-            interaction.reply("You've been blacklisted. Reason = " `${blacklist.reason}`)
-         };
-         return;
+        if (blacklist.blacklisted === true) {
+          interaction.reply("You've been blacklisted. Reason = " + `${blacklist.reason}`)
+          return;
+        };
       };
     };
 

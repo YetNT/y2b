@@ -8,6 +8,8 @@ module.exports = {
   name: 'daily',
   description: 'Collect your dailies!',
   blacklist: true,
+  cooldown: 86400000,
+  
   /**
    *
    * @param {Client} client
@@ -30,6 +32,7 @@ module.exports = {
       };
 
       let user = await User.findOne(query);
+/*
       let cooldown = await Cooldown.findOne(query);
 
       if (cooldown) {
@@ -53,7 +56,7 @@ module.exports = {
         });
         await cooldown.save()
       }
-
+*/
       if (user) {
         user.balance += dailyAmount;
       } else {

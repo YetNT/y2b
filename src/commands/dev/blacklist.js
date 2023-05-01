@@ -24,7 +24,7 @@ module.exports = {
         }, 
         {
             name:"user",
-            description:"which user to blacklist",
+            description:"User id of the user you would like to blacklist. This is parsed as a string cuz discord gae",
             type: ApplicationCommandOptionType.String,
             required: true
         },
@@ -43,39 +43,48 @@ module.exports = {
     */
     callback: async (client, interaction) => {
         try {
-            interaction.deferReply()
+            await interaction.deferReply({ephemeral: true})
 
             const code = interaction.options.get("query").value
             const victim = interaction.options.get("user").value
             const reason = interaction.options.get("reason").value
+
+            let victimUser = await client.users.fetch(victim)
+
+            const time = Date.now()
             const query = {
                 userId: victim
             };
 
             let blacklist = await Blacklist.findOne(query)
-              
+        
+
             if (code === "add") {
                 if (blacklist) {
-                    if (blacklist.blacklisted === true) {interaction.editReply({content: "This is user has already been blacklisted", ephemeral: true}); return;}
+                    if (blacklist.blacklisted == true) {interaction.editReply({content:"This user has already been blacklisted",ephemeral: true}); return}
                     blacklist.blacklisted = true;
                     blacklist.reason = reason
+                    blacklist.time = time
                 } else {
                     blacklist = new Blacklist({
                         ...query,
                         blacklisted: true,
-                        reason: reason
+                        reason: reason,
+                        time: time
                     })
                 }
             } else {
                 if (blacklist) {
-                    if (blacklist.blacklisted === false) {interaction.editReply({content: "This user is already removed from the blacklist.", ephemeral: true}); return;}
+                    if (blacklist.blacklisted == false) {interaction.editReply({content:"This user is already removed from the blacklist.",ephemeral: true}); return};
                     blacklist.blacklisted = false;
                     blacklist.reason = reason
+                    blacklist.time = time
                 } else {
                     blacklist = new Blacklist({
                         ...query,
                         blacklisted: false,
-                        reason: reason
+                        reason: reason,
+                        time: time
                     })
                 }
             }
@@ -83,25 +92,84 @@ module.exports = {
             await blacklist.save();
 
             if (code === "add") {
-                interaction.editReply({ embeds: [
-                    new EmbedBuilder()
-                        .setTitle("Blacklist")
-                        .setDescription(`The user <@${victim}> has been add to the blacklist`)
-                        .setFields(
-                            {
-                                name:"Reason",
-                                value:`${reason}`
-                            }
-                        )
-                        .setColor("Red")
-                ]})
+                interaction.editReply({ 
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle("Blacklist")
+                            .setDescription(`The user <@${victim}> has been add to the blacklist`)
+                            .setFields(
+                                {
+                                    name:"Reason",
+                                    value:`${reason}`
+                                }
+                            )
+                            .setColor("Red")
+                    ],
+                    ephemeral: true
+                })
+
+                // log to support server
+
+                client.guilds.cache.get("808701451399725116").channels.cache.get("858644165038047262").send({ 
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle("New Blacklist")
+                            .setFields(
+                                {
+                                    name:"User",
+                                    value:`Name: **${victimUser.username}** \n`+ `Discrim: **${victimUser.discriminator}** \n` + `User Id: **${victim}**`,
+                                    inline: true
+                                },
+                                {
+                                    name:"Reason",
+                                    value:`${reason}`,
+                                    inline: true
+                                },
+                                {
+                                    name: "Time (epoch)",
+                                    value: `${time}`,
+                                    inline: true
+                                }
+                            )
+                            .setThumbnail(victimUser.avatarURL())
+                            .setColor("Red")
+                            .setImage("https://cdn.discordapp.com/emojis/860970578684018700.webp?size=160&quality=lossless")
+                    ]
+                });
             } else {
-                interaction.editReply({ embeds: [
-                    new EmbedBuilder()
-                        .setTitle("Blacklist")
-                        .setDescription(`The user <@${victim}> has been removed from the blacklist`)
-                        .setColor("Red")
-                ]})
+                interaction.followUp({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle("Blacklist")
+                            .setDescription(`The user <@${victim}> has been removed from the blacklist`)
+                            .setColor("Red")
+                    ],
+                    ephemeral: true
+                })
+
+                // log to support server
+
+                client.guilds.cache.get("808701451399725116").channels.cache.get("858644165038047262").send({ 
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle("New Blacklist Removal")
+                            .setFields(
+                                {
+                                    name:"User",
+                                    value:`Name: **${victimUser.username}** \n`+ `Discrim: **${victimUser.discriminator}** \n` + `User Id: **${victim}**`,
+                                    inline: true
+                                },
+                                {
+                                    name: "Time (epoch)",
+                                    value: `${time}`,
+                                    inline: true
+                                }
+                            )
+                            .setColor("Green")
+                            .setThumbnail(victimUser.avatarURL())
+                            .setImage("https://cdn.discordapp.com/emojis/860970578747981864.webp?size=160&quality=lossless")
+                    ]
+                });
             }
         } catch (error) {
             interaction.editReply({

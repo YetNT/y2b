@@ -12,6 +12,10 @@ const blacklistSchema = new Schema({
    reason: {
       type: String,
       required: true
+   },
+   time: {
+      type: Date,
+      required: true
    }
 })
 

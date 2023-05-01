@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { Client, IntentsBitField, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ActivityType } = require('discord.js');
+const { Client, IntentsBitField, /* EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle,*/ ActivityType} = require('discord.js');
 const mongoose = require('mongoose')
 const eventHandler = require('./handlers/eventHandler')
 
@@ -24,24 +24,32 @@ let status = [
     {
         name: "Crab Game on Steam",
         type: ActivityType.Playing
+    },
+    {
+        name: "Bot is now on JS",
+        type: ActivityType.Playing
     }
 ];
 
 (async () => {
 	try {
-      await mongoose.connect(process.env.MONGODB_URI, { keepAlive: true });
-      console.log("connected to DB")
+        await mongoose.connect(process.env.MONGODB_URI, { keepAlive: true });
+        console.log("connected to DB")
 
-      eventHandler(client)
-      
-      client.on('ready', (c) => {
-         setInterval(() => {
-            let random = Math.floor(Math.random() * status.length)
-            client.user.setActivity(status[random])
-         }, 10000)
-      })
+        eventHandler(client)
 
-      client.login(process.env.TOKEN);
+
+        client.on('ready', (c) => {
+            setInterval(() => {
+                let random = Math.floor(Math.random() * status.length)
+                client.user.setPresence({
+                    status: 'dnd',
+                    activity: status[random]
+                });
+            }, 10000)
+        })
+
+        client.login(process.env.TOKEN);
 
    } catch (error) {
       console.log(`db error ${error}`)

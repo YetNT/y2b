@@ -33,16 +33,16 @@ module.exports = {
             const victimDm = await client.users.fetch(victimId).catch(() => null); // to dm the user.
             let author = await User.findOne({userId: interaction.user.id })
 
+            if (victimId == interaction.user.id) {interaction.editReply("don't rob yourself."); return};
+            if (!author) {interaction.editReply("You cannot rob people when you've got nothing"); return}
+            if (author.balance < 1000) {interaction.editReply("You cannot rob people when your balance is lower than 1000."); return}
             if (!victim) {interaction.editReply("Leave them alone, they've got nothing :sob:"); return};
             if (victim.balance < 0) {interaction.editReply("This user is paying off their debts"); return};
             if (victim.balance <= 500) {interaction.editReply(`It aint worth it, they've only got ${victim.balance}`); return};
-            if (!author) {interaction.editReply("You cannot rob people when you've got nothing"); return}
-            if (author.balance < 1000) {interaction.editReply("You cannot rob people when your balance is lower than 1000."); return}
-            if (victimId == interaction.user.id) {interaction.editReply("don't rob yourself.")};
             
             const max = Math.floor(victim.balance / 2) // doing this so mfs dont get their whole ass robbed. 
             let sRob = rndInt(1, max) // user can only be robbed random amounts from 1 to half their balance
-            let fRob = Math.floor(sRob / 2) // if robbery failed deduct sRob / 2 amount from the author
+            let fRob = rndInt(Math.floor(author.balance / 2), author.balance) // if robbery failed deduct random amt between author/2 and author
 
             if (sf === 2) { // Succesful
                 victim.balance -= sRob

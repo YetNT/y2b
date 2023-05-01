@@ -66,7 +66,7 @@ module.exports = {
                             .setFooter({text: "You monster"})
                     ]
                 })
-            } else { //failed
+            } else { // failed
                 author.balance -= fRob
                 victim.balance += fRob
 

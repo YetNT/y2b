@@ -8,7 +8,7 @@ module.exports = {
   name: 'daily',
   description: 'Collect your dailies!',
   blacklist: true,
-  cooldown: 86400000,
+  cooldown: "1d",
   
   /**
    *

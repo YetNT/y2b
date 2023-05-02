@@ -14,7 +14,7 @@ module.exports = {
         }
     ],
     blacklist: true,
-    cooldown: 10000,
+    cooldown: "5min",
 
 
     /**

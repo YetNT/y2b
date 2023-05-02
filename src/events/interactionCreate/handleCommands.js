@@ -3,6 +3,7 @@ const { devs, testServer } = require(path.join(__dirname, '..', '..', '..', 'con
 const getLocalCommands = require(path.join(__dirname, '..', '..', 'utils', 'getLocalCommands'));
 const Blacklist = require('../../models/Blacklist')
 const Cooldown = require('../../models/Cooldown');
+const strToMilli = require('../../utils/strToMilli')
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = async (client, interaction) => {
@@ -48,6 +49,14 @@ module.exports = async (client, interaction) => {
       let name = interaction.commandName
       let date = Date.now()
       let cooldown = await Cooldown.findOne(query)
+      let cooldownTime;
+      if (typeof commandObject.cooldown == "string") {
+        cooldownTime = strToMilli(commandObject.cooldown)
+      } else if (typeof commandObject.cooldown == "integer") {
+        cooldownTime = commandObject.cooldown
+      } else {
+        throw `wtf is "${commandObject.cooldown}"`
+      }
 
       if (cooldown && cooldown[name]) {
         let remainingTime = cooldown[name] - date
@@ -66,12 +75,12 @@ module.exports = async (client, interaction) => {
       }
 
       if (cooldown) {
-        cooldown[name] = date + commandObject.cooldown
+        cooldown[name] = date + cooldownTime
         await cooldown.save()
       } else {
         const newCooldown = new Cooldown({
           ...query,
-          [name]: date + commandObject.cooldown
+          [name]: date + cooldownTime
         });
 
         await newCooldown.save()

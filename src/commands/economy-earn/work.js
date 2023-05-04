@@ -29,7 +29,7 @@ module.exports = {
     name:"work",
     description:"mm",
     blacklist: true,
-    cooldown: '10s',
+    cooldown: '5m',
     options: [
         {
             name:"job",

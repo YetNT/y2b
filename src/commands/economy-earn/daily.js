@@ -32,31 +32,7 @@ module.exports = {
       };
 
       let user = await User.findOne(query);
-/*
-      let cooldown = await Cooldown.findOne(query);
 
-      if (cooldown) {
-        const lastDailyDate = cooldown.daily.toDateString();
-        const currentDate = new Date().toDateString();
-
-        if (lastDailyDate === currentDate) {
-          interaction.editReply(
-            'You have already collected your dailies today. Come back tomorrow!'
-          );
-          return;
-        }
-        
-        cooldown.daily = new Date();
-
-        await cooldown.save()
-      } else {
-        cooldown = new Cooldown({
-          ...query,
-          daily: new Date(),
-        });
-        await cooldown.save()
-      }
-*/
       if (user) {
         user.balance += dailyAmount;
       } else {

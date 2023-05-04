@@ -1,0 +1,67 @@
+[
+    {
+      "type": "tailor",
+      "min": 500,
+      "max": 1500
+    },
+    {
+      "type": "farmer",
+      "min": 1000,
+      "max": 3000
+    },
+    {
+      "type": "gamer",
+      "min": 0,
+      "max": 0
+    },
+    {
+      "type": "youtuber",
+      "min": 2000,
+      "max": 5000
+    },
+    {
+      "type": "twitch-streamer",
+      "min": 1500,
+      "max": 3500
+    },
+    {
+      "type": "discord-mod",
+      "min": 500,
+      "max": 1000
+    },
+    {
+      "type": "teacher",
+      "min": 2500,
+      "max": 4000
+    },
+    {
+      "type": "chef",
+      "min": 1500,
+      "max": 3500
+    },
+    {
+      "type": "pilot",
+      "min": 8000,
+      "max": 12000
+    },
+    {
+      "type": "servant",
+      "min": 500,
+      "max": 2000
+    },
+    {
+      "type": "police",
+      "min": 3000,
+      "max": 5000
+    },
+    {
+      "type": "miner",
+      "min": 2000,
+      "max": 5000
+    },
+    {
+      "type": "construction-worker",
+      "min": 1500,
+      "max": 3000
+    }
+]

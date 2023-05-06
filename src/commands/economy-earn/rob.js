@@ -4,7 +4,7 @@ const rndInt = require('../../utils/rndInt')
 
 module.exports = {
     name:"rob",
-    description:"robn some",
+    description:"Rob people for some quick cash",
     options: [
         {
             name:"victim",

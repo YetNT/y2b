@@ -4,7 +4,7 @@ const User = require('../../models/User');
 
 module.exports = {
     name:"balance",
-    description:"view your or other's balance",
+    description:"View your or another user's coin balance and bank",
     blacklist: true,
     options : [
         {

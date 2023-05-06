@@ -3,7 +3,7 @@ const User = require('../../models/User')
 
 module.exports = {
     name:"deposit",
-    description:"deposit fr",
+    description:"Deposit coins into your bank",
     options: [
         {
             name:"amount",

@@ -27,9 +27,9 @@ const rnd = (ar,pay, option) => {
 
 module.exports = {
     name:"work",
-    description:"mm",
+    description:"Work for cash",
     blacklist: true,
-    cooldown: '5m',
+    cooldown: '5min',
     options: [
         {
             name:"job",

@@ -3,7 +3,7 @@ const User = require('../../models/User')
 
 module.exports = {
     name:"withdraw",
-    description:"withdraw fr",
+    description:"Withdraw coins from your bank",
     blacklist: true,
     options: [
         {

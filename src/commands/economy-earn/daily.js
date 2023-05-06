@@ -6,7 +6,7 @@ const dailyAmount = 1000;
 
 module.exports = {
   name: 'daily',
-  description: 'Collect your dailies!',
+  description: 'Collect your daily coins',
   blacklist: true,
   cooldown: "1d",
   

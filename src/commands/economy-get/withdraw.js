@@ -56,7 +56,7 @@ module.exports = {
             interaction.editReply({ embeds: [
                 new EmbedBuilder()
                     .setTitle("Successful Withdrawal.")
-                    .setDescription(`Successfully withdrew **${amount}**. Your balance is now **${user.balance}**`)
+                    .setDescription(`Successfully withdrew **${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}**. Your balance is now **${user.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}**`)
             ]})
         } catch (error) {
 			interaction.editReply('An error occured.')

@@ -61,7 +61,7 @@ module.exports = {
                     embeds : [
                         new EmbedBuilder()
                             .setTitle("Robbery :money_with_wings:")
-                            .setDescription(`You stole a grand total of **${sRob}** from <@${victimId}>. Leaving them with ${victim.balance}`)
+                            .setDescription(`You stole a grand total of **${sRob.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}** from <@${victimId}>. Leaving them with ${victim.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`)
                             .setColor("Green")
                             .setFooter({text: "You monster"})
                     ]
@@ -74,7 +74,7 @@ module.exports = {
                     embeds : [
                         new EmbedBuilder()
                             .setTitle("Robbery")
-                            .setDescription(`You tried robbing <@${victimId}> but they caught you before you could get away. You paid **${fRob}** in fines to <@${victimId}>`)
+                            .setDescription(`You tried robbing <@${victimId}> but they caught you before you could get away. You paid **${fRob.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}** in fines to <@${victimId}>`)
                             .setColor("Red")
                             .setFooter({text: "I knew this wouldnt work."})
                     ]

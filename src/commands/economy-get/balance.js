@@ -47,11 +47,11 @@ module.exports = {
                             .setFields(
                                 {
                                     name:"Balance",
-                                    value: `${user.balance}`
+                                    value: `${user.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
                                 },
                                 {
                                     name:"Bank",
-                                    value: `${user.bank}`
+                                    value: `${user.bank.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
                                 }
                             )
                             .setColor("DarkGreen")
@@ -63,11 +63,11 @@ module.exports = {
                             .setFields(
                                 {
                                     name:"Balance",
-                                    value: `${user.balance}`
+                                    value: `${user.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
                                 },
                                 {
                                     name:"Bank",
-                                    value: `${user.bank}`
+                                    value: `${user.bank.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
                                 }
                             )
                             .setColor("Green")

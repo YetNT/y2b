@@ -1,8 +1,8 @@
-const { Client, Interaction, StringSelectMenuOptionBuilder, StringSelectMenuBuilder, ActionRowBuilder } = require('discord.js')
-module.exports = {
-    name:"slash-test",
-    description:"jh",
+const { Client, Interaction, StringSelectMenuOptionBuilder, StringSelectMenuBuilder, ActionRowBuilder } = require('discord.js');
 
+module.exports = {
+    name: "slash-test",
+    description: "jh",
     /**
      * 
      * @param {Client} client
@@ -10,7 +10,6 @@ module.exports = {
      */
     callback: async (client, interaction) => {
         try {
-            
             const select = new StringSelectMenuBuilder()
                 .setCustomId('starter')
                 .setPlaceholder('Make a selection!')
@@ -32,34 +31,49 @@ module.exports = {
             const row = new ActionRowBuilder()
                 .addComponents(select);
 
-            const reply = await interaction.reply({
+            await interaction.reply({
                 content: 'hmm',
                 components: [row],
             });
-            const id = reply.message.id
-            console.log(id)
-            const message = await interaction.channel.messages.fetch(id);
 
             client.on('interactionCreate', async (interaction) => {
                 if (interaction.isStringSelectMenu() && interaction.customId === 'starter') {
                     const selectedOption = interaction.values[0];
+                    var message = await interaction.message.fetch();
+
                     if (selectedOption === 'h') {
-                        await message.edit({content: "h", components: [row]});
+                        await message.edit({ content: "h", components: [row] });
                     }
                     if (selectedOption === 'q') {
-                        await message.edit({content: "q", components: [row]});
+                        await message.edit({ content: "q", components: [row] });
                     }
                     if (selectedOption === 's') {
-                        await message.edit({content: "s", components: [row]});
+                        await message.edit({ content: "s", components: [row] });
                     }
                 }
             });
 
-            setTimeout(() => {
-                message.edit({ components: [] });
+            setTimeout(async () => {
+                const message = await interaction.fetchReply();
+                message.delete();
             }, 30000);
+
+            interaction.channel.client.on('interactionCreate', async (interaction) => {
+                if (interaction.isMessageComponent() && interaction.customId === 'starter') {
+                    const message = await interaction.message.fetch();
+                    message.delete();
+                    await interaction.reply({
+                        content: 'hmm',
+                        components: [row],
+                    });
+                    setTimeout(async () => {
+                        const newMessage = await interaction.fetchReply();
+                        newMessage.delete();
+                    }, 30000);
+                }
+            });
         } catch (error) {
             console.log(error)
         }
-	}
+    }
 }

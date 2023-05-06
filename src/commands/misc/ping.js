@@ -1,4 +1,4 @@
-const { /*PermissionFlgasBits,*/ Client, Interaction } = require('discord.js')
+const { /*PermissionFlgasBits,*/ Client, Interaction, EmbedBuilder } = require('discord.js')
 
 module.exports = {
   name: 'ping',
@@ -17,7 +17,32 @@ module.exports = {
    * @param {Client} client 
    * @param {Interaction} interaction 
    */
-  callback: (client, interaction) => {
-    interaction.reply(`Pong! ${client.ws.ping}ms`);
+  callback: async (client, interaction) => {
+    try {
+    const sent = await interaction.reply({ embeds: [new EmbedBuilder().setDescription('Pinging...')], fetchReply: true });
+    interaction.editReply({
+      embeds : [
+        new EmbedBuilder()
+          .setTitle("Pong!")
+          .setFields(
+            [
+              {
+                name:"Roundtrip latency",
+                value:`${sent.createdTimestamp - interaction.createdTimestamp}ms`,
+                inline: true
+              },
+              {
+                name:"Websocket heartbeat",
+                value: `${client.ws.ping}ms.`,
+                inline: true
+              }
+            ]
+          )
+        .setColor("Green")
+      ]
+    });
+    } catch (error) {
+     console.log(error) 
+    }
   },
 };

@@ -1,6 +1,9 @@
 #env
 .env
 
+#promocodes
+promocodes.json
+
 # Logs
 logs
 *.log

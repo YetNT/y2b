@@ -26,12 +26,12 @@ module.exports = {
                         .setLabel('Economy')
                         .setDescription('All the economy commands')
                         .setValue('eco')
-                        .setEmoji(':money_with_wings:'),
+                        .setEmoji('💸'),
                     new StringSelectMenuOptionBuilder()
                         .setLabel('Others')
                         .setDescription('The other commands')
                         .setValue('other')
-                        .setEmoji(':information_source:'),
+                        .setEmoji('ℹ️'), // this is the emoji `ℹ️` not letter
                 );
 
             const row = new ActionRowBuilder()
@@ -69,7 +69,7 @@ module.exports = {
                             resolve();
                         });
 
-                        await message.edit({ content: "h", components: [row], embeds: [new EmbedBuilder().setTitle("Economy").setFields(ecoFields).setColor("#4FC5E3")] });
+                        await message.edit({ content: "_ _", components: [row], embeds: [new EmbedBuilder().setTitle("Economy").setFields(ecoFields).setColor("Random")] });
                     }
                     if (selectedOption === 'other') {
                         let otherDesc = []
@@ -92,7 +92,7 @@ module.exports = {
                             resolve();
                         });
 
-                        await message.edit({ content: "h", components: [row], embeds: [new EmbedBuilder().setTitle("Others").setFields(otherFields).setColor("#4FC5E3")] });
+                        await message.edit({ content: "_ _", components: [row], embeds: [new EmbedBuilder().setTitle("Others").setFields(otherFields).setColor("Random")] });
                     }
                    interaction.deferUpdate()
                     if (message) {

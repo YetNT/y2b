@@ -95,7 +95,7 @@ module.exports = {
 
                 if (confirmation.customId === 'confirm') {
 
-                    if (user) { // If the user exists
+                    if (user && userInv) { // If the user exists
                         if (item) {
                             userInv.inv[item] += amount
                             authorInv.inv[item] -= amount
@@ -149,6 +149,7 @@ module.exports = {
 
             } catch (e) { // User did not confirm whether they want to share the coins or not
 	            await interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("Confirmation not received within 1 minute, cancelling") ], components: [new ActionRowBuilder().addComponents(cancelDisabled, confirmDisabled)], });
+                console.log(e)
             }
         }  catch (error) {
 			interaction.editReply('An error occured.')

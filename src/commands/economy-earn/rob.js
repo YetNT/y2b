@@ -1,6 +1,7 @@
 const { ApplicationCommandOptionType, Client, Interaction, EmbedBuilder } = require('discord.js')
 const User = require('../../models/User')
 const rndInt = require('../../utils/rndInt')
+const Inventory = require('../../models/Inventory')
 const [ comma, coin, shopify ] = require('../../utils/beatify')
 
 module.exports = {
@@ -31,15 +32,32 @@ module.exports = {
             const sf = rndInt(1, 2) // 2 = success; 1 = failure
 
             let victim = await User.findOne({userId: victimId})
+            let inventory = await Inventory.findOne({userId: victimId}) // victim's inventory
             const victimDm = await client.users.fetch(victimId).catch(() => null); // to dm the user.
             let author = await User.findOne({userId: interaction.user.id })
 
-            if (victimId == interaction.user.id) {interaction.editReply("don't rob yourself."); return};
-            if (!author) {interaction.editReply("You cannot rob people when you've got nothing"); return}
-            if (author.balance < 1000) {interaction.editReply("You cannot rob people when your balance is lower than 1000."); return}
-            if (!victim) {interaction.editReply("Leave them alone, they've got nothing :sob:"); return};
-            if (victim.balance < 0) {interaction.editReply("This user is paying off their debts"); return};
-            if (victim.balance <= 500) {interaction.editReply(`It aint worth it, they've only got ${coin(victim.balance)}`); return};
+            if (victimId == interaction.user.id) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription("don't rob yourself.")]}); return};
+            if (!author) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription("You cannot rob people when you've got nothing")]}); return}
+            if (author.balance < 1000) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription("You cannot rob people when your balance is lower than 1000.")]}); return}
+            if (!victim) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription("Leave them alone, they've got nothing :sob:")]}); return};
+            if (victim.balance < 0) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription("This user is paying off their debts")]}); return};
+            if (victim.balance <= 500) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription(`It aint worth it, they've only got ${coin(victim.balance)}`)]}); return};
+
+            if (inventory) { // check if they have an inventory
+                if (inventory.inv.shield.amt > 0 && inventory.inv.shield.hp > 0) {
+                    let damage = rndInt(Math.ceil(inventory.inv.shield.hp / 2), inventory.inv.shield.hp)
+                    await interaction.editReply( { embeds : [ new EmbedBuilder().setDescription(`You tried to rob them but this user had a shield! You damaged their shield by **${comma(damage)}%**`)]})
+                    inventory.inv.shield.hp -= damage
+
+                    await inventory.save()
+                    if (inventory.inv.shield.hp == 0) {
+                        inventory.inv.shield.amt -= 1
+                        await interaction.followUp("You broke this user's shield.")
+                        await inventory.save()
+                    }
+                    return
+                }
+            }
             
             const max = Math.floor(victim.balance / 2) // doing this so mfs dont get their whole ass robbed. 
             let sRob = rndInt(1, max) // user can only be robbed random amounts from 1 to half their balance

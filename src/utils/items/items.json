@@ -1,0 +1,37 @@
+{
+    "shield": {
+        "name" : "Shield",
+        "description": "It's a shield, there's not really anything else to it. Although it can sometimes protect you from robberies",
+        "uses":[
+            "100% chance of protecting you from a robbery",
+            "50% chance of loosing HP on robbery."
+        ],
+        "price": 1500,
+        "id": "shield",
+        "rarity": "Common"
+    },
+    "shieldhp": {
+        "name": "Shield's HP",
+        "description": "The amount of hp your shield has before it breaks. It lowers when somebody attempts to rob you.",
+        "uses" : [],
+        "price": 150,
+        "id": "shieldhp",
+        "rarity": "Common"
+    },
+    "rock": {
+        "name": "Rock",
+        "description":"It's a rock. Nothing more, nothing less.",
+        "uses" : [],
+        "price" : 50,
+        "id" : "rock",
+        "rarity": "Common"
+    },
+    "stick": {
+        "name": "Stick",
+        "description": "A stick that was torn off from a tree, stick moment",
+        "uses" : [],
+        "price": 100,
+        "id" : "stick",
+        "rarity": "Common"
+    }
+}

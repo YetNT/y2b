@@ -133,7 +133,11 @@ module.exports = {
                     }
 
                     await confirmation.update({
-                        embeds: [ new EmbedBuilder().setDescription(response) ],
+                        embeds: [ new EmbedBuilder()
+                            .setTitle("Sharing is caring")
+                            .setColor("Yellow")
+                            .setDescription(response)
+                        ],
                         components: [new ActionRowBuilder().addComponents(confirmDisabled)] 
                     });
 

@@ -2,7 +2,7 @@ const { Interaction, Client, EmbedBuilder, ApplicationCommandOptionType } = requ
 const User = require('../../models/User')
 const workAr = require('../../utils/work/work.json')
 const workPay = require('../../utils/work/workPay.json')
-const [ comma, coin ] = require('../../utils/beatify')
+const [ comma, coin, shopify ] = require('../../utils/beatify')
 
 /**
  * 

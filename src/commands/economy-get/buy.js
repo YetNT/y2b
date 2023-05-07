@@ -1,8 +1,8 @@
 const { Client, Interaction, ApplicationCommandOptionType, EmbedBuilder } = require('discord.js')
 const User = require('../../models/User')
 const Inventory = require('../../models/Inventory')
-const price = require('../../utils/items/price.json')
-const [ comma, shopify ] = require('../../utils/beatify')
+const Items = require('../../utils/items/items.json')
+const [ comma, coin, shopify ] = require('../../utils/beatify')
 
 module.exports = {
     name:"buy",
@@ -47,7 +47,7 @@ module.exports = {
 
             const item = interaction.options.get("item").value
             const amount = interaction.options.get("amount").value
-            const cost = price[item] * amount
+            const cost = (Items[item].price * amount)
             let query = {
                 userId: interaction.user.id
             }
@@ -105,8 +105,8 @@ module.exports = {
 
             interaction.editReply({ embeds : [
                 new EmbedBuilder()
-                    .setTitle("Purchase")
-                    .setDescription(`Succesfully bought \`${amount} ${item}\` for ${shopify(cost)}`)
+                    .setTitle("W Purchase")
+                    .setDescription(`Succesfully bought \`${amount} ${Items[item].name}\` for ${shopify(cost)}`)
                     .setColor("Green")
             ] })
         }  catch (error) {

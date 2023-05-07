@@ -1,6 +1,6 @@
 const { Client, ApplicationCommandOptionType, Interaction, EmbedBuilder } = require('discord.js');
 const User = require('../../models/User');
-const [ comma ] = require('../../utils/beatify')
+const [ comma, coin, shopify ] = require('../../utils/beatify')
 
 module.exports = {
     name:"balance",

@@ -1,7 +1,7 @@
 const { Client, Interaction } = require('discord.js');
 const User = require('../../models/User');
 const Cooldown = require('../../models/Cooldown')
-const [ coin, comma ] = require('../../utils/beatify')
+const [ comma, coin, shopify ] = require('../../utils/beatify')
 
 const dailyAmount = 1000;
 

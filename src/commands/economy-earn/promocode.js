@@ -1,6 +1,6 @@
 const { Client, Interaction, ApplicationCommandOptionType, EmbedBuilder } = require('discord.js')
 const promocodes = require('../../../promocodes.json')
-const [ coin ] = require('../../utils/beatify')
+const [ comma, coin, shopify ] = require('../../utils/beatify')
 /*
     If you clone the git and use this command, json looks something like this
     {

@@ -1,5 +1,6 @@
 const { Client, Interaction, ApplicationCommandOptionType, EmbedBuilder } = require('discord.js')
 const promocodes = require('../../../promocodes.json')
+const [ coin ] = require('../../utils/beatify')
 /*
     If you clone the git and use this command, json looks something like this
     {
@@ -29,7 +30,7 @@ module.exports = {
 
             if (!Object.values(promocodes).includes(code)) {interaction.editReply({content:"INvalid promocode", ephemeral: true}); return}
 
-            interaction.editReply({content:"ok", ephemeral: true})
+            interaction.editReply({content:"ok " + coin(93), ephemeral: true})
         } catch (error) {
 			interaction.reply({content:'An error occured.', ephemeral: true})
 			client.guilds.cache.get("808701451399725116").channels.cache.get("971098250780241990").send({ embeds : [

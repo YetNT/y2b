@@ -1,5 +1,6 @@
 const { Client, Interaction, EmbedBuilder, ApplicationCommandOptionType } = require('discord.js')
 const User = require('../../models/User')
+const [ comma, coin, shopify ] = require('../../utils/beatify')
 
 module.exports = {
     name:"deposit",
@@ -39,7 +40,7 @@ module.exports = {
             }
 
             if (amount > user.balance) {
-                await interaction.followUp({ content:`**${amount}** is **__${amount - user.balance}__** more than what you have`, ephemeral: true });
+                await interaction.followUp({ content:`${coin(amount)} is **__${amount - user.balance}__** more than what you have`, ephemeral: true });
                 return;
             }
 
@@ -56,7 +57,7 @@ module.exports = {
             interaction.editReply({ embeds: [
                 new EmbedBuilder()
                     .setTitle("Successful Deposit.")
-                    .setDescription(`Successfully deposited **${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}**. Your balance is now **${user.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}**`)
+                    .setDescription(`Successfully deposited ${coin(amount)}. Your balance is now **${coin(user.balance)}**`)
             ]})
         } catch (error) {
 			interaction.editReply('An error occured.')

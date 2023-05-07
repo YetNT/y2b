@@ -1,6 +1,6 @@
 const { Client, ApplicationCommandOptionType, Interaction, EmbedBuilder } = require('discord.js');
 const User = require('../../models/User');
-
+const [ comma ] = require('../../utils/beatify')
 
 module.exports = {
     name:"balance",
@@ -47,11 +47,11 @@ module.exports = {
                             .setFields(
                                 {
                                     name:"Balance",
-                                    value: `${user.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
+                                    value: `${comma(user.balance)}`
                                 },
                                 {
                                     name:"Bank",
-                                    value: `${user.bank.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
+                                    value: `${comma(user.bank)}`
                                 }
                             )
                             .setColor("DarkGreen")
@@ -63,11 +63,11 @@ module.exports = {
                             .setFields(
                                 {
                                     name:"Balance",
-                                    value: `${user.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
+                                    value: `${comma(user.balance)}`
                                 },
                                 {
                                     name:"Bank",
-                                    value: `${user.bank.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`
+                                    value: `${comma(user.bank)}`
                                 }
                             )
                             .setColor("Green")

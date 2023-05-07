@@ -2,6 +2,7 @@ const { Client, Interaction, ApplicationCommandOptionType, EmbedBuilder } = requ
 const User = require('../../models/User')
 const Inventory = require('../../models/Inventory')
 const price = require('../../utils/items/price.json')
+const [ comma, shopify ] = require('../../utils/beatify')
 
 module.exports = {
     name:"buy",
@@ -56,7 +57,7 @@ module.exports = {
 
             if (!user) {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("You cannot buy items when you've got nothing") ] }); return}
             if (amount < 0) {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("Don't buy amounts lower than 0") ] });return}
-            if (cost > user.balance) {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription(`You cannot afford ${amount} ${item}s`) ] }); return}
+            if (cost > user.balance) {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription(`You cannot afford ${comma(amount)} ${item}s`) ] }); return}
             
             if (inventory) {
                 if ((inventory.inv.shield.amt + amount) > 20 && item == "shield") {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("You can only have 20 shields.") ] }); return}
@@ -105,7 +106,7 @@ module.exports = {
             interaction.editReply({ embeds : [
                 new EmbedBuilder()
                     .setTitle("Purchase")
-                    .setDescription(`Succesfully bought __${amount}__ ${item} for **${cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}**`)
+                    .setDescription(`Succesfully bought \`${amount} ${item}\` for ${shopify(cost)}`)
                     .setColor("Green")
             ] })
         }  catch (error) {

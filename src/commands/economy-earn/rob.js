@@ -1,6 +1,7 @@
 const { ApplicationCommandOptionType, Client, Interaction, EmbedBuilder } = require('discord.js')
 const User = require('../../models/User')
 const rndInt = require('../../utils/rndInt')
+const [ coin ] = require('../../utils/beatify')
 
 module.exports = {
     name:"rob",
@@ -38,7 +39,7 @@ module.exports = {
             if (author.balance < 1000) {interaction.editReply("You cannot rob people when your balance is lower than 1000."); return}
             if (!victim) {interaction.editReply("Leave them alone, they've got nothing :sob:"); return};
             if (victim.balance < 0) {interaction.editReply("This user is paying off their debts"); return};
-            if (victim.balance <= 500) {interaction.editReply(`It aint worth it, they've only got ${victim.balance}`); return};
+            if (victim.balance <= 500) {interaction.editReply(`It aint worth it, they've only got ${coin(victim.balance)}`); return};
             
             const max = Math.floor(victim.balance / 2) // doing this so mfs dont get their whole ass robbed. 
             let sRob = rndInt(1, max) // user can only be robbed random amounts from 1 to half their balance
@@ -52,7 +53,7 @@ module.exports = {
                     embeds: [
                         new EmbedBuilder()
                             .setTitle("You have been robbed from!")
-                            .setDescription(`<@${interaction.user.id}> stole **${sRob}** from you!`)
+                            .setDescription(`<@${interaction.user.id}> stole **${coin(sRob)}** from you!`)
                             .setFooter({text: `Server = ${interaction.member.guild.name}`})
                     ]
                 }).catch(() => null);
@@ -61,7 +62,7 @@ module.exports = {
                     embeds : [
                         new EmbedBuilder()
                             .setTitle("Robbery :money_with_wings:")
-                            .setDescription(`You stole a grand total of **${sRob.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}** from <@${victimId}>. Leaving them with ${victim.balance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`)
+                            .setDescription(`You stole a grand total of **${coin(sRob)}** from <@${victimId}>. Leaving them with ${coin(victim.balance)}`)
                             .setColor("Green")
                             .setFooter({text: "You monster"})
                     ]
@@ -74,7 +75,7 @@ module.exports = {
                     embeds : [
                         new EmbedBuilder()
                             .setTitle("Robbery")
-                            .setDescription(`You tried robbing <@${victimId}> but they caught you before you could get away. You paid **${fRob.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}** in fines to <@${victimId}>`)
+                            .setDescription(`You tried robbing <@${victimId}> but they caught you before you could get away. You paid **${coin(fRob)}** in fines to <@${victimId}>`)
                             .setColor("Red")
                             .setFooter({text: "I knew this wouldnt work."})
                     ]

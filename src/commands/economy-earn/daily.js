@@ -1,6 +1,7 @@
 const { Client, Interaction } = require('discord.js');
 const User = require('../../models/User');
 const Cooldown = require('../../models/Cooldown')
+const [ coin, comma ] = require('../../utils/beatify')
 
 const dailyAmount = 1000;
 
@@ -45,7 +46,11 @@ module.exports = {
       await user.save();
 
       interaction.editReply(
-        `${dailyAmount} was added to your balance. Your new balance is ${user.balance}`
+        { embeds : [ new EmbedBuilder()
+          .setTitle("Daily Reward")
+          .setDescription(`${comma(dailyAmount)} was added to your balance. Your new balance is ${coin(user.balance)}`)
+          .setColor("Yellow")
+        ]}
       );
     }  catch (error) {
 			interaction.editReply('An error occured.')

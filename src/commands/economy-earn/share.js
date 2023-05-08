@@ -2,6 +2,7 @@ const { ApplicationCommandOptionType, Client, Interaction, EmbedBuilder, ActionR
 const User = require('../../models/User')
 const Inventory = require('../../models/Inventory')
 const Blacklist = require('../../models/Blacklist')
+const { all, withoutShield, itemNames, itemNamesNoShield } = require('../../utils/items/items')
 const [ comma, coin ] = require('../../utils/beatify')
 
 module.exports = {
@@ -25,16 +26,7 @@ module.exports = {
             description:"Are you sharing an item? (If not leave this empty)",
             requred: false,
             type: ApplicationCommandOptionType.String,
-            choices: [
-                {
-                    name:"Rock",
-                    value:"rock"
-                },
-                {
-                    name:"Stick",
-                    value:"stick"
-                }
-            ]
+            choices: itemNamesNoShield()
         }
     ],
     blacklist: true,

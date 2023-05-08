@@ -126,7 +126,7 @@ module.exports = {
                     user.balance += payment
                 } else {
                     interaction.editReply({embeds: embed})
-                    if (reply.includes("{AMT}") == true) user.balance -= payment;
+                    if (/\{AMT\}/.test(reply) == true) user.balance -= payment;
                 }
 
                 await user.save()

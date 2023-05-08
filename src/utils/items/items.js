@@ -21,5 +21,18 @@ const itemNames = () => {
     return r
 }
 
+const itemNamesNoShield = () => {
+    let { shield, shieldhp, ...newInv } = all;
 
-module.exports = { all, withoutShield, itemNames }
+    let r = []
+    for (let item in newInv) {
+        r.push({
+            name: newInv[item].name,
+            value: newInv[item].id
+        })
+    }
+
+    return r
+}
+
+module.exports = { all, withoutShield, itemNames, itemNamesNoShield }

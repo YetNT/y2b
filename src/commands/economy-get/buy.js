@@ -2,7 +2,7 @@ const { Client, Interaction, ApplicationCommandOptionType, EmbedBuilder } = requ
 const User = require('../../models/User')
 const Inventory = require('../../models/Inventory')
 const Items = require('../../utils/items/items.json')
-const { all, withoutShield, itemNames } = require('../../utils/items/items')
+const { all, withoutShield, itemNames, itemNamesNoShield } = require('../../utils/items/items')
 const [ comma, coin, shopify ] = require('../../utils/beatify')
 
 module.exports = {

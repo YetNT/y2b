@@ -15,7 +15,6 @@ module.exports = {
             for (let item in items) {
                 reply += `__${items[item].name}__ - ${shopify(items[item].price)}\n`;
             }
-            console.log(reply)
 
             await interaction.editReply({ embeds : [
                 new EmbedBuilder()

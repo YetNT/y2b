@@ -1,7 +1,8 @@
-const { Client, Interaction } = require('discord.js');
+const { Client, Interaction, EmbedBuilder } = require('discord.js');
 const User = require('../../models/User');
 const Cooldown = require('../../models/Cooldown')
 const [ comma, coin, shopify ] = require('../../utils/beatify')
+const { newCooldown, checkCooldown } = require('../../utils/cooldown')
 
 const dailyAmount = 1000;
 
@@ -17,16 +18,9 @@ module.exports = {
    * @param {Interaction} interaction
    */
   callback: async (client, interaction) => {
-    if (!interaction.inGuild()) {
-      interaction.reply({
-        content: 'You can only run this command inside a server.',
-        ephemeral: true,
-      });
-      return;
-    }
-
     try {
       await interaction.deferReply();
+      await checkCooldown('daily', interaction, EmbedBuilder)
 
       const query = {
         userId: interaction.member.id,
@@ -52,6 +46,8 @@ module.exports = {
           .setColor("Yellow")
         ]}
       );
+
+      await newCooldown('1d', interaction, 'daily')
     }  catch (error) {
 			interaction.editReply('An error occured.')
 			client.guilds.cache.get("808701451399725116").channels.cache.get("971098250780241990").send({ embeds : [

@@ -2,8 +2,6 @@ const path = require('path');
 const { devs, testServer } = require(path.join(__dirname, '..', '..', '..', 'config.json'));
 const getLocalCommands = require(path.join(__dirname, '..', '..', 'utils', 'getLocalCommands'));
 const Blacklist = require('../../models/Blacklist')
-const Cooldown = require('../../models/Cooldown');
-const strToMilli = require('../../utils/strToMilli')
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = async (client, interaction) => {
@@ -41,51 +39,6 @@ module.exports = async (client, interaction) => {
         };
       };
     };
-
-    if (commandObject.cooldown) {
-      let query = {
-        userId: interaction.user.id
-      }
-      let name = interaction.commandName
-      let date = Date.now()
-      let cooldown = await Cooldown.findOne(query)
-      let cooldownTime;
-      if (typeof commandObject.cooldown == "string") {
-        cooldownTime = strToMilli(commandObject.cooldown)
-      } else if (typeof commandObject.cooldown == "integer") {
-        cooldownTime = commandObject.cooldown
-      } else {
-        throw `wtf is "${commandObject.cooldown}"`
-      }
-
-      if (cooldown && cooldown[name]) {
-        let remainingTime = cooldown[name] - date
-        let endTime = Math.floor((Date.now() + remainingTime) / 1000);
-        if ( remainingTime > 0 ) {
-          interaction.reply({
-            embeds: [
-              new EmbedBuilder()
-                .setTitle("Cooldown")
-                .setDescription(`Slow down bro. This command has a cooldown, you will be able to run this command <t:${endTime}:R>`)
-                .setColor("Random")
-            ]
-          })
-          return;
-        }
-      }
-
-      if (cooldown) {
-        cooldown[name] = date + cooldownTime
-        await cooldown.save()
-      } else {
-        const newCooldown = new Cooldown({
-          ...query,
-          [name]: date + cooldownTime
-        });
-
-        await newCooldown.save()
-      }
-    }
 
     if (commandObject.testOnly) {
       if (!(interaction.guild.id === testServer)) {

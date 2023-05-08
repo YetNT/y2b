@@ -3,8 +3,7 @@
         "name" : "Shield",
         "description": "It's a shield, there's not really anything else to it. Although it can sometimes protect you from robberies",
         "uses":[
-            "100% chance of protecting you from a robbery",
-            "50% chance of loosing HP on robbery."
+            "Will protect you from any robbery"
         ],
         "price": 1500,
         "id": "shield",
@@ -33,5 +32,21 @@
         "price": 100,
         "id" : "stick",
         "rarity": "Common"
+    },
+    "gem" : {
+        "name": "Gem",
+        "description": "shine",
+        "uses": [],
+        "price": 6e9,
+        "id": "gem",
+        "rarity": "Rare"
+    },
+    "coal": {
+        "name": "Coal",
+        "description": "it's coal. coal.",
+        "uses": [],
+        "price": 1200,
+        "id": "coal",
+        "rarity": "Uncommon"
     }
 }

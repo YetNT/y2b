@@ -113,7 +113,7 @@ module.exports = {
             let reply = rnd(workAr, earn, option)
             let job = workPay.find(job => job.type === option);
             let payment = Math.floor(Math.random() * (job.max - job.min) ) + job.min;
-            let work = reply.answer.replace("{AMT}", `**${coin(payment)}**`)
+            let work = reply.answer.replace("{AMT}", `${coin(payment)}`)
 
             earn == true ? embed.push(new EmbedBuilder().setTitle("Nice work").setColor("Green").setDescription(`${work}`)) : embed.push(new EmbedBuilder().setTitle("... work").setColor("Red").setDescription(`${work}`))
             

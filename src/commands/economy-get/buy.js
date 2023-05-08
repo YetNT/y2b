@@ -2,6 +2,7 @@ const { Client, Interaction, ApplicationCommandOptionType, EmbedBuilder } = requ
 const User = require('../../models/User')
 const Inventory = require('../../models/Inventory')
 const Items = require('../../utils/items/items.json')
+const { all, withoutShield, itemNames } = require('../../utils/items/items')
 const [ comma, coin, shopify ] = require('../../utils/beatify')
 
 module.exports = {
@@ -14,24 +15,7 @@ module.exports = {
             description:"Which item you buying?",
             required: true,
             type: ApplicationCommandOptionType.String,
-            choices: [
-                {
-                    name:"Rock",
-                    value:"rock"
-                },
-                {
-                    name:"Stick",
-                    value:"stick"
-                },
-                {
-                    name:"Shield",
-                    value:"shield"
-                },
-                {
-                    name:"ShieldHP",
-                    value:"shieldhp"
-                }
-            ]
+            choices: itemNames()
         },
         {
             name:"amount",

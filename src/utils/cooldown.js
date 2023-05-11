@@ -10,38 +10,37 @@ const strToMilli = require('../utils/strToMilli')
  * @returns 
  */
 const newCooldown = async (time, interaction, name) => {
-
     let query = {
-        userId: interaction.user.id
+      userId: interaction.user.id
+    };
+    let date = Date.now();
+    let cooldown = await Cooldown.findOne(query);
+  
+    if (cooldown && cooldown[name] && cooldown[name].getTime() > date) {
+      return;
     }
-    let date = Date.now()
-    let cooldown = await Cooldown.findOne(query)
-
-    if (cooldown && cooldown[name]) {
-        return
-    }
-
+  
     let cooldownTime;
     if (typeof time == "string") {
-        cooldownTime = strToMilli(time)
+      cooldownTime = strToMilli(time);
     } else if (typeof time == "integer") {
-        cooldownTime = time
+      cooldownTime = time;
     } else {
-        throw `wtf is "${time}"`
+      throw `wtf is "${time}"`;
     }
-
+  
     if (cooldown) {
-        cooldown[name] = date + cooldownTime
-        await cooldown.save()
+      cooldown[name] = new Date(date + cooldownTime);
+      await cooldown.save();
     } else {
-        const newCooldown = new Cooldown({
-            ...query,
-            [name]: date + cooldownTime
-        });
-
-        await newCooldown.save()
+      const newCooldown = new Cooldown({
+        ...query,
+        [name]: new Date(date + cooldownTime)
+      });
+      await newCooldown.save();
     }
-}
+};
+  
 
 
 /**
@@ -71,7 +70,7 @@ const checkCooldown = async (name, interaction, EmbedBuilder) => {
                         .setColor("Random")
                 ]
             })
-            return;
+            return 0;
         }
     } else {
         return

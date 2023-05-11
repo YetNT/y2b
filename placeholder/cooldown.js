@@ -1,6 +1,5 @@
 const { ApplicationCommandOptionType, Client, Interaction, EmbedBuilder } = require('discord.js')
-const CooldownTimes = require('../../cooldownTimes.json')
-const Cooldown = require('../../models/Cooldown')
+const { newCooldown, checkCooldown } = require('../../utils/cooldown') // import custom cooldown handler
 
 module.exports = {
     name:"rob",
@@ -14,36 +13,22 @@ module.exports = {
     callback: async (client, interaction) => {
 
         try {
-            await interaction.deferReply()
-
-            const userId = interaction.user.id
-            const cooldown = await Cooldown.findOne({ userId: userId })
-
-            if (cooldown && cooldown.COMMAND_NAME) {
-                const remainingTime = cooldown.COMMAND_NAME - Date.now()
-                if ( remainingTime > 0){
-                  interaction.editReply(`You are on cooldown. Please wait ${Math.ceil(remainingTime / 1000)} seconds.`)
-                  return;
-                }
+            await interaction.deferReply();
+            /*
+             * add any errors over here, so cooldown only executes if all checks have been passed
+             */
+            const cooldownResult = await checkCooldown(COMMAND_NAME, interaction, EmbedBuilder);
+            if (cooldownResult === 0) {
+              return;
             }
 
-            interaction.editReply("Robbing in progress...")
             /*
             CODE GOES HEREEEEEE
             
-            make sure you have this command in the models and the cooldown times in millieconds
+            cooldown time can be like '1d' pr '20m' cuz i made it work lolololol
             */
 
-            if (cooldown) {
-                cooldown.COMMAND_NAME = Date.now() + CooldownTimes.COMMAND_NAME
-                await cooldown.save()
-            } else {
-                const newCooldown = new Cooldown({
-                    userId: userId,
-                    COMMAND_NAME: Date.now() + CooldownTimes.COMMAND_NAME
-                })
-                await newCooldown.save()
-            }
+            await newCooldown('TIME', interaction, COMMAND_NAME)
 
         } catch (error) {
             interaction.editReply(

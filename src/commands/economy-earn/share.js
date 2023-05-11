@@ -4,6 +4,7 @@ const Inventory = require('../../models/Inventory')
 const Blacklist = require('../../models/Blacklist')
 const { all, withoutShield, itemNames, itemNamesNoShield } = require('../../utils/items/items')
 const [ comma, coin ] = require('../../utils/beatify')
+const { newCooldown, checkCooldown } = require('../../utils/cooldown') 
 
 module.exports = {
     name:"share",
@@ -57,6 +58,11 @@ module.exports = {
             if (utgi.bot == true) {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("You can't share with bots.").setColor("Red") ]});return}
             if (blacklist && blacklist.blacklisted == true) {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("that user is blacklisted.").setColor("Red") ]});return}
             if (userToGiveId == interaction.user.id) {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("You cannot share with yourself").setColor("Red") ] });return}
+
+            const cooldownResult = await checkCooldown('share', interaction, EmbedBuilder);
+            if (cooldownResult === 0) {
+              return;
+            }
 
             if (item) {
                 isItem = true
@@ -143,6 +149,8 @@ module.exports = {
 	            await interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("Confirmation not received within 1 minute, cancelling") ], components: [new ActionRowBuilder().addComponents(cancelDisabled, confirmDisabled)], });
                 console.log(e)
             }
+
+            await newCooldown('15s', interaction, 'share')
         }  catch (error) {
 			interaction.editReply('An error occured.')
 			client.guilds.cache.get("808701451399725116").channels.cache.get("971098250780241990").send({ embeds : [

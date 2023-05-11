@@ -1,6 +1,5 @@
 const { Client, Interaction, EmbedBuilder } = require('discord.js');
 const User = require('../../models/User');
-const Cooldown = require('../../models/Cooldown')
 const [ comma, coin, shopify ] = require('../../utils/beatify')
 const { newCooldown, checkCooldown } = require('../../utils/cooldown')
 
@@ -10,7 +9,6 @@ module.exports = {
   name: 'daily',
   description: 'Collect your daily coins',
   blacklist: true,
-  cooldown: "1d",
   
   /**
    *
@@ -20,7 +18,10 @@ module.exports = {
   callback: async (client, interaction) => {
     try {
       await interaction.deferReply();
-      await checkCooldown('daily', interaction, EmbedBuilder)
+      const cooldownResult = await checkCooldown('daily', interaction, EmbedBuilder);
+      if (cooldownResult === 0) {
+        return;
+      }
 
       const query = {
         userId: interaction.member.id,

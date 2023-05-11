@@ -3,6 +3,7 @@ const User = require('../../models/User')
 const rndInt = require('../../utils/rndInt')
 const Inventory = require('../../models/Inventory')
 const [ comma, coin, shopify ] = require('../../utils/beatify')
+const { newCooldown, checkCooldown } = require('../../utils/cooldown')
 
 module.exports = {
     name:"rob",
@@ -16,7 +17,6 @@ module.exports = {
         }
     ],
     blacklist: true,
-    cooldown: "5min",
 
 
     /**
@@ -42,6 +42,11 @@ module.exports = {
             if (!victim) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription("Leave them alone, they've got nothing :sob:")]}); return};
             if (victim.balance < 0) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription("This user is paying off their debts")]}); return};
             if (victim.balance <= 500) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription(`It aint worth it, they've only got ${coin(victim.balance)}`)]}); return};
+
+            const cooldownResult = await checkCooldown('rob', interaction, EmbedBuilder);
+            if (cooldownResult === 0) {
+              return;
+            }
 
             if (inventory) { // check if they have an inventory
                 if (inventory.inv.shield.amt > 0 && inventory.inv.shield.hp > 0) {
@@ -102,6 +107,8 @@ module.exports = {
 
             await author.save()
             await victim.save()
+
+            await newCooldown('5min', interaction, 'rob')
         }  catch (error) {
 			interaction.editReply('An error occured.')
 			client.guilds.cache.get("808701451399725116").channels.cache.get("971098250780241990").send({ embeds : [

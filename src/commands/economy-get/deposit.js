@@ -57,7 +57,7 @@ module.exports = {
             interaction.editReply({ embeds: [
                 new EmbedBuilder()
                     .setTitle("Successful Deposit.")
-                    .setDescription(`Successfully deposited ${coin(amount)}. Your balance is now **${coin(user.balance)}**`)
+                    .setDescription(`Successfully deposited ${coin(amount)}. Your balance is now ${coin(user.balance)}`)
             ]})
         } catch (error) {
 			interaction.editReply('An error occured.')

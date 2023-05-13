@@ -76,7 +76,7 @@ module.exports = {
                     embeds: [
                         new EmbedBuilder()
                             .setTitle("You have been robbed from!")
-                            .setDescription(`<@${interaction.user.id}> stole **${coin(sRob)}** from you!`)
+                            .setDescription(`<@${interaction.user.id}> stole ${coin(sRob)} from you!`)
                             .setFooter({text: `Server = ${interaction.member.guild.name}`})
                     ]
                 }).catch(() => null);
@@ -85,7 +85,7 @@ module.exports = {
                     embeds : [
                         new EmbedBuilder()
                             .setTitle("Robbery :money_with_wings:")
-                            .setDescription(`You stole a grand total of **${coin(sRob)}** from <@${victimId}>. Leaving them with ${coin(victim.balance)}`)
+                            .setDescription(`You stole a grand total of ${coin(sRob)} from <@${victimId}>. Leaving them with ${coin(victim.balance)}`)
                             .setColor("Green")
                             .setFooter({text: "You monster"})
                     ]
@@ -98,7 +98,7 @@ module.exports = {
                     embeds : [
                         new EmbedBuilder()
                             .setTitle("Robbery")
-                            .setDescription(`You tried robbing <@${victimId}> but they caught you before you could get away. You paid **${coin(fRob)}** in fines to <@${victimId}>`)
+                            .setDescription(`You tried robbing <@${victimId}> but they caught you before you could get away. You paid ${coin(fRob)} in fines to <@${victimId}>`)
                             .setColor("Red")
                             .setFooter({text: "I knew this wouldnt work."})
                     ]

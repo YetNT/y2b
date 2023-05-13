@@ -23,7 +23,8 @@
         "uses" : [],
         "price" : 50,
         "id" : "rock",
-        "rarity": "Common"
+        "rarity": "Common",
+        "emoji":"<:rock:1106937815738110055>"
     },
     "stick": {
         "name": "Stick",
@@ -31,7 +32,8 @@
         "uses" : [],
         "price": 100,
         "id" : "stick",
-        "rarity": "Common"
+        "rarity": "Common",
+        "emoji":"<:stick:1106945454572314695>"
     },
     "gem" : {
         "name": "Gem",
@@ -39,7 +41,8 @@
         "uses": [],
         "price": 6e9,
         "id": "gem",
-        "rarity": "Rare"
+        "rarity": "Rare",
+        "emoji":"💎"
     },
     "coal": {
         "name": "Coal",
@@ -47,6 +50,7 @@
         "uses": [],
         "price": 1200,
         "id": "coal",
-        "rarity": "Uncommon"
+        "rarity": "Uncommon",
+        "emoji":"<:coal:1106946918954827956>"
     }
 }

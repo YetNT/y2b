@@ -4,6 +4,7 @@ module.exports = {
     name:"eval",
     description:"evaluate",
     devOnly: true,
+    deleted: true,
     options: [
         {
             name:"eval",

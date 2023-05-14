@@ -1,7 +1,7 @@
 
 const { Client, Interaction, EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js')
 
-let eco = ['daily', 'rob', 'work', 'balance', 'deposit', 'withdraw', 'buy', 'promocode', 'share', 'shop', 'inventory', 'leaderboard']
+let eco = ['daily', 'rob', 'work', 'balance', 'deposit', 'withdraw', 'buy', 'promocode', 'share', 'shop', 'inventory', 'leaderboard', 'item']
 let other = ['help', 'ping']
 
 module.exports = {

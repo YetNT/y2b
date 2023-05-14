@@ -1,5 +1,5 @@
 
-const { Client, Interaction, EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder } = require('discord.js')
+const { Client, Interaction, EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js')
 
 let eco = ['daily', 'rob', 'work', 'balance', 'deposit', 'withdraw', 'buy', 'promocode', 'share', 'shop', 'inventory', 'leaderboard']
 let other = ['help', 'ping']
@@ -33,13 +33,24 @@ module.exports = {
                         .setValue('other')
                         .setEmoji('ℹ️'), // this is the emoji `ℹ️` not letter
                 );
+            
+            const invite = new ButtonBuilder()
+                .setLabel("Invite")
+                .setURL("https://discord.com/oauth2/authorize?client_id=701280304182067251&permissions=412317141056&scope=applications.commands%20bot")
+                .setStyle(ButtonStyle.Link)
+            const support = new ButtonBuilder()
+                .setLabel("Support Server")
+                .setURL("https://discord.gg/r2rdHXTJvs")
+                .setStyle(ButtonStyle.Link)
 
-            const row = new ActionRowBuilder()
+            const row1 = new ActionRowBuilder()
                 .addComponents(select);
+            const row2 = new ActionRowBuilder()
+                .addComponents(invite, support)
 
             await interaction.editReply({
                 content: 'help',
-                components: [row],
+                components: [row1, row2],
             });
 
             client.on('interactionCreate', async (interaction) => {
@@ -69,7 +80,7 @@ module.exports = {
                             resolve();
                         });
 
-                        await message.edit({ content: "_ _", components: [row], embeds: [new EmbedBuilder().setTitle("Economy").setFields(ecoFields).setColor("Random")] });
+                        await message.edit({ content: "_ _", components: [row1, row2], embeds: [new EmbedBuilder().setTitle("Economy").setFields(ecoFields).setColor("Random")] });
                     }
                     if (selectedOption === 'other') {
                         let otherDesc = []
@@ -92,12 +103,12 @@ module.exports = {
                             resolve();
                         });
 
-                        await message.edit({ content: "_ _", components: [row], embeds: [new EmbedBuilder().setTitle("Others").setFields(otherFields).setColor("Random")] });
+                        await message.edit({ content: "_ _", components: [row1, row2], embeds: [new EmbedBuilder().setTitle("Others").setFields(otherFields).setColor("Random")] });
                     }
                    interaction.deferUpdate()
                     if (message) {
                         setTimeout(async () => {
-                            message.edit({components:[]});
+                            message.edit({components:[row2]});
                         }, 30000);
                     } else {
                         // do nothing.

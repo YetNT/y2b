@@ -81,7 +81,7 @@ module.exports = {
                     ]
                 }).catch(() => null);
 
-                interaction.editReply({
+                await interaction.editReply({
                     embeds : [
                         new EmbedBuilder()
                             .setTitle("Robbery :money_with_wings:")

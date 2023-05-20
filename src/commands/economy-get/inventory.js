@@ -49,7 +49,7 @@ module.exports = {
             }
 
             let shieldOutput;
-            if (inventory.inv.shield.amt > 0) {
+            if (inventory.inv.shield.amt > 0 && inventory.inv.shield.hp > 0) {
                 shieldOutput = `*Active*\nShield Hp - **${inventory.inv.shield.hp}**`
             } else {
                 shieldOutput = '*Inactive*'

@@ -1,6 +1,27 @@
 const { Client, ApplicationCommandOptionType, Interaction, EmbedBuilder } = require('discord.js');
 const User = require('../../models/User');
+const Inventory = require('../../models/Inventory')
+const items = require('../../utils/items/items.json')
 const [ comma, coin, shopify ] = require('../../utils/beatify')
+
+/**
+ * 
+ * @param {Inventory} model the queried inventory model
+ * @returns 
+ */
+const calculateInv = (model) => {
+    const itemIds = Object.values(items).map(item => item.id);
+    const itemPrice = Object.values(items).map(item => item.price)
+
+    let total = (model.inv.shield.amt * items.shield.price) + (model.inv.shield.amt * items.shieldhp.price)
+    let { shield, shieldhp, ...newInv } = items;
+
+    for (let item in newInv) {
+        total += model.inv[item] * items[item].price;
+    }
+
+    return total
+}
 
 module.exports = {
     name:"balance",
@@ -37,6 +58,19 @@ module.exports = {
             };
     
             let user = await User.findOne(query);
+            let inventory = await Inventory.findOne(query);
+
+            let networth = 0
+            let inventoryNetworth = 0
+            let totalNetworth = 0
+            if (!inventory) {
+                networth += user.balance + user.bank
+                totalNetworth += networth
+            } else {
+                networth += user.balance + user.bank
+                inventoryNetworth += calculateInv(inventory)
+                totalNetworth += networth + inventoryNetworth
+            }
             
             if (user) {
                 // if the user exists in the database =
@@ -47,11 +81,28 @@ module.exports = {
                             .setFields(
                                 {
                                     name:"Balance",
-                                    value: `${comma(user.balance)}`
+                                    value: `${comma(user.balance)}`,
+                                    inline:true
                                 },
                                 {
                                     name:"Bank",
-                                    value: `${comma(user.bank)}`
+                                    value: `${comma(user.bank)}`,
+                                    inline:true
+                                },
+                                { // INVIS FIELD
+                                    name:"_ _",
+                                    value: "_ _",
+                                    inline: true
+                                },
+                                {
+                                    name:"Items Networth",
+                                    value: `${comma(inventoryNetworth)}`,
+                                    inline: true
+                                },
+                                {
+                                    name:"Total Networth",
+                                    value: `${comma(totalNetworth)}`,
+                                    inline: true
                                 }
                             )
                             .setColor("DarkGreen")
@@ -63,11 +114,28 @@ module.exports = {
                             .setFields(
                                 {
                                     name:"Balance",
-                                    value: `${comma(user.balance)}`
+                                    value: `${comma(user.balance)}`,
+                                    inline:true
                                 },
                                 {
                                     name:"Bank",
-                                    value: `${comma(user.bank)}`
+                                    value: `${comma(user.bank)}`,
+                                    inline:true
+                                },
+                                { // INVIS FIELD
+                                    name:"_ _",
+                                    value: "_ _",
+                                    inline: true
+                                },
+                                {
+                                    name:"Items Networth",
+                                    value: `${comma(inventoryNetworth)}`,
+                                    inline: true
+                                },
+                                {
+                                    name:"Total Networth",
+                                    value: `${comma(totalNetworth)}`,
+                                    inline: true
                                 }
                             )
                             .setColor("Green")

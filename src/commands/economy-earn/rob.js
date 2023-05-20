@@ -33,6 +33,7 @@ module.exports = {
 
             let victim = await User.findOne({userId: victimId})
             let inventory = await Inventory.findOne({userId: victimId}) // victim's inventory
+            let authorInventory = await Inventory.findOne({userId: interaction.user.id})//author's inventory.
             const victimDm = await client.users.fetch(victimId).catch(() => null); // to dm the user.
             let author = await User.findOne({userId: interaction.user.id })
 
@@ -91,24 +92,51 @@ module.exports = {
                     ]
                 })
             } else { // failed
-                author.balance -= fRob
-                victim.balance += fRob
-
-                interaction.editReply({
-                    embeds : [
-                        new EmbedBuilder()
-                            .setTitle("Robbery")
-                            .setDescription(`You tried robbing <@${victimId}> but they caught you before you could get away. You paid ${coin(fRob)} in fines to <@${victimId}>`)
-                            .setColor("Red")
-                            .setFooter({text: "I knew this wouldnt work."})
-                    ]
-                })
+                if (!authorInventory || authorInventory.inv.donut == 0) { // Normal fail
+                    author.balance -= fRob
+                    victim.balance += fRob
+    
+                    interaction.editReply({
+                        embeds : [
+                            new EmbedBuilder()
+                                .setTitle("Robbery")
+                                .setDescription(`You tried robbing <@${victimId}> but they caught you before you could get away. You paid ${coin(fRob)} in fines to <@${victimId}>`)
+                                .setColor("Red")
+                                .setFooter({text: "I knew this wouldnt work."})
+                        ]
+                    })
+                } else { // If user has a donut, do not subtract amount and instead give donut to victim.
+                    if (inventory) {
+                        inventory.inv.donut += 1
+                        authorInventory.inv.donut -= 1
+                    } else {
+                        inventory = new Inventory({
+                            userId: victimId,
+                            inv: {
+                                donut: 1
+                            }
+                        })
+                        authorInventory.inv.donut -= 1
+                    }
+    
+                    interaction.editReply({
+                        embeds : [
+                            new EmbedBuilder()
+                                .setTitle("Robbery")
+                                .setDescription(`You tried robbing <@${victimId}> but they caught you before you could get away. **You had a donut in your inventory which was given to the victim.**`)
+                                .setColor("Orange")
+                                .setFooter({text: "I knew this wouldnt work."})
+                        ]
+                    })
+                    await inventory.save()
+                    await authorInventory.save()
+                }
             }
 
             await author.save()
             await victim.save()
 
-            await newCooldown('5min', interaction, 'rob')
+            await newCooldown('10min', interaction, 'rob')
         }  catch (error) {
 			interaction.editReply('An error occured.')
 			client.guilds.cache.get("808701451399725116").channels.cache.get("971098250780241990").send({ embeds : [

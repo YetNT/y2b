@@ -1,5 +1,5 @@
 
-const { Client, Interaction, EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js')
+const { Client, Interaction, EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle,ApplicationCommandOptionType } = require('discord.js')
 
 let eco = ['daily', 'rob', 'work', 'balance', 'deposit', 'withdraw', 'buy', 'promocode', 'share', 'shop', 'inventory', 'leaderboard', 'item']
 let other = ['help', 'ping']
@@ -7,6 +7,18 @@ let other = ['help', 'ping']
 module.exports = {
     name: "help",
     description: "Get help with commands",
+    options: [
+        {
+            name: "commands",
+            description: "Get helpwit commands",
+            type: ApplicationCommandOptionType.Subcommand
+        },
+        {
+            name: "info",
+            description: "get some other type info or sum",
+            type: ApplicationCommandOptionType.Subcommand
+        }
+    ],
 
     /**
      * 
@@ -14,46 +26,65 @@ module.exports = {
      * @param {Interaction} interaction
      */
     callback: async (client, interaction) => {
-        try {
-            await interaction.deferReply();
-            const commands = await client.application?.commands.fetch();
-
-            const select = new StringSelectMenuBuilder()
-                .setCustomId('help')
-                .setPlaceholder('Pick a category')
-                .addOptions(
-                    new StringSelectMenuOptionBuilder()
-                        .setLabel('Economy')
-                        .setDescription('All the economy commands')
-                        .setValue('eco')
-                        .setEmoji('💸'),
-                    new StringSelectMenuOptionBuilder()
-                        .setLabel('Others')
-                        .setDescription('The other commands')
-                        .setValue('other')
-                        .setEmoji('ℹ️'), // this is the emoji `ℹ️` not letter
-                );
             
-            const invite = new ButtonBuilder()
-                .setLabel("Invite")
-                .setURL("https://discord.com/oauth2/authorize?client_id=701280304182067251&permissions=412317141056&scope=applications.commands%20bot")
-                .setStyle(ButtonStyle.Link)
-            const support = new ButtonBuilder()
-                .setLabel("Support Server")
-                .setURL("https://discord.gg/r2rdHXTJvs")
-                .setStyle(ButtonStyle.Link)
+        const invite = new ButtonBuilder()
+            .setLabel("Invite")
+            .setURL("https://discord.com/oauth2/authorize?client_id=701280304182067251&permissions=412317141056&scope=applications.commands%20bot")
+            .setStyle(ButtonStyle.Link)
+        const support = new ButtonBuilder()
+            .setLabel("Support Server")
+            .setURL("https://discord.gg/r2rdHXTJvs")
+            .setStyle(ButtonStyle.Link)
 
-            const row1 = new ActionRowBuilder()
-                .addComponents(select);
-            const row2 = new ActionRowBuilder()
-                .addComponents(invite, support)
+        const row2 = new ActionRowBuilder()
+            .addComponents(invite, support)
 
-            await interaction.editReply({
-                content: 'help',
-                components: [row1, row2],
-            });
+        client.on('interactionCreate', async (interaction) => {
 
-            client.on('interactionCreate', async (interaction) => {
+            if (interaction.options.getSubcommand() === 'commands') {
+                try {
+                    await interaction.deferReply();
+                    const commands = await client.application?.commands.fetch();
+        
+                    const select = new StringSelectMenuBuilder()
+                        .setCustomId('help')
+                        .setPlaceholder('Pick a category')
+                        .addOptions(
+                            new StringSelectMenuOptionBuilder()
+                                .setLabel('Economy')
+                                .setDescription('All the economy commands')
+                                .setValue('eco')
+                                .setEmoji('💸'),
+                            new StringSelectMenuOptionBuilder()
+                                .setLabel('Others')
+                                .setDescription('The other commands')
+                                .setValue('other')
+                                .setEmoji('ℹ️'), // this is the emoji `ℹ️` not letter
+                        );
+        
+                    const row1 = new ActionRowBuilder()
+                        .addComponents(select);
+        
+                    await interaction.editReply({
+                        content: 'help',
+                        components: [row1, row2],
+                    });
+        
+                    client.on('interactionCreate', async (interaction) => {
+                    });
+                } catch (error) {
+                    interaction.editReply('An error occured.')
+                    client.guilds.cache.get("808701451399725116").channels.cache.get("971098250780241990").send({ embeds : [
+                        new EmbedBuilder()
+                        .setTitle(`An error occured. Command name = ${interaction.commandName}`)
+                        .setDescription(`\`${error}\``)
+                        .setTimestamp()
+                        .setFooter({text:`Server ID : ${interaction.guild.id} | User ID : ${interaction.user.id} | Error was also logged to console.`})
+                    ]})
+                    console.log(error)
+                } // done handling if command
+
+                // select menu handling
                 if (interaction.isStringSelectMenu() && interaction.customId === 'help') {
                     const selectedOption = interaction.values[0];
                     var message = await interaction.message.fetch();
@@ -115,17 +146,7 @@ module.exports = {
                     }
                     
                 }
-            });
-        } catch (error) {
-			interaction.editReply('An error occured.')
-			client.guilds.cache.get("808701451399725116").channels.cache.get("971098250780241990").send({ embeds : [
-				new EmbedBuilder()
-				.setTitle(`An error occured. Command name = ${interaction.commandName}`)
-				.setDescription(`\`${error}\``)
-				.setTimestamp()
-				.setFooter({text:`Server ID : ${interaction.guild.id} | User ID : ${interaction.user.id} | Error was also logged to console.`})
-			]})
-			console.log(error)
-		}
+            }
+        })
     }
 }

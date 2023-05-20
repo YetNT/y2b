@@ -1,6 +1,10 @@
 const { Client, Interaction, ApplicationCommandOptionType, EmbedBuilder } = require('discord.js')
 const promocodes = require('../../../promocodes.json')
 const [ comma, coin, shopify ] = require('../../utils/beatify')
+const User = require('../../models/User')
+const Inventory = require('../../models/Inventory')
+const items = require('../../utils/items/items.json')
+const PromocodeDb =require('../../models/Promocodes')
 /*
     If you clone the git and use this command, json looks something like this
     {
@@ -9,6 +13,48 @@ const [ comma, coin, shopify ] = require('../../utils/beatify')
 
     make sure the promocodes.json file is in the main direcotory above src
 */
+
+/**
+ * 
+ * @param {Number} amount Amount of item/money
+ * @param {String} Userid User Id
+ * @param {Boolean} item Is it an item? Default is false
+ * @param {String} itemId item's Id Default is null
+ * @returns nothing
+ */
+const add = async (amount,UserId, item = false, itemId = null) => {
+    if (item != true) {
+        let user = await User.findOne({userId: UserId})
+
+        if (user) {
+            user.balance += amount
+        } else {
+            user = new User({
+              userId: UserId,
+              balance: amount
+            })
+        }
+
+        await user.save()
+    } else {
+        let inventory = await Inventory.findOne({userId: UserId})
+
+        if (inventory) {
+            inventory.inv[itemId] += amount
+        } else {
+            inventory = new Inventory({
+                userId: UserId,
+                inv : {
+                    [itemId]: amount
+                }
+            })
+        }
+
+        await inventory.save()
+    }
+
+
+}
 
 module.exports = {
     name:"promocode",
@@ -27,12 +73,79 @@ module.exports = {
         try {
             await interaction.deferReply({ ephemeral: true })
             const code = interaction.options.get("code").value
+            let promocodedb = await PromocodeDb.findOne({userId: interaction.user.id})
 
-            if (!Object.values(promocodes).includes(code)) {interaction.editReply({content:"INvalid promocode", ephemeral: true}); return}
+            if (!Object.values(promocodes).includes(code)) {interaction.editReply({embeds: [ new EmbedBuilder().setTitle("Invalid Promocode").setDescription("Lmao rip").setColor("Red") ], ephemeral: true}); return}
 
-            interaction.editReply({content:"ok " + coin(93), ephemeral: true})
+            let promocodeName = null;
+            for (const prop in promocodes) {
+                if (promocodes[prop] === code) {
+                    promocodeName = prop;
+                    break;
+                }
+            }
+
+            if (promocodedb) {
+                if (promocodedb[promocodeName] == true) {
+                    interaction.editReply({content: 'you claimed this.',ephemeral: true})
+                    return
+                }
+            }
+
+
+            let embed = new EmbedBuilder().setTitle("Real promocode").setColor("Green")
+            if (code === promocodes.beta) {
+                await add(900, interaction.user.id)
+                interaction.editReply({embeds: [embed.setDescription(`**Thanks for using the beta bot!**\n**+**${coin(900)}`)], ephemeral: true})
+                if (!promocodedb) {
+                    promocodedb = new PromocodeDb({
+                        userId: interaction.user.id,
+                        beta: true
+                    })
+                } else {
+                    promocodedb.beta = true
+                }
+
+            } else if (code === promocodes.bruh) {
+                await add(10, interaction.user.id, true, 'donut')
+                interaction.editReply({embeds: [embed.setDescription(`**How the hell did you find this?**\n**+${comma(10)}** ${items.donut.emoji}`)], ephemeral: true})
+                if (!promocodedb) {
+                    promocodedb = new PromocodeDb({
+                        userId: interaction.user.id,
+                        bruh: true
+                    })
+                } else {
+                    promocodedb.bruh = true
+                }
+
+            } else if (code === promocodes.newMember) {
+                await add(1000, interaction.user.id)
+                interaction.editReply({embeds: [embed.setDescription(`**Welcome, new user.**\n**+**${coin(1000)}`)], ephemeral: true})
+                if (!promocodedb) {
+                    promocodedb = new PromocodeDb({
+                        userId: interaction.user.id,
+                        newMember: true
+                    })
+                } else {
+                    promocodedb.newMember = true
+                }
+
+            } else if (code === promocodes.promocodeName) {
+                await add(1, interaction.user.id, true, 'gem')
+                interaction.editReply({embeds: [embed.setDescription(`**Not surprised you found this one.**\n**+1${comma(1)}** ${items.gem.emoji}`)], ephemeral: true})
+                if (!promocodedb) {
+                    promocodedb = new PromocodeDb({
+                        userId: interaction.user.id,
+                        promocodeName: true
+                    })
+                } else {
+                    promocodedb.promocodeName = true
+                }
+
+            }
+            await promocodedb.save()
         } catch (error) {
-			interaction.reply({content:'An error occured.', ephemeral: true})
+			interaction.editReply({content:'An error occured.', ephemeral: true})
 			client.guilds.cache.get("808701451399725116").channels.cache.get("971098250780241990").send({ embeds : [
 				new EmbedBuilder()
 				    .setTitle(`An error occured. Command name = ${interaction.commandName}`)

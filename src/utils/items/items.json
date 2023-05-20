@@ -41,7 +41,7 @@
         "uses": [],
         "price": 6e9,
         "id": "gem",
-        "rarity": "Rare",
+        "rarity": "Stupidly Rare",
         "emoji":"💎"
     },
     "coal": {
@@ -52,5 +52,14 @@
         "id": "coal",
         "rarity": "Uncommon",
         "emoji":"<:coal:1106946918954827956>"
+    },
+    "donut": {
+        "name": "Donut",
+        "description": "Yay a donut",
+        "uses": ["When you fail to rob a user, 1 donut is subtracted instead of fines."],
+        "price": 42e5,
+        "id": "donut",
+        "rarity": "Rare",
+        "emoji":"<:donut:1109381339947487374>"
     }
 }

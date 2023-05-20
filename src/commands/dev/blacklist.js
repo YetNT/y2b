@@ -1,3 +1,4 @@
+// ONLY AVAILABLE ON BETA BOT!!!!!!!
 const { Interaction, ApplicationCommandOptionType, EmbedBuilder } = require('discord.js')
 const Blacklist = require('../../models/Blacklist')
 
@@ -5,7 +6,6 @@ module.exports = {
     name:"blacklist",
     description:"blacklist users",
     devOnly: true,
-    deleted: true,
     options: [
         {
             name:"query",

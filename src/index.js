@@ -14,44 +14,12 @@ const client = new Client({
     ]
 });
 
-let status = [
-    {
-        name: "the Gulag",
-        type: ActivityType.Competing
-    },
-    {
-        name: "wtf by Prod.$elly",
-        type: ActivityType.Listening
-    },
-    {
-        name: "Crab Game on Steam",
-        type: ActivityType.Playing
-    },
-    {
-        name: "Bot is now on JS",
-        type: ActivityType.Playing
-    }
-];
+
 
 (async () => {
 	try {
-        await mongoose.connect(process.env.MONGODB_URI, { keepAlive: true });
+        await mongoose.connect(process.env.MONGODB_URI);
         console.log("connected to DB")
-
-        eventHandler(client)
-
-
-        client.on('ready', (c) => {
-            setInterval(() => {
-                let random = Math.floor(Math.random() * status.length)
-                client.user.setPresence({
-                    status: 'dnd',
-                    activity: status[random]
-                });
-            }, 10000)
-        })
-
-        client.login(process.env.TOKEN);
 
    } catch (error) {
       console.log(`db error ${error}`)
@@ -74,3 +42,6 @@ function editMessage() {
 
 setInterval(editMessage, 120000);
 
+eventHandler(client)
+
+client.login(process.env.TOKEN);

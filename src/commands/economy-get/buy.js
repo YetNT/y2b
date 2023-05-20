@@ -41,7 +41,7 @@ module.exports = {
 
             if (!user) {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("You cannot buy items when you've got nothing") ] }); return}
             if (amount < 0) {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("Don't buy amounts lower than 0") ] });return}
-            if (cost > user.balance) {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription(`You cannot afford ${comma(amount)} ${item}s`) ] }); return}
+            if (cost > user.balance) {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription(`You cannot afford ${comma(amount)} ${item}s\nyou need ${coin(cost - user.balance)} more coins`)] }); return}
             
             if (inventory) {
                 if ((inventory.inv.shield.amt + amount) > 20 && item == "shield") {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("You can only have 20 shields.") ] }); return}

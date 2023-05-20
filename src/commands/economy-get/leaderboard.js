@@ -17,12 +17,6 @@ module.exports = {
                 .limit(10)
                 .select('userId balance -_id')
 
-            console.log('Leaderboard2 Query:', {
-                inv: {
-                    [randomItemObj.id]: { $exists: true }
-                }
-            });
-
             const query = {};
             query[`inv.${randomItemObj.id}`] = { $exists: true };
 

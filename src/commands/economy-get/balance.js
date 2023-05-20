@@ -63,16 +63,16 @@ module.exports = {
             let networth = 0
             let inventoryNetworth = 0
             let totalNetworth = 0
-            if (!inventory) {
-                networth += user.balance + user.bank
-                totalNetworth += networth
-            } else {
-                networth += user.balance + user.bank
-                inventoryNetworth += calculateInv(inventory)
-                totalNetworth += networth + inventoryNetworth
-            }
             
             if (user) {
+                if (!inventory) {
+                    networth += user.balance + user.bank
+                    totalNetworth += networth
+                } else {
+                    networth += user.balance + user.bank
+                    inventoryNetworth += calculateInv(inventory)
+                    totalNetworth += networth + inventoryNetworth
+                }
                 // if the user exists in the database =
                 if (option !== undefined) {
                     interaction.editReply({ embeds: [

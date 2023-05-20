@@ -3,6 +3,7 @@ const User = require('../../models/User')
 const workAr = require('../../utils/work/work.json')
 const workPay = require('../../utils/work/workPay.json')
 const [ comma, coin, shopify ] = require('../../utils/beatify')
+const { newCooldown, checkCooldown } = require('../../utils/cooldown')
 
 /**
  * 
@@ -30,7 +31,6 @@ module.exports = {
     name:"work",
     description:"Work for cash",
     blacklist: true,
-    cooldown: '5min',
     options: [
         {
             name:"job",
@@ -103,6 +103,10 @@ module.exports = {
     callback: async (client, interaction) => {
         try {
             await interaction.deferReply();
+            const cooldownResult = await checkCooldown('work', interaction, EmbedBuilder);
+            if (cooldownResult === 0) {
+              return;
+            }
             let embed = []
             const query = {
                 userId: interaction.user.id
@@ -148,6 +152,8 @@ module.exports = {
 
                 await user.save();
             }
+
+            await newCooldown("5min", interaction, "work")
 
         } catch (error) {
 			interaction.editReply('An error occured.')

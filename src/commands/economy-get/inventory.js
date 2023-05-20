@@ -38,7 +38,7 @@ module.exports = {
             }
 
             let inventory = await Inventory.findOne(query)
-            if (!inventory) interaction.editReply({ embeds : [ new EmbedBuilder().setTitle(`${userInfo.username}'s Inventory`).setDescription("User has no items yet.") ]});
+            if (!inventory) {interaction.editReply({ embeds : [ new EmbedBuilder().setTitle(`${userInfo.username}'s Inventory`).setDescription("User has no items yet.") ]}); return}
             let output = []
 
             for (let item of Object.values(withoutShield)) {

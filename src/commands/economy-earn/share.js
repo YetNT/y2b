@@ -31,7 +31,6 @@ module.exports = {
         }
     ],
     blacklist: true,
-    cooldown: '15s',
     
     /**
      * 

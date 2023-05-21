@@ -6,6 +6,7 @@ const Inventory = require('../../models/Inventory')
 module.exports = {
     name:"inventory",
     description:"See yours or another user's inventory",
+    blacklist: true,
     options : [
         {
             name:"user",

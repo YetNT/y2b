@@ -7,6 +7,7 @@ const { randomItem } = require('../../utils/items/items')
 module.exports = {
     name : "leaderboard",
     description:"View the coins leaderboard",
+    blacklist: true,
 
     callback: async (client, interaction) => {
         try {

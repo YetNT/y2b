@@ -35,6 +35,7 @@ module.exports = {
             let inventory = await Inventory.findOne({userId: victimId}) // victim's inventory
             let authorInventory = await Inventory.findOne({userId: interaction.user.id})//author's inventory.
             const victimDm = await client.users.fetch(victimId).catch(() => null); // to dm the user.
+            const authorDm = await client.users.fetch(victimId).catch(() => null) // get dm for author
             let author = await User.findOne({userId: interaction.user.id })
 
             if (victimId == interaction.user.id) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription("don't rob yourself.")]}); return};
@@ -55,11 +56,28 @@ module.exports = {
                     await interaction.editReply( { embeds : [ new EmbedBuilder().setDescription(`You tried to rob them but this user had a shield! You damaged their shield by **${comma(damage)}%**`)]})
                     inventory.inv.shield.hp -= damage
 
+                    await victimDm.send({
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle("Your shield has been damaged!")
+                                .setDescription(`<@${interaction.user.id}> tried robbing you but instead damaged your shield by **${comma(damage)}%**`)
+                                .setFooter({text: `Server = ${interaction.member.guild.name}`})
+                        ]
+                    }).catch(() => null);
                     await inventory.save()
                     if (inventory.inv.shield.hp == 0) {
                         inventory.inv.shield.amt -= 1
                         await interaction.followUp("You broke this user's shield.")
                         await inventory.save()
+
+                        await victimDm.send({
+                            embeds: [
+                                new EmbedBuilder()
+                                    .setTitle("Your shield has been broken!")
+                                    .setDescription(`<@${interaction.user.id}> managed to break your shield! You know have **${inventory.inv.shield.amt}** shields left.`)
+                                    .setFooter({text: `Server = ${interaction.member.guild.name}`})
+                            ]
+                        }).catch(() => null);
                     }
                     return
                 }

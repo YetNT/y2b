@@ -47,12 +47,17 @@ module.exports = {
                     output.push(`${withoutShield[id].name} ${all[id].emoji} - **${comma(inventory.inv[id])}**`)
                 }
             }
+            
+            if (typeof output !== 'undefined' && output.length === 0) {
+                output.push("User is broke as hell")
+                output.push(":skull:")
+            }
 
             let shieldOutput;
             if (inventory.inv.shield.amt > 0 && inventory.inv.shield.hp > 0) {
-                shieldOutput = `*Active*\nShield Hp - **${inventory.inv.shield.hp}**`
+                shieldOutput = `*[Active](https://discord.com "${inventory.inv.shield.amt} Shields")*\nShield Hp - **${inventory.inv.shield.hp}**`
             } else {
-                shieldOutput = '*Inactive*'
+                shieldOutput = `*[Inactive](https://discord.com "${inventory.inv.shield.amt} Shields")*`
             }
 
             

@@ -5,6 +5,7 @@ const User = require('../../models/User')
 const Inventory = require('../../models/Inventory')
 const items = require('../../utils/items/items.json')
 const PromocodeDb =require('../../models/Promocodes')
+const { awardBadge } = require('../../utils/badges/badges.js')
 /*
     If you clone the git and use this command, json looks something like this
     {
@@ -105,6 +106,8 @@ module.exports = {
                 } else {
                     promocodedb.beta = true
                 }
+                
+                await awardBadge(interaction, EmbedBuilder, interaction.user.id, 'betaTester', true)
 
             } else if (code === promocodes.bruh) {
                 await add(10, interaction.user.id, true, 'donut')

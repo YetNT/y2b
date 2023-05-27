@@ -28,7 +28,7 @@ const giveBadge = async (userId, badgeId) => {
         throw new Error(`Badge id (${badgeId}) not found!`)
     };
 
-    let badges = await Badges.findOne({userId: [userId]});
+    let badges = await Badges.findOne({userId: userId});
 
     if (badges) {
         if (badges.badges[badgeId] == true) {
@@ -38,12 +38,14 @@ const giveBadge = async (userId, badgeId) => {
         }
     } else {
         badges = new Badges({
-            userId: [userId],
+            userId: userId.toString(),
             badges: {
                 [badgeId]: true
             }
         })
     }
+
+    await badges.save();
 }
 
 /**

@@ -24,7 +24,7 @@ module.exports = {
         var evalq;
         
         try {
-            evalq = eval(interaction.options.get("eval").value);
+            evalq = await eval(interaction.options.get("eval").value);
 
             const embed = new EmbedBuilder()
                 .setTitle("Eval")

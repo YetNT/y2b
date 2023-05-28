@@ -11,8 +11,8 @@
     },
     {
       "type": "gamer",
-      "min": 0,
-      "max": 0
+      "min": 100,
+      "max": 4200
     },
     {
       "type": "youtuber",

@@ -67,7 +67,22 @@ module.exports = {
             let subcommand = interaction.options.getSubcommand();
             
             if (subcommand === "list") {
-                return
+
+                if (!serverCommand) {interaction.editReply("there is nothing.");return}
+                
+                interaction.editReply({
+                    embeds : [
+                        new EmbedBuilder()
+                            .setTitle("Command list")
+                            .setFields([
+                                {
+                                    name:"Rob",
+                                    value: serverCommand.rob == false ? ":moyai: Enabled" : ":skull_crossbones: Disabled"
+                                }
+                            ])
+                    ]
+                })
+
             } else if (subcommand === "enable") {
                 let command = interaction.options.getString('command');
 

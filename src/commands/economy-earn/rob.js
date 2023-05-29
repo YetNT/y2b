@@ -17,6 +17,7 @@ module.exports = {
         }
     ],
     blacklist: true,
+    canBeServerDisabled: true,
 
 
     /**

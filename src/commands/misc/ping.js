@@ -1,4 +1,4 @@
-const { /*PermissionFlgasBits,*/ Client, Interaction, EmbedBuilder } = require('discord.js')
+const { /*PermissionFlagsBits,*/ Client, Interaction, EmbedBuilder } = require('discord.js')
 
 module.exports = {
 	name: 'ping',
@@ -11,6 +11,7 @@ module.exports = {
 	// blacklist: true,
 	// permissionsRequired: [PermissionFlagsBits.Administrator],
 	// botPermissions: [PermissionFlagsBits.Administrator],
+	// canBeServerDisabled: true,
 
 	/**
 	 * 

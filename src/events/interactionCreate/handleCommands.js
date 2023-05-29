@@ -2,6 +2,7 @@ const path = require('path');
 const { devs, testServer } = require(path.join(__dirname, '..', '..', '..', 'config.json'));
 const getLocalCommands = require(path.join(__dirname, '..', '..', 'utils', 'getLocalCommands'));
 const Blacklist = require('../../models/Blacklist')
+const ServerCommand = require('../../models/ServerCommand')
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = async (client, interaction) => {
@@ -25,6 +26,22 @@ module.exports = async (client, interaction) => {
         return;
       };
     };
+
+    if (commandObject.canBeServerDisabled) {
+      let query = {
+        guildId: interaction.guild.id
+      };
+      let serverCommand = await ServerCommand.findOne(query)
+      if (serverCommand) {
+        if (serverCommand[interaction.commandName] == true) {
+          interaction.reply({
+            ephemerel: true,
+            content: "This command has been disabled in this server. Ask a mod to enable it or run another comamnd."
+          })
+          return;
+        }
+      }
+    }
      
     if (commandObject.blacklist) {
       let query = {

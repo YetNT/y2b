@@ -3,7 +3,7 @@ const ServerCommand = require("../../models/ServerCommand")
 
 module.exports = {
     name: "command",
-    description:"Server Command Disbale/Enable/List",
+    description:"Server Command Disbale/Enable/List (This command has subcommands.)",
     options: [
         {
             name: "list",
@@ -69,7 +69,6 @@ module.exports = {
             if (subcommand === "list") {
                 return
             } else if (subcommand === "enable") {
-                console.log("enable!")
                 let command = interaction.options.getString('command');
 
                 if (!serverCommand) {interaction.editReply("Command is already enabled"); return}
@@ -85,7 +84,6 @@ module.exports = {
                 })
                 await serverCommand.save()
             } else if (subcommand === "disable") {
-                console.log("disable!")
                 let command = interaction.options.getString('command');
 
                 if (serverCommand && serverCommand[command] == true) {interaction.editReply("Command is already disabled."); return}

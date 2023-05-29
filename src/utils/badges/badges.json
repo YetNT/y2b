@@ -6,12 +6,12 @@
         "id": "devBadge",
         "emoji":"<:BotDevAndOwnerBadge:859693781406580736>"
     },
-    "betaTester": {
-        "name":"Beta Tester",
-        "description": "Thanks for helping in the bot's early stages :)",
-        "obtainable": true,
-        "id": "betaTester",
-        "emoji":"<:bet:857905226689937429><:a_:857905226689937428>"
+    "friend": {
+        "name": "Friend of Yet",
+        "description":"You're so special you get a badge showing how special you are",
+        "obtainable": false,
+        "id": "friend",
+        "emoji":"<:FriendOfDevBadge:864164751319498784>"
     },
     "og": {
         "name":"OG Badge",
@@ -20,11 +20,11 @@
         "id": "og",
         "emoji":"<:OGBadge:867676737994358795>"
     },
-    "friend": {
-        "name": "Friend of Yet",
-        "description":"You're so special you get a badge showing how special you are",
-        "obtainable": false,
-        "id": "friend",
-        "emoji":"<:FriendOfDevBadge:864164751319498784>"
+    "betaTester": {
+        "name":"Beta Tester",
+        "description": "Thanks for helping in the bot's early stages :)",
+        "obtainable": true,
+        "id": "betaTester",
+        "emoji":"<:bet:857905226689937429><:a_:857905226689937428>"
     }
 }

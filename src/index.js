@@ -29,9 +29,9 @@ const channelId = '920947757613735966';
 const mainMessageId = '920947874156658688'; 
 const betaMessageId = '1015333980725313558'
 
-function editMessage() {
+async function editMessage() {
     const channel = client.channels.cache.get(channelId);
-    channel.messages.fetch(betaMessageId)
+    await channel.messages.fetch(betaMessageId)
         .then(message => {
             message.edit({ content: '_ _',embeds : [ new EmbedBuilder().setTitle("Edited Message").setDescription(`Message edited at: ${new Date()} \n uptime : ${moment.duration(client.uptime).format(" D [days], H [hrs], m [mins], s [secs]")}`).setFooter({text:"This is done so that discord doesn't time out the bot's window"}).setColor("Random") ] });
         })

@@ -4,6 +4,7 @@ const [ comma, coin ] = require('../../utils/beatify')
 const Inventory = require('../../models/Inventory')
 const Badges = require('../../models/Badges')
 const allBadges = require('../../utils/badges/badges.json')
+const { progressBar } = require('../../utils/progressBar')
 
 module.exports = {
     name:"inventory",
@@ -72,8 +73,10 @@ module.exports = {
             }
 
             let shieldOutput;
+            let bar;
             if (inventory.inv.shield.amt > 0 && inventory.inv.shield.hp > 0) {
-                shieldOutput = `*[Active](https://discord.com "${inventory.inv.shield.amt} Shields")*\nShield Hp - **${inventory.inv.shield.hp}**`
+                bar = progressBar(inventory.inv.shield.hp / 5, 10, "<:progressempty:1113377221067931699>", "<:progressfull:1113377216743624705>", false, ["<:firstempty:1113377223567736832>", "<:firstfull:1113377227069997137>"], ["<:lastempty:1113377233248198687>","<:lastfull:1113377230693879821>"])
+                shieldOutput = `*[Active](https://discord.com "${inventory.inv.shield.amt} Shields")*\n` + bar + ` **${inventory.inv.shield.hp}/500**`
             } else {
                 shieldOutput = `*[Inactive](https://discord.com "${inventory.inv.shield.amt} Shields")*`
             }
@@ -82,8 +85,11 @@ module.exports = {
             await interaction.editReply({ embeds: [
                 new EmbedBuilder()
                     .setTitle(`${userInfo.username}'s Inventory`)
-                    .setDescription(shieldOutput)
                     .setFields([
+                        {
+                            name:"Shield",
+                            value: shieldOutput
+                        },
                         {
                             name:"Badges",
                             value: badgeOutput.join(' ')

@@ -6,6 +6,7 @@ module.exports = {
     name:"blacklist",
     description:"blacklist users",
     devOnly: true,
+    deleted: true,
     options: [
         {
             name:"query",
@@ -115,7 +116,7 @@ module.exports = {
                     embeds: [
                         new EmbedBuilder()
                             .setTitle("New Blacklist")
-                            .setFields(
+                            .setFields([
                                 {
                                     name:"User",
                                     value:`Name: **${victimUser.username}** \n`+ `Discrim: **${victimUser.discriminator}** \n` + `User Id: **${victim}**`,
@@ -131,7 +132,7 @@ module.exports = {
                                     value: `${time}`,
                                     inline: true
                                 }
-                            )
+                            ])
                             .setThumbnail(victimUser.avatarURL())
                             .setColor("Red")
                             .setImage("https://cdn.discordapp.com/emojis/860970578684018700.webp?size=160&quality=lossless")

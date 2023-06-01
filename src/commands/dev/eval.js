@@ -5,6 +5,7 @@ module.exports = {
     name:"eval",
     description:"evaluate",
     devOnly: true,
+    deleted: true,
     options: [
         {
             name:"eval",
@@ -44,6 +45,10 @@ ${interaction.options.get("eval").value}
 ${evalq}
 \`\`\`
                         `
+                    },
+                    {
+                        name: "output (without codeblock)",
+                        value: `${evalq}`
                     }
                 )
                 .setColor('Green')

@@ -1,6 +1,7 @@
 // ONLY AVAILABLE ON BETA BOT!!!!!!!
 const { Interaction, ApplicationCommandOptionType, EmbedBuilder } = require('discord.js')
 const Blacklist = require('../../models/Blacklist')
+const errorHandler = require('../../utils/errorHandler')
 
 module.exports = {
     name:"blacklist",
@@ -173,14 +174,8 @@ module.exports = {
                     ]
                 });
             }
-        } catch (error) {
-            interaction.editReply({
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle("Error")
-                        .setDescription(`${error}`)
-                ]
-            })
-        }
+        }  catch (error) {
+			errorHandler(error, client, interaction, EmbedBuilder)
+		}
     }
 }

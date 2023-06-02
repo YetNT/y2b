@@ -1,5 +1,6 @@
 const {Client, Interaction, EmbedBuilder} = require('discord.js')
 const pkg = require('../../../package.json')
+const errorHandler = require('../../utils/errorHandler')
 
 module.exports = {
     name:"info",
@@ -51,16 +52,8 @@ module.exports = {
                         .setColor("#ADD8E6")
                 ]
             })
-        } catch (error) {
-			interaction.editReply('An error occured.')
-			client.guilds.cache.get("808701451399725116").channels.cache.get("971098250780241990").send({ embeds : [
-				new EmbedBuilder()
-				.setTitle(`An error occured. Command name = ${interaction.commandName}`)
-				.setDescription(`\`${error}\``)
-				.setTimestamp()
-				.setFooter({text:`Server ID : ${interaction.guild.id} | User ID : ${interaction.user.id} | Error was also logged to console.`})
-			]})
-			console.log(error)
+        }  catch (error) {
+			errorHandler(error, client, interaction, EmbedBuilder)
 		}
     }
 }

@@ -3,6 +3,7 @@ const User = require('../../models/User')
 const Inventory = require('../../models/Inventory')
 const [ comma, coin, shopify ] = require('../../utils/beatify')
 const { randomItem } = require('../../utils/items/items')
+const errorHandler = require('../../utils/errorHandler')
 
 module.exports = {
     name : "leaderboard",
@@ -53,16 +54,9 @@ module.exports = {
                     }
                 ])
             ]})
-        } catch (error) {
-			interaction.editReply('An error occured.')
-			client.guilds.cache.get("808701451399725116").channels.cache.get("971098250780241990").send({ embeds : [
-				new EmbedBuilder()
-				.setTitle(`An error occured. Command name = ${interaction.commandName}`)
-				.setDescription(`\`${error}\``)
-				.setTimestamp()
-				.setFooter({text:`Server ID : ${interaction.guild.id} | User ID : ${interaction.user.id} | Error was also logged to console.`})
-			]})
-			console.log(error)
+        }
+          catch (error) {
+			errorHandler(error, client, interaction, EmbedBuilder)
 		}
     }
 }

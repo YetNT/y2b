@@ -6,6 +6,7 @@ const Inventory = require('../../models/Inventory')
 const items = require('../../utils/items/items.json')
 const PromocodeDb =require('../../models/Promocodes')
 const { awardBadge } = require('../../utils/badges/badges.js')
+const errorHandler = require('../../utils/errorHandler')
 /*
     If you clone the git and use this command, json looks something like this
     {
@@ -147,16 +148,8 @@ module.exports = {
 
             }
             await promocodedb.save()
-        } catch (error) {
-			interaction.editReply({content:'An error occured.', ephemeral: true})
-			client.guilds.cache.get("808701451399725116").channels.cache.get("971098250780241990").send({ embeds : [
-				new EmbedBuilder()
-				    .setTitle(`An error occured. Command name = ${interaction.commandName}`)
-				    .setDescription(`\`${error}\``)
-				    .setTimestamp()
-				    .setFooter({text:`Server ID : ${interaction.guild.id} | User ID : ${interaction.user.id} | Error was also logged to console.`})
-			]})
-			console.log(error)
+        }  catch (error) {
+			errorHandler(error, client, interaction, EmbedBuilder)
 		}
     }
 }

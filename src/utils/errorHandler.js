@@ -1,4 +1,3 @@
-const {Client, Interaction, EmbedBuilder} = require('discord.js')
 const support = "808701451399725116"
 const channel = "971098250780241990"
 

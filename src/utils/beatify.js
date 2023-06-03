@@ -26,4 +26,4 @@ const shopify = (input) => {
     return `${coinEmoji}**[${comma(input)}](https://discord.com)**`
 }
 
-module.exports = [comma, coin, shopify]
+module.exports = {comma, coin, shopify}

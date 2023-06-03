@@ -23,7 +23,7 @@ const newCooldown = async (time, interaction, name) => {
     let cooldownTime;
     if (typeof time == "string") {
       cooldownTime = strToMilli(time);
-    } else if (typeof time == "integer") {
+    } else if (typeof time === "number") {
       cooldownTime = time;
     } else {
       throw `wtf is "${time}"`;

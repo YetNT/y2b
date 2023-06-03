@@ -40,7 +40,7 @@ const progressBar = (percentage, barWidth, emptyChars, fullChars, returnAr = fal
     var bar = []
     let empty = "", filled = "";
       
-    for ( i = 0; i < barWidth; i++) {
+    for ( let i = 0; i < barWidth; i++) {
     
         if (emptyChars == undefined && fullChars == undefined) {
             empty = "empty", filled = "filled"

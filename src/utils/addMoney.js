@@ -8,7 +8,7 @@ module.exports = async (id, amt) => {
 
     if (!user) {
         return "nah";
-    };
+    }
 
     user.balance += amt;
     await user.save();

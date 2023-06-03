@@ -1,6 +1,6 @@
-const { Client, Interaction, EmbedBuilder } = require('discord.js')
+const {EmbedBuilder } = require('discord.js')
 const items = require('../../utils/items/items.json')
-const [ comma, coin, shopify ] = require('../../utils/beatify')
+const {shopify} = require('../../utils/beatify')
 const errorHandler = require('../../utils/errorHandler')
 
 module.exports = {

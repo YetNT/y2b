@@ -1,6 +1,6 @@
-const { Client, Interaction, ApplicationCommandOptionType, EmbedBuilder } = require('discord.js')
+const { ApplicationCommandOptionType, EmbedBuilder } = require('discord.js')
 const promocodes = require('../../../promocodes.json')
-const [ comma, coin, shopify ] = require('../../utils/beatify')
+const {comma, coin} = require('../../utils/beatify')
 const User = require('../../models/User')
 const Inventory = require('../../models/Inventory')
 const items = require('../../utils/items/items.json')

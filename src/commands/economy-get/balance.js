@@ -1,8 +1,8 @@
-const { Client, ApplicationCommandOptionType, Interaction, EmbedBuilder } = require('discord.js');
+const { ApplicationCommandOptionType, EmbedBuilder } = require('discord.js');
 const User = require('../../models/User');
 const Inventory = require('../../models/Inventory')
 const items = require('../../utils/items/items.json')
-const [ comma, coin, shopify ] = require('../../utils/beatify')
+const { comma } = require('../../utils/beatify')
 const errorHandler = require('../../utils/errorHandler')
 
 /**
@@ -11,10 +11,9 @@ const errorHandler = require('../../utils/errorHandler')
  * @returns 
  */
 const calculateInv = (model) => {
-    const itemIds = Object.values(items).map(item => item.id);
-    const itemPrice = Object.values(items).map(item => item.price)
 
     let total = (model.inv.shield.amt * items.shield.price) + (model.inv.shield.amt * items.shieldhp.price)
+    // eslint-disable-next-line
     let { shield, shieldhp, ...newInv } = items;
 
     for (let item in newInv) {
@@ -45,13 +44,14 @@ module.exports = {
         try {
             await interaction.deferReply();
             const option = interaction.options.get('userid')?.value
+            let querySet
 
             if (option) {
                 // set the user id to the option field
-                var querySet = option
+                querySet = option
             } else {
                 // set the user id to the user's id
-                var querySet = interaction.member.id
+                querySet = interaction.member.id
             }
 
             const query = {
@@ -150,7 +150,7 @@ module.exports = {
                 } else {
                     interaction.editReply(`You do not have anything`)
                 }
-            };
+            }
         }  catch (error) {
 			errorHandler(error, client, interaction, EmbedBuilder)
 		}

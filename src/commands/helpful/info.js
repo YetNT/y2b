@@ -1,4 +1,4 @@
-const {Client, Interaction, EmbedBuilder} = require('discord.js')
+const { EmbedBuilder } = require('discord.js')
 const pkg = require('../../../package.json')
 const errorHandler = require('../../utils/errorHandler')
 

@@ -1,9 +1,9 @@
-const { ApplicationCommandOptionType, Client, Interaction, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js')
+const { ApplicationCommandOptionType, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js')
 const User = require('../../models/User')
 const Inventory = require('../../models/Inventory')
 const Blacklist = require('../../models/Blacklist')
-const { all, withoutShield, itemNames, itemNamesNoShield } = require('../../utils/items/items')
-const [ comma, coin ] = require('../../utils/beatify')
+const { itemNamesNoShield } = require('../../utils/items/items')
+const { comma, coin } = require('../../utils/beatify')
 const { newCooldown, checkCooldown } = require('../../utils/cooldown') 
 const errorHandler = require('../../utils/errorHandler')
 
@@ -46,7 +46,7 @@ module.exports = {
             let utgi = await client.users.fetch(userToGiveId) // cache the user to check if their a bot later on
             const amount = interaction.options.get("amount").value
             const item = interaction.options.get("item")?.value
-            let isItem; let shareVar; let warning = ``; let t = await coin(amount)
+            let shareVar; let warning = ``; let t = await coin(amount)
 
             let user = await User.findOne({userId: userToGiveId})
             let userInv = await Inventory.findOne({userId: userToGiveId})
@@ -65,21 +65,21 @@ module.exports = {
             }
 
             if (item) {
-                isItem = true
+                // it is an item
                 shareVar = `Share ${item}`;
                 warning = `Are you sure that you'd like to share ${amount} ${item}s with <@${userToGiveId}>`
                 if (authorInv.inv[item] < amount) {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("You have less than what you'd like to give").setColor("Red") ] });return}
             } else {
-                isItem = false
+                // it not is an item
                 shareVar = 'Share Coins';
                 warning = `Are you sure that you'd like to share ${t} with <@${userToGiveId}>`
                 if (author.balance < amount) {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("You have less than what you'd like to give").setColor("Red") ] });return}
             }
 
             const confirm = new ButtonBuilder().setCustomId('confirm').setLabel(shareVar).setStyle(ButtonStyle.Danger);
-		    const cancel = new ButtonBuilder().setCustomId('cancel').setLabel('Cancel').setStyle(ButtonStyle.Success);
+            const cancel = new ButtonBuilder().setCustomId('cancel').setLabel('Cancel').setStyle(ButtonStyle.Success);
             const confirmDisabled = new ButtonBuilder().setCustomId('confirm').setLabel(shareVar).setStyle(ButtonStyle.Danger).setDisabled(true);
-		    const cancelDisabled = new ButtonBuilder().setCustomId('cancel').setLabel('Cancel').setStyle(ButtonStyle.Success).setDisabled(true);
+            const cancelDisabled = new ButtonBuilder().setCustomId('cancel').setLabel('Cancel').setStyle(ButtonStyle.Success).setDisabled(true);
     
             const response = await interaction.editReply({
                 embeds : [ new EmbedBuilder().setTitle("Confirmation").setDescription(warning) ],
@@ -89,7 +89,7 @@ module.exports = {
             const collectorFilter = i => i.user.id === interaction.user.id;
 
             try {
-	            const confirmation = await response.awaitMessageComponent({ filter: collectorFilter, time: 60000 });
+                const confirmation = await response.awaitMessageComponent({ filter: collectorFilter, time: 60000 });
 
                 if (confirmation.customId === 'confirm') {
 
@@ -146,7 +146,7 @@ module.exports = {
                 }
 
             } catch (e) { // User did not confirm whether they want to share the coins or not
-	            await interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("Confirmation not received within 1 minute, cancelling") ], components: [new ActionRowBuilder().addComponents(cancelDisabled, confirmDisabled)], });
+                await interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("Confirmation not received within 1 minute, cancelling") ], components: [new ActionRowBuilder().addComponents(cancelDisabled, confirmDisabled)], });
                 console.log(e)
             }
 

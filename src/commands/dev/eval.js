@@ -1,11 +1,10 @@
 // ONLY AVAILABLE ON BETA BOT!!!!!!!
-const { Interaction, ApplicationCommandOptionType, EmbedBuilder } = require('discord.js')
+const { ApplicationCommandOptionType, EmbedBuilder } = require('discord.js')
 
 module.exports = {
     name:"eval",
     description:"evaluate",
     devOnly: true,
-    deleted: true,
     options: [
         {
             name:"eval",

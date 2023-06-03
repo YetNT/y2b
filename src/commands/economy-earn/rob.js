@@ -1,8 +1,8 @@
-const { ApplicationCommandOptionType, Client, Interaction, EmbedBuilder } = require('discord.js')
+const { ApplicationCommandOptionType, EmbedBuilder } = require('discord.js')
 const User = require('../../models/User')
 const rndInt = require('../../utils/rndInt')
 const Inventory = require('../../models/Inventory')
-const [ comma, coin, shopify ] = require('../../utils/beatify')
+const { comma, coin } = require('../../utils/beatify')
 const { newCooldown, checkCooldown } = require('../../utils/cooldown')
 const errorHandler = require('../../utils/errorHandler')
 
@@ -37,15 +37,14 @@ module.exports = {
             let inventory = await Inventory.findOne({userId: victimId}) // victim's inventory
             let authorInventory = await Inventory.findOne({userId: interaction.user.id})//author's inventory.
             const victimDm = await client.users.fetch(victimId).catch(() => null); // to dm the user.
-            const authorDm = await client.users.fetch(victimId).catch(() => null) // get dm for author
             let author = await User.findOne({userId: interaction.user.id })
 
-            if (victimId == interaction.user.id) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription("don't rob yourself.")]}); return};
+            if (victimId == interaction.user.id) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription("don't rob yourself.")]}); return}
             if (!author) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription("You cannot rob people when you've got nothing")]}); return}
             if (author.balance < 1000) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription("You cannot rob people when your balance is lower than 1000.")]}); return}
-            if (!victim) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription("Leave them alone, they've got nothing :sob:")]}); return};
-            if (victim.balance < 0) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription("This user is paying off their debts")]}); return};
-            if (victim.balance <= 500) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription(`It aint worth it, they've only got ${coin(victim.balance)}`)]}); return};
+            if (!victim) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription("Leave them alone, they've got nothing :sob:")]}); return}
+            if (victim.balance < 0) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription("This user is paying off their debts")]}); return}
+            if (victim.balance <= 500) {interaction.editReply( { embeds : [ new EmbedBuilder().setDescription(`It aint worth it, they've only got ${coin(victim.balance)}`)]}); return}
 
             const cooldownResult = await checkCooldown('rob', interaction, EmbedBuilder);
             if (cooldownResult === 0) {

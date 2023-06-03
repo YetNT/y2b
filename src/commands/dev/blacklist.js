@@ -1,5 +1,5 @@
 // ONLY AVAILABLE ON BETA BOT!!!!!!!
-const { Interaction, ApplicationCommandOptionType, EmbedBuilder } = require('discord.js')
+const { ApplicationCommandOptionType, EmbedBuilder } = require('discord.js')
 const Blacklist = require('../../models/Blacklist')
 const errorHandler = require('../../utils/errorHandler')
 
@@ -78,7 +78,7 @@ module.exports = {
                 }
             } else {
                 if (blacklist) {
-                    if (blacklist.blacklisted == false) {interaction.editReply({content:"This user is already removed from the blacklist.",ephemeral: true}); return};
+                    if (blacklist.blacklisted == false) {interaction.editReply({content:"This user is already removed from the blacklist.",ephemeral: true}); return}
                     blacklist.blacklisted = false;
                     blacklist.reason = reason
                     blacklist.time = time

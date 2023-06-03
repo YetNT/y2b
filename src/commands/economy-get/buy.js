@@ -1,9 +1,9 @@
-const { Client, Interaction, ApplicationCommandOptionType, EmbedBuilder } = require('discord.js')
+const { ApplicationCommandOptionType, EmbedBuilder } = require('discord.js')
 const User = require('../../models/User')
 const Inventory = require('../../models/Inventory')
 const Items = require('../../utils/items/items.json')
-const { all, withoutShield, itemNames, itemNamesNoShield } = require('../../utils/items/items')
-const [ comma, coin, shopify ] = require('../../utils/beatify')
+const { itemNames } = require('../../utils/items/items')
+const { comma, coin, shopify } = require('../../utils/beatify')
 const errorHandler = require('../../utils/errorHandler')
 
 module.exports = {
@@ -45,7 +45,7 @@ module.exports = {
             if (cost > user.balance) {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription(`You cannot afford ${comma(amount)} ${item}s\nyou need ${coin(cost - user.balance)} more coins`)] }); return}
             
             if (inventory) {
-                if ((inventory.inv.shield.amt + amount) > 20 && item == "shield") {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("You can only have 20 shields.") ] }); return};
+                if ((inventory.inv.shield.amt + amount) > 20 && item == "shield") {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("You can only have 20 shields.") ] }); return}
                 if ((inventory.inv.shield.hp + amount) > 500 && item == "shieldhp") {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("You can't buy more than 500 ShieldHP") ] }); return}
                 user.balance -= cost
                 if (item == "shield") {

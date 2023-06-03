@@ -1,7 +1,7 @@
-const { Client, Interaction, EmbedBuilder } = require('discord.js')
+const {EmbedBuilder } = require('discord.js')
 const User = require('../../models/User')
 const Inventory = require('../../models/Inventory')
-const [ comma, coin, shopify ] = require('../../utils/beatify')
+const {comma, coin} = require('../../utils/beatify')
 const { randomItem } = require('../../utils/items/items')
 const errorHandler = require('../../utils/errorHandler')
 

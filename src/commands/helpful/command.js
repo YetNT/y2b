@@ -1,4 +1,4 @@
-const {Client, Interaction,ApplicationCommandOptionType, PermissionFlagsBits, EmbedBuilder } = require('discord.js')
+const { ApplicationCommandOptionType, PermissionFlagsBits, EmbedBuilder } = require('discord.js')
 const ServerCommand = require("../../models/ServerCommand")
 const errorHandler = require('../../utils/errorHandler')
 

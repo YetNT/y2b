@@ -1,8 +1,8 @@
-const { Interaction, Client, EmbedBuilder, ApplicationCommandOptionType } = require('discord.js')
+const { EmbedBuilder, ApplicationCommandOptionType } = require('discord.js')
 const User = require('../../models/User')
 const workAr = require('../../utils/work/work.json')
 const workPay = require('../../utils/work/workPay.json')
-const [ comma, coin, shopify ] = require('../../utils/beatify')
+const { coin } = require('../../utils/beatify')
 const { newCooldown, checkCooldown } = require('../../utils/cooldown')
 const errorHandler = require('../../utils/errorHandler')
 

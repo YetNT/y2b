@@ -1,4 +1,4 @@
-const { /*PermissionFlagsBits,*/ Client, Interaction, EmbedBuilder } = require('discord.js')
+const { /*PermissionFlagsBits,*/ EmbedBuilder } = require('discord.js')
 const errorHandler = require('../../utils/errorHandler')
 
 module.exports = {

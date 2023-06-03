@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { Client, IntentsBitField,  EmbedBuilder,/* ActionRowBuilder, ButtonBuilder, ButtonStyle,*/ ActivityType} = require('discord.js');
+const { Client, IntentsBitField,  EmbedBuilder,/* ActionRowBuilder, ButtonBuilder, ButtonStyle,*/} = require('discord.js');
 const mongoose = require('mongoose')
 const eventHandler = require('./handlers/eventHandler')
 const moment = require("moment");
@@ -26,7 +26,7 @@ const client = new Client({
 
 // Assuming you have a message ID and channel ID stored in variables
 const channelId = '920947757613735966';
-const mainMessageId = '920947874156658688'; 
+// const mainMessageId = '920947874156658688'; 
 const betaMessageId = '1015333980725313558'
 
 async function editMessage() {

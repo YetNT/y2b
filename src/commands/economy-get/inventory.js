@@ -48,11 +48,17 @@ module.exports = {
             if (!inventory) {interaction.editReply({ embeds : [ new EmbedBuilder().setTitle(`${userInfo.username}'s Inventory`).setDescription("User has no items yet.") ]}); return}
             let invOutput = []
             let badgeOutput = []
+            let rareInvOutput = []
 
+            // set outputs
             for (let item of Object.values(withoutShield)) {
                 let id = item.id
                 if((inventory.inv.hasOwnProperty(item.id) == true) && inventory.inv[item.id] > 0) {
-                    invOutput.push(`${withoutShield[id].name} ${all[id].emoji} - **${comma(inventory.inv[id])}**`)
+                    if (all[id].rarity == "Rare" || all[id].rarity == "Extremely Rare") {
+                        rareInvOutput.push(`${all[id].emoji} **${withoutShield[id].name}** - ${comma(inventory.inv[id])}\n_${all[id].rarity}_`)
+                    } else {
+                        invOutput.push(`${all[id].emoji} **${withoutShield[id].name}** - ${comma(inventory.inv[id])}\n_${all[id].rarity}_`)
+                    }
                 }
             }
 
@@ -63,9 +69,15 @@ module.exports = {
                 }
             }
             
+            // checks
             if (typeof invOutput !== 'undefined' && invOutput.length === 0) {
                 invOutput.push("User is broke as hell")
                 invOutput.push(":skull:")
+            }
+
+            if (typeof rareInvOutput !== 'undefined' && rareInvOutput.length === 0) {
+                rareInvOutput.push("User is has no rare items")
+                rareInvOutput.push(":skull:")
             }
 
             if (typeof badgeOutput !== 'undefined' && badgeOutput.length === 0) {
@@ -82,22 +94,30 @@ module.exports = {
                 shieldOutput = `*[Inactive](https://discord.com "${inventory.inv.shield.amt} Shields")*`
             }
 
-            
+            // send outputs
             await interaction.editReply({ embeds: [
                 new EmbedBuilder()
                     .setTitle(`${userInfo.username}'s Inventory`)
                     .setFields([
                         {
                             name:"Shield",
-                            value: shieldOutput
+                            value: shieldOutput,
+                            inline: false
                         },
                         {
                             name:"Badges",
-                            value: badgeOutput.join(' ')
+                            value: badgeOutput.join(' '),
+                            inline: false
                         },
                         {
                             name:"Items",
-                            value: invOutput.join('\n')
+                            value: invOutput.join('\n \n'),
+                            inline: true
+                        },
+                        {
+                            name:"Real Items",
+                            value: rareInvOutput.join('\n \n'),
+                            inline: true
                         }
                     ])
                     .setColor("Blue")

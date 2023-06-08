@@ -26,12 +26,12 @@ const client = new Client({
 
 // Assuming you have a message ID and channel ID stored in variables
 const channelId = '920947757613735966';
-const mainMessageId = '920947874156658688'; 
-// const betaMessageId = '1015333980725313558'
+// const mainMessageId = '920947874156658688'; 
+const betaMessageId = '1015333980725313558'
 
 async function editMessage() {
     const channel = client.channels.cache.get(channelId);
-    await channel.messages.fetch(mainMessageId)
+    await channel.messages.fetch(betaMessageId)
         .then(message => {
             message.edit({ content: '_ _',embeds : [ new EmbedBuilder().setTitle("Edited Message").setDescription(`Message edited at: ${new Date()} \n uptime : ${moment.duration(client.uptime).format(" D [days], H [hrs], m [mins], s [secs]")}`).setFooter({text:"This is done so that discord doesn't time out the bot's window"}).setColor("Random") ] });
         })
@@ -42,4 +42,4 @@ setInterval(editMessage, 120000);
 
 eventHandler(client)
 
-client.login(process.env.MAIN);
+client.login(process.env.TOKEN);

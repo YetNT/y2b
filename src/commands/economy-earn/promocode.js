@@ -146,6 +146,19 @@ module.exports = {
                     promocodedb.promocodeName = true
                 }
 
+            } else if (code === promocodes.website) {
+                await add(2000, interaction.user.id)
+					 await add(2, interaction.user.id, true, 'gem')
+                interaction.editReply({embeds: [embed.setDescription(`**Thanks for visiting my website :)**\n**+${comma(2)}** ${items.gem.emoji}\n+**${coin(2000)}`)], ephemeral: true})
+                if (!promocodedb) {
+                    promocodedb = new PromocodeDb({
+                        userId: interaction.user.id,
+                        website: true
+                    })
+                } else {
+                    promocodedb.website = true
+                }
+
             }
             await promocodedb.save()
         }  catch (error) {

@@ -20,7 +20,11 @@ const promocodeSchema = new Schema({
     beta: {
         type: Boolean,
         default: false
-    }
+    },
+	 website: {
+	     type: Boolean,
+		  default: false
+	 }
 })
 
 module.exports = model('promocodes', promocodeSchema)

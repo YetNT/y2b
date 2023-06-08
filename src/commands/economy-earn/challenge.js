@@ -103,7 +103,7 @@ module.exports = {
                             ],
                             components: [] 
                         });
-
+                        await user.save()
                         newCooldown('30min', interaction, "challenge.buttons")
                     } else {
     

@@ -13,7 +13,6 @@ module.exports = {
             required: true
         }
     ],
-	deleted: true,
 
     /**
     *

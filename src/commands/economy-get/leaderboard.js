@@ -7,7 +7,7 @@ const errorHandler = require('../../utils/errorHandler')
 
 module.exports = {
     name : "leaderboard",
-    description:"View the coins leaderboard",
+    description:"View the coins leaderboard and a random leaderboard",
     blacklist: true,
 
     callback: async (client, interaction) => {

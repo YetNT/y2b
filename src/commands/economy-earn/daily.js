@@ -8,7 +8,7 @@ const dailyAmount = 1000;
 
 module.exports = {
   name: 'daily',
-  description: 'Collect your daily coins',
+  description: 'Receive your daily reward of 1000',
   blacklist: true,
   
   /**

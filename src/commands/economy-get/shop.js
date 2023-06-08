@@ -5,7 +5,7 @@ const errorHandler = require('../../utils/errorHandler')
 
 module.exports = {
     name:"shop",
-    description:"Shop for items that you (tottaly) can afford",
+    description:"Shop for items that are definitely not overpriced",
     blacklist: true,
     
     callback: async (client, interaction) => {

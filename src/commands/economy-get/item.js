@@ -6,7 +6,7 @@ const errorHandler = require('../../utils/errorHandler')
 
 module.exports = {
     name:"item",
-    description:"View item's information.",
+    description:"View an item's information.",
     blacklist: true,
     options: [
         {

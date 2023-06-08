@@ -8,7 +8,7 @@ const errorHandler = require('../../utils/errorHandler')
 
 module.exports = {
     name:"rob",
-    description:"Rob people for some quick cash",
+    description:"Rob other people for some quick cash. Can end badly",
     options: [
         {
             name:"victim",

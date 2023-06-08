@@ -9,7 +9,7 @@ const errorHandler = require('../../utils/errorHandler')
 
 module.exports = {
     name:"inventory",
-    description:"See yours or another user's inventory",
+    description:"View your or another user's inventory",
     blacklist: true,
     options : [
         {

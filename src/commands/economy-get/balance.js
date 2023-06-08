@@ -25,7 +25,7 @@ const calculateInv = (model) => {
 
 module.exports = {
     name:"balance",
-    description:"View your or another user's coin balance and bank",
+    description:"View your or another user's coin balance, bank and networth",
     blacklist: true,
     options : [
         {

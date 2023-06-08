@@ -9,7 +9,7 @@ const errorHandler = require('../../utils/errorHandler')
 
 module.exports = {
     name:"share",
-    description: "share your wealth with other people",
+    description: "Share your wealth (or items) with other people",
     options: [
         {
             name:"user",

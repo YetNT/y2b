@@ -1,12 +1,37 @@
 const { EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js')
 const errorHandler = require('../../utils/errorHandler')
 
-let eco = ['daily', 'rob', 'work', 'balance', 'deposit', 'withdraw', 'buy', 'promocode', 'share', 'shop', 'inventory', 'leaderboard', 'item']
+let eco = ['daily', 'rob', 'work', 'balance', 'deposit', 'withdraw', 'buy', 'promocode', 'share', 'shop', 'inventory', 'leaderboard', 'item', 'challenge']
 let other = ['help', 'ping', 'command', 'info']
+
+const makeWebsiteObject = (commands) => {
+    let outputObject = {
+        economy : [],
+        other: []
+    };
+    let r;
+    eco.forEach((n) => {
+        r = commands.find(l => l.name === n);
+        outputObject.economy.push({
+            name: r.name,
+            description: r.description
+        })
+    });
+
+    other.forEach((n) => {
+        r = commands.find(l => l.name === n);
+        outputObject.other.push({
+            name: r.name,
+            description: r.description
+        })
+    });
+
+    return outputObject
+}
 
 module.exports = {
     name: "help",
-    description: "Get help with commands",
+    description: "Get help with commands. List commands and their description",
 
     /**
      * 
@@ -52,6 +77,8 @@ module.exports = {
                 content: 'help',
                 components: [row1, row2],
             });
+
+            console.log(makeWebsiteObject(commands))
 
             client.on('interactionCreate', async (interaction) => {
                 if (interaction.isStringSelectMenu() && interaction.customId === 'help') {

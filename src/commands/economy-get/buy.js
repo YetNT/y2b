@@ -8,7 +8,7 @@ const errorHandler = require('../../utils/errorHandler')
 
 module.exports = {
     name:"buy",
-    description:"Buy items",
+    description:"Buy from the shop",
     blacklist: true,
     options: [
         {

@@ -16,6 +16,12 @@ const cdSchema = new Schema({
     daily: {
         type: Date,
         default: new Date(0)
+    },
+    challenge : {
+        buttons : {
+            type: Date,
+            default: new Date(0)
+        }
     }
 })
 module.exports = model('cooldown', cdSchema)

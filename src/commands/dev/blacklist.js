@@ -7,6 +7,7 @@ module.exports = {
     name:"blacklist",
     description:"blacklist users",
     devOnly: true,
+	deleted: true,
     options: [
         {
             name:"query",

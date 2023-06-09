@@ -13,7 +13,7 @@ module.exports = {
             required: true
         }
     ],
-
+	deleted: true,
     /**
     *
     * @param {Client} client

@@ -1,6 +1,8 @@
 const { EmbedBuilder } = require("discord.js");
 const pkg = require("../../../package.json");
 const errorHandler = require("../../utils/handlers/errorHandler");
+const moment = require("moment");
+require("moment-duration-format");
 
 module.exports = {
     name: "info",
@@ -49,6 +51,15 @@ module.exports = {
                             {
                                 name: "Github repository",
                                 value: `[Github repo](https://github.com/Yetity/y2b "ay bruh why u hoverin over dis?")`,
+                                inline: true,
+                            },
+                            {
+                                name: "Uptime",
+                                value: moment
+                                    .duration(client.uptime)
+                                    .format(
+                                        " D [days], H [hrs], m [mins], s [secs]"
+                                    ),
                                 inline: true,
                             },
                         ])

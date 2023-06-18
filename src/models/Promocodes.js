@@ -1,30 +1,30 @@
-const { Schema, model } = require('mongoose')
+const { Schema, model } = require("mongoose");
 
 const promocodeSchema = new Schema({
     userId: {
         type: String,
-        required: true
+        required: true,
     },
     promocodeName: {
         type: Boolean,
-        default: false
+        default: false,
     },
     bruh: {
         type: Boolean,
-        default: false
+        default: false,
     },
     newMember: {
         type: Boolean,
-        default: false
+        default: false,
     },
     beta: {
         type: Boolean,
-        default: false
+        default: false,
     },
-	 website: {
-	     type: Boolean,
-		  default: false
-	 }
-})
+    website: {
+        type: Boolean,
+        default: false,
+    },
+});
 
-module.exports = model('promocodes', promocodeSchema)
+module.exports = model("promocodes", promocodeSchema);

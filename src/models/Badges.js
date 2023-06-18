@@ -1,28 +1,26 @@
-const { Schema, model } = require('mongoose')
-
+const { Schema, model } = require("mongoose");
 
 const schemaItems = () => {
-    let Badges = require('../utils/badges/badges.json');
+    let Badges = require("../utils/misc/badges/badges.json");
 
-    let r  = {
+    let r = {
         userId: {
             type: String,
-            required: true
+            required: true,
         },
-        badges : {
-        }
-    }
+        badges: {},
+    };
 
     for (let badge in Badges) {
         r.badges[Badges[badge].id] = {
             type: Boolean,
-            default: false
+            default: false,
         };
     }
 
     return r;
-}
+};
 
-const badgeSchema = new Schema(schemaItems())
+const badgeSchema = new Schema(schemaItems());
 
-module.exports = model('badge', badgeSchema)
+module.exports = model("badge", badgeSchema);

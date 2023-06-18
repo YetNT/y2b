@@ -59,7 +59,6 @@ module.exports = {
             }
             let invOutput = [];
             let badgeOutput = [];
-            let rareInvOutput = [];
 
             // set outputs
             for (let item of Object.values(withoutShield)) {
@@ -68,26 +67,11 @@ module.exports = {
                     inventory.inv.hasOwnProperty(item.id) == true &&
                     inventory.inv[item.id] > 0
                 ) {
-                    if (
-                        all[id].rarity == "Rare" ||
-                        all[id].rarity == "Extremely Rare"
-                    ) {
-                        rareInvOutput.push(
-                            `${all[id].emoji} **${
-                                withoutShield[id].name
-                            }** - ${comma(inventory.inv[id])}\n_${
-                                all[id].rarity
-                            }_`
-                        );
-                    } else {
-                        invOutput.push(
-                            `${all[id].emoji} **${
-                                withoutShield[id].name
-                            }** - ${comma(inventory.inv[id])}\n_${
-                                all[id].rarity
-                            }_`
-                        );
-                    }
+                    invOutput.push(
+                        `${all[id].emoji} **${
+                            withoutShield[id].name
+                        }** - ${comma(inventory.inv[id])}\n_${all[id].rarity}_`
+                    );
                 }
             }
 
@@ -105,14 +89,6 @@ module.exports = {
             if (typeof invOutput !== "undefined" && invOutput.length === 0) {
                 invOutput.push("User is broke as hell");
                 invOutput.push(":skull:");
-            }
-
-            if (
-                typeof rareInvOutput !== "undefined" &&
-                rareInvOutput.length === 0
-            ) {
-                rareInvOutput.push("User is has no rare items");
-                rareInvOutput.push(":skull:");
             }
 
             if (
@@ -168,11 +144,6 @@ module.exports = {
                             {
                                 name: "Items",
                                 value: invOutput.join("\n \n"),
-                                inline: true,
-                            },
-                            {
-                                name: "Real Items",
-                                value: rareInvOutput.join("\n \n"),
                                 inline: true,
                             },
                         ])

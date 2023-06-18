@@ -1,102 +1,162 @@
-const { ApplicationCommandOptionType, EmbedBuilder } = require('discord.js')
-const User = require('../../models/User')
-const Inventory = require('../../models/Inventory')
-const Items = require('../../utils/items/items.json')
-const { itemNames } = require('../../utils/items/items')
-const { comma, coin, shopify } = require('../../utils/beatify')
-const errorHandler = require('../../utils/errorHandler')
+const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
+const User = require("../../models/User");
+const Inventory = require("../../models/Inventory");
+const Items = require("../../utils/misc/items/items.json");
+const { itemNames } = require("../../utils/misc/items/items");
+const { comma, coin, shopify } = require("../../utils/formatters/beatify");
+const errorHandler = require("../../utils/handlers/errorHandler");
 
 module.exports = {
-    name:"buy",
-    description:"Buy from the shop",
+    name: "buy",
+    description: "Buy from the shop",
     blacklist: true,
     options: [
         {
-            name:"item",
-            description:"Which item you buying?",
+            name: "item",
+            description: "Which item you buying?",
             required: true,
             type: ApplicationCommandOptionType.String,
-            choices: itemNames()
+            choices: itemNames(),
         },
         {
-            name:"amount",
-            description:"How much of this item are you buying?",
+            name: "amount",
+            description: "How much of this item are you buying?",
             required: true,
-            type: ApplicationCommandOptionType.Integer
-        }
+            type: ApplicationCommandOptionType.Integer,
+        },
     ],
 
     callback: async (client, interaction) => {
         try {
-            await interaction.deferReply()
+            await interaction.deferReply();
 
-            const item = interaction.options.get("item").value
-            const amount = interaction.options.get("amount").value
-            const cost = (Items[item].price * amount)
+            const item = interaction.options.get("item").value;
+            const amount = interaction.options.get("amount").value;
+            const cost = Items[item].price * amount;
             let query = {
-                userId: interaction.user.id
+                userId: interaction.user.id,
+            };
+
+            let user = await User.findOne(query);
+            let inventory = await Inventory.findOne(query);
+
+            if (!user) {
+                interaction.editReply({
+                    embeds: [
+                        new EmbedBuilder().setDescription(
+                            "You cannot buy items when you've got nothing"
+                        ),
+                    ],
+                });
+                return;
+            }
+            if (amount < 0) {
+                interaction.editReply({
+                    embeds: [
+                        new EmbedBuilder().setDescription(
+                            "Don't buy amounts lower than 0"
+                        ),
+                    ],
+                });
+                return;
+            }
+            if (cost > user.balance) {
+                interaction.editReply({
+                    embeds: [
+                        new EmbedBuilder().setDescription(
+                            `You cannot afford ${comma(
+                                amount
+                            )} ${item}s\nyou need ${coin(
+                                cost - user.balance
+                            )} more coins`
+                        ),
+                    ],
+                });
+                return;
             }
 
-            let user = await User.findOne(query)
-            let inventory = await Inventory.findOne(query)
-
-            if (!user) {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("You cannot buy items when you've got nothing") ] }); return}
-            if (amount < 0) {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("Don't buy amounts lower than 0") ] });return}
-            if (cost > user.balance) {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription(`You cannot afford ${comma(amount)} ${item}s\nyou need ${coin(cost - user.balance)} more coins`)] }); return}
-            
             if (inventory) {
-                if ((inventory.inv.shield.amt + amount) > 20 && item == "shield") {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("You can only have 20 shields.") ] }); return}
-                if ((inventory.inv.shield.hp + amount) > 500 && item == "shieldhp") {interaction.editReply({ embeds: [ new EmbedBuilder().setDescription("You can't buy more than 500 ShieldHP") ] }); return}
-                user.balance -= cost
+                if (
+                    inventory.inv.shield.amt + amount > 20 &&
+                    item == "shield"
+                ) {
+                    interaction.editReply({
+                        embeds: [
+                            new EmbedBuilder().setDescription(
+                                "You can only have 20 shields."
+                            ),
+                        ],
+                    });
+                    return;
+                }
+                if (
+                    inventory.inv.shield.hp + amount > 500 &&
+                    item == "shieldhp"
+                ) {
+                    interaction.editReply({
+                        embeds: [
+                            new EmbedBuilder().setDescription(
+                                "You can't buy more than 500 ShieldHP"
+                            ),
+                        ],
+                    });
+                    return;
+                }
+                user.balance -= cost;
                 if (item == "shield") {
-                    inventory.inv.shield.amt += amount
+                    inventory.inv.shield.amt += amount;
                 } else if (item == "shieldhp") {
-                    inventory.inv.shield.hp += amount
+                    inventory.inv.shield.hp += amount;
                 } else {
-                    inventory.inv[item] += amount
+                    inventory.inv[item] += amount;
                 }
             } else {
-                user.balance -= cost
+                user.balance -= cost;
                 if (item == "shield") {
                     inventory = new Inventory({
                         ...query,
-                        inv : {
-                            shield : {
-                                amt: amount
-                            }
-                       }
-                    })
-                
+                        inv: {
+                            shield: {
+                                amt: amount,
+                            },
+                        },
+                    });
                 } else if (item == "shieldhp") {
                     inventory = new Inventory({
                         ...query,
-                        inv : {
+                        inv: {
                             shield: {
-                                hp: amount
-                            }
-                        }
-                    })
+                                hp: amount,
+                            },
+                        },
+                    });
                 } else {
                     inventory = new Inventory({
                         ...query,
-                        inv : {
-                            [item]: amount
-                        }
-                    })
+                        inv: {
+                            [item]: amount,
+                        },
+                    });
                 }
             }
 
-            await user.save()
-            await inventory.save()
+            await user.save();
+            await inventory.save();
 
-            interaction.editReply({ embeds : [
-                new EmbedBuilder()
-                    .setTitle("W Purchase")
-                    .setDescription(`Succesfully bought \`${amount} ${Items[item].name}\` for ${shopify(cost)}`)
-                    .setColor("Green")
-            ] })
-        }  catch (error) {
-			errorHandler(error, client, interaction, EmbedBuilder)
-		}
-    }
-}
+            interaction.editReply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("W Purchase")
+                        .setDescription(
+                            `Succesfully bought \`${amount} ${
+                                Items[item].name
+                            }\` for ${shopify(cost)}`
+                        )
+                        .setColor("Green"),
+                ],
+            });
+        } catch (error) {
+            errorHandler(error, client, interaction, EmbedBuilder);
+        }
+    },
+};

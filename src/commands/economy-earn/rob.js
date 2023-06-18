@@ -1,10 +1,10 @@
 const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
 const User = require("../../models/User");
-const rndInt = require("../../utils/rndInt");
+const rndInt = require("../../utils/misc/rndInt");
 const Inventory = require("../../models/Inventory");
-const { comma, coin } = require("../../utils/beatify");
-const { newCooldown, checkCooldown } = require("../../utils/cooldown");
-const errorHandler = require("../../utils/errorHandler");
+const { comma, coin } = require("../../utils/formatters/beatify");
+const { newCooldown, checkCooldown } = require("../../utils/handlers/cooldown");
+const errorHandler = require("../../utils/handlers/errorHandler");
 
 module.exports = {
     name: "rob",
@@ -107,7 +107,9 @@ module.exports = {
             const cooldownResult = await checkCooldown(
                 "rob",
                 interaction,
-                EmbedBuilder
+                EmbedBuilder,
+                false,
+                "Ay bro chillax on the robbin. Cops are still out for you. They'll give up"
             );
             if (cooldownResult === 0) {
                 return;

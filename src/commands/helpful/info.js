@@ -1,59 +1,62 @@
-const { EmbedBuilder } = require('discord.js')
-const pkg = require('../../../package.json')
-const errorHandler = require('../../utils/errorHandler')
+const { EmbedBuilder } = require("discord.js");
+const pkg = require("../../../package.json");
+const errorHandler = require("../../utils/handlers/errorHandler");
 
 module.exports = {
-    name:"info",
-    description:"Bot's info and other stuff",
+    name: "info",
+    description: "Bot's info and other stuff",
 
     /**
-     * 
-     * @param {Client} client 
-     * @param {Interaction} interaction 
+     *
+     * @param {Client} client
+     * @param {Interaction} interaction
      */
     callback: async (client, interaction) => {
         try {
             interaction.reply({
-                embeds : [
+                embeds: [
                     new EmbedBuilder()
                         .setTitle("Stats")
                         .setFields([
                             {
                                 name: "Slash command count",
                                 value: `${interaction.client.application.commands.cache.size}`,
-                                inline: true
+                                inline: true,
                             },
                             {
                                 name: "Total user count",
-                                value: `${client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)}`,
-                                inline: true
+                                value: `${client.guilds.cache.reduce(
+                                    (acc, guild) => acc + guild.memberCount,
+                                    0
+                                )}`,
+                                inline: true,
                             },
                             {
-                                name:"Guild count",
+                                name: "Guild count",
                                 value: `${client.guilds.cache.size}`,
-                                inline: true
+                                inline: true,
                             },
                             {
                                 name: "Discord.js version",
-                                value: `${pkg.dependencies['discord.js']}`,
-                                inline: true
+                                value: `${pkg.dependencies["discord.js"]}`,
+                                inline: true,
                             },
                             {
                                 name: "Mongoose version",
                                 value: `${pkg.dependencies.mongoose}`,
-                                inline: true
+                                inline: true,
                             },
                             {
                                 name: "Github repository",
                                 value: `[Github repo](https://github.com/Yetity/y2b "ay bruh why u hoverin over dis?")`,
-                                inline: true
-                            }
+                                inline: true,
+                            },
                         ])
-                        .setColor("#ADD8E6")
-                ]
-            })
-        }  catch (error) {
-			errorHandler(error, client, interaction, EmbedBuilder)
-		}
-    }
-}
+                        .setColor("#ADD8E6"),
+                ],
+            });
+        } catch (error) {
+            errorHandler(error, client, interaction, EmbedBuilder);
+        }
+    },
+};

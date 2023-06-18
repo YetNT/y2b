@@ -1,8 +1,8 @@
 const { EmbedBuilder } = require("discord.js");
 const User = require("../../models/User");
-const { comma, coin } = require("../../utils/beatify");
-const { newCooldown, checkCooldown } = require("../../utils/cooldown");
-const errorHandler = require("../../utils/errorHandler");
+const { comma, coin } = require("../../utils/formatters/beatify");
+const { newCooldown, checkCooldown } = require("../../utils/handlers/cooldown");
+const errorHandler = require("../../utils/handlers/errorHandler");
 
 const dailyAmount = 1000;
 

@@ -1,11 +1,11 @@
 const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
-const { all, withoutShield } = require("../../utils/items/items");
-const { comma } = require("../../utils/beatify");
+const { all, withoutShield } = require("../../utils/misc/items/items");
+const { comma } = require("../../utils/formatters/beatify");
 const Inventory = require("../../models/Inventory");
 const Badges = require("../../models/Badges");
-const allBadges = require("../../utils/badges/badges.json");
+const allBadges = require("../../utils/misc/badges/badges.json");
 const { progressBar } = require("@yetnt/progressbar");
-const errorHandler = require("../../utils/errorHandler");
+const errorHandler = require("../../utils/handlers/errorHandler");
 
 module.exports = {
     name: "inventory",

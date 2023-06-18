@@ -1,18 +1,18 @@
-const { EmbedBuilder, ApplicationCommandOptionType } = require('discord.js')
-const User = require('../../models/User')
-const { coin } = require('../../utils/beatify')
-const errorHandler = require('../../utils/errorHandler')
+const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
+const User = require("../../models/User");
+const { coin } = require("../../utils/formatters/beatify");
+const errorHandler = require("../../utils/handlers/errorHandler");
 
 module.exports = {
-    name:"deposit",
-    description:"Deposit coins into your bank",
+    name: "deposit",
+    description: "Deposit coins into your bank",
     options: [
         {
-            name:"amount",
-            description:"how much to deposit",
+            name: "amount",
+            description: "how much to deposit",
             required: true,
-            type: ApplicationCommandOptionType.Number
-        }
+            type: ApplicationCommandOptionType.Number,
+        },
     ],
     blacklist: true,
 
@@ -26,42 +26,63 @@ module.exports = {
 
             const amount = interaction.options.get("amount").value;
             const query = {
-                userId: interaction.user.id
-            }
-            let user = await User.findOne(query)
+                userId: interaction.user.id,
+            };
+            let user = await User.findOne(query);
 
             if (!user) {
-                await interaction.followUp({ content:"Why deposit when you've got nothing?", ephemeral: true });
+                await interaction.followUp({
+                    content: "Why deposit when you've got nothing?",
+                    ephemeral: true,
+                });
                 return;
             }
 
             if (!user.balance) {
-                await interaction.followUp({ content:"You exist in the database but have no money weird", ephemeral: true });
+                await interaction.followUp({
+                    content:
+                        "You exist in the database but have no money weird",
+                    ephemeral: true,
+                });
                 return;
             }
 
             if (amount > user.balance) {
-                await interaction.followUp({ content:`${coin(amount)} is **__${amount - user.balance}__** more than what you have`, ephemeral: true });
+                await interaction.followUp({
+                    content: `${coin(amount)} is **__${
+                        amount - user.balance
+                    }__** more than what you have`,
+                    ephemeral: true,
+                });
                 return;
             }
 
             if (amount < 0) {
-                await interaction.followUp({ content:"You can't deposit numbers smaller than zerp", ephemeral: true });
+                await interaction.followUp({
+                    content: "You can't deposit numbers smaller than zerp",
+                    ephemeral: true,
+                });
                 return;
             }
 
-            user.balance -= amount
-            user.bank += amount
+            user.balance -= amount;
+            user.bank += amount;
 
-            await user.save()
+            await user.save();
 
-            interaction.editReply({ embeds: [
-                new EmbedBuilder()
-                    .setTitle("Successful Deposit.")
-                    .setDescription(`Successfully deposited ${coin(amount)}. Your balance is now ${coin(user.balance)}`)
-            ]})
-        }  catch (error) {
-			errorHandler(error, client, interaction, EmbedBuilder)
-		}
-    }
-}
+            interaction.editReply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Successful Deposit.")
+                        .setDescription(
+                            `Successfully deposited ${coin(
+                                amount
+                            )}. Your balance is now ${coin(user.balance)}`
+                        ),
+                ],
+            });
+        } catch (error) {
+            errorHandler(error, client, interaction, EmbedBuilder);
+        }
+    },
+};

@@ -63,87 +63,38 @@ module.exports = {
 
             collector.on("collect", async (i) => {
                 let id = i.customId;
+                let pagerRow;
 
                 if (id == "prevPage") {
                     pageIndex--;
                     if (pageIndex != 1) {
-                        let pagerRow = pagerButtons(
-                            nextPage,
-                            previousPage,
-                            null
-                        );
-                        await i.update({
-                            embeds: [
-                                new EmbedBuilder()
-                                    .setDescription(
-                                        pageItems[pageIndex - 1].join("\n")
-                                    )
-                                    .setFooter({
-                                        text: `Page ${pageIndex}/${pageItems.length}`,
-                                    }),
-                            ],
-                            components: [pagerRow],
-                        });
+                        pagerRow = pagerButtons(nextPage, previousPage, null);
                     } else {
-                        let pagerRow = pagerButtons(
+                        pagerRow = pagerButtons(
                             nextPage,
                             previousPage,
                             "previous"
                         );
-                        await i.update({
-                            embeds: [
-                                new EmbedBuilder()
-                                    .setDescription(
-                                        pageItems[pageIndex - 1].join("\n")
-                                    )
-                                    .setFooter({
-                                        text: `Page ${pageIndex}/${pageItems.length}`,
-                                    }),
-                            ],
-                            components: [pagerRow],
-                        });
                     }
                 }
                 if (id == "nextPage") {
                     pageIndex++;
                     if (pageIndex != pageItems.length) {
-                        let pagerRow = pagerButtons(
-                            nextPage,
-                            previousPage,
-                            null
-                        );
-                        await i.update({
-                            embeds: [
-                                new EmbedBuilder()
-                                    .setDescription(
-                                        pageItems[pageIndex - 1].join("\n")
-                                    )
-                                    .setFooter({
-                                        text: `Page ${pageIndex}/${pageItems.length}`,
-                                    }),
-                            ],
-                            components: [pagerRow],
-                        });
+                        pagerRow = pagerButtons(nextPage, previousPage, null);
                     } else {
-                        let pagerRow = pagerButtons(
-                            nextPage,
-                            previousPage,
-                            "next"
-                        );
-                        await i.update({
-                            embeds: [
-                                new EmbedBuilder()
-                                    .setDescription(
-                                        pageItems[pageIndex - 1].join("\n")
-                                    )
-                                    .setFooter({
-                                        text: `Page ${pageIndex}/${pageItems.length}`,
-                                    }),
-                            ],
-                            components: [pagerRow],
-                        });
+                        pagerRow = pagerButtons(nextPage, previousPage, "next");
                     }
                 }
+                await i.update({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setDescription(pageItems[pageIndex - 1].join("\n"))
+                            .setFooter({
+                                text: `Page ${pageIndex}/${pageItems.length}`,
+                            }),
+                    ],
+                    components: [pagerRow],
+                });
             });
         } catch (error) {
             console.log(error);

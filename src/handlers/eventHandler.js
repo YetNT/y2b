@@ -19,7 +19,8 @@ module.exports = (client) => {
                 const eventFunction = require(eventFile);
                 if (eventFile.includes("dbPost") == true) {
                     if (client.application.id == "701280304182067251") {
-                        await eventFunction(client, arg);
+                        //so that stats publish code doesn't execute on beta bot
+                        await eventFunction.post(client, arg); //dbPost exports 2 things, express middleware for topgg listener and discordbotlist shit, so use .post
                         console.log("dbPost has been loaded");
                     } else {
                         continue;

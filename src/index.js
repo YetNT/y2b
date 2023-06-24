@@ -9,6 +9,12 @@ const eventHandler = require("./handlers/eventHandler");
 const moment = require("moment");
 require("moment-duration-format");
 
+const express = require("express");
+const { setRoutes } = require("./events/ready/dbPost.js");
+
+const app = express();
+app.use(express.json());
+
 const client = new Client({
     intents: [
         IntentsBitField.Flags.Guilds,
@@ -20,6 +26,10 @@ const client = new Client({
     try {
         await mongoose.connect(process.env.MONGODB_URI);
         console.log("connected to DB");
+
+        eventHandler(client);
+
+        // Use the dbPost middleware and routes
     } catch (error) {
         console.log(`db error ${error}`);
     }
@@ -27,13 +37,13 @@ const client = new Client({
 
 // Assuming you have a message ID and channel ID stored in variables
 const channelId = "920947757613735966";
-// const mainMessageId = '920947874156658688';
-const betaMessageId = "1015333980725313558";
+const mainMessageId = "920947874156658688";
+// const betaMessageId = "1015333980725313558";
 
 async function editMessage() {
     const channel = client.channels.cache.get(channelId);
     await channel.messages
-        .fetch(betaMessageId)
+        .fetch(mainMessageId)
         .then((message) => {
             message.edit({
                 content: "_ _",
@@ -59,6 +69,16 @@ async function editMessage() {
 
 setInterval(editMessage, 120000);
 
-eventHandler(client);
+client.login(process.env.MAIN);
 
-client.login(process.env.TOKEN);
+client.on("ready", () => {
+    const routes = setRoutes(client);
+
+    app.use(routes);
+
+    app.listen(1284, () => {
+        console.log(
+            ":+1: waiting for topgg and discordbotlist to respond now..."
+        );
+    });
+});

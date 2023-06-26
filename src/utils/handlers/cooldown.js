@@ -1,5 +1,6 @@
 const Cooldown = require("../../models/Cooldown");
 const strToMilli = require("../formatters/strToMilli");
+const cds = require("../misc/cooldowns");
 
 /**
  *
@@ -85,6 +86,9 @@ const checkCooldown = async (
     let description = ``;
 
     let cooldown = await Cooldown.findOne(query);
+	 if (!cooldown) {
+        return 0;
+    }
     let result =
         complex === false || complex === undefined
             ? cooldown[name]
@@ -114,4 +118,6 @@ const checkCooldown = async (
     }
 };
 
-module.exports = { newCooldown, checkCooldown };
+const Cooldowns = Object.freeze(cds);
+
+module.exports = { newCooldown, checkCooldown, Cooldowns };

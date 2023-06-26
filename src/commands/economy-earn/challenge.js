@@ -61,9 +61,9 @@ const createButtonActionRows = (rightButton) => {
 
     let randomIntForButton = rndInt(1, 5);
     let rndIntForButtArr = randomIntForButton - 1;
-    for (let i = 0; i < 5; i++) {
-        let randomed = false;
 
+    let randomed = false;
+    for (let i = 0; i < 5; i++) {
         if (randomed == false && i == rndIntForButtArr) {
             correctRow.addComponents(rightButton.setStyle(ButtonStyle.Danger));
             randomed = true;
@@ -72,14 +72,14 @@ const createButtonActionRows = (rightButton) => {
         }
     }
 
-    for (let i = 0; i < 5; i++) {
-        let randomed = false;
+    randomed = false;
 
+    for (let i = 0; i < 5; i++) {
         if (randomed == false && i == rndIntForButtArr) {
             correctRowShow.addComponents(
                 new ButtonBuilder()
                     .setCustomId("right")
-                    .setLabel("iit was this")
+                    .setLabel("it was this")
                     .setDisabled(true)
                     .setStyle(ButtonStyle.Success)
             );
@@ -171,7 +171,12 @@ module.exports = {
                             components: [],
                         });
                         await user.save();
-                        newCooldown("30min", interaction, "challenge.buttons");
+                        newCooldown(
+                            "30min",
+                            interaction,
+                            "challenge",
+                            "buttons"
+                        );
                     } else {
                         await confirmation.update({
                             embeds: [

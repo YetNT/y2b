@@ -10,7 +10,11 @@ const rndInt = require("../../utils/misc/rndInt");
 const User = require("../../models/User");
 const reward = 5000;
 const { coin } = require("../../utils/formatters/beatify");
-const { newCooldown, checkCooldown } = require("../../utils/handlers/cooldown");
+const {
+    newCooldown,
+    checkCooldown,
+    Cooldowns,
+} = require("../../utils/handlers/cooldown");
 
 const createButtonActionRows = (rightButton) => {
     let wrongButtonArr = [
@@ -172,7 +176,7 @@ module.exports = {
                         });
                         await user.save();
                         newCooldown(
-                            "30min",
+                            Cooldowns.challenge.buttons.right,
                             interaction,
                             "challenge",
                             "buttons"
@@ -190,7 +194,7 @@ module.exports = {
                         });
 
                         newCooldown(
-                            "10min",
+                            Cooldowns.challenge.buttons.wrong,
                             interaction,
                             "challenge",
                             "buttons"

@@ -3,7 +3,7 @@ const User = require("../../models/User");
 const rndInt = require("../../utils/misc/rndInt");
 const Inventory = require("../../models/Inventory");
 const { comma, coin } = require("../../utils/formatters/beatify");
-const { newCooldown, checkCooldown } = require("../../utils/handlers/cooldown");
+const { newCooldown, checkCooldown, Cooldowns } = require("../../utils/handlers/cooldown");
 const errorHandler = require("../../utils/handlers/errorHandler");
 
 module.exports = {
@@ -282,7 +282,7 @@ module.exports = {
             await author.save();
             await victim.save();
 
-            await newCooldown("10min", interaction, "rob");
+            await newCooldown(Cooldowns.rob, interaction, "rob");
         } catch (error) {
             errorHandler(error, client, interaction, EmbedBuilder);
         }

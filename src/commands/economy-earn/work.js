@@ -3,7 +3,7 @@ const User = require("../../models/User");
 const workAr = require("../../utils/misc/work/work.json");
 const workPay = require("../../utils/misc/work/workPay.json");
 const { coin } = require("../../utils/formatters/beatify");
-const { newCooldown, checkCooldown } = require("../../utils/handlers/cooldown");
+const { newCooldown, checkCooldown, Cooldowns } = require("../../utils/handlers/cooldown");
 const errorHandler = require("../../utils/handlers/errorHandler");
 
 /**
@@ -176,7 +176,7 @@ module.exports = {
                 await user.save();
             }
 
-            await newCooldown("5min", interaction, "work");
+            await newCooldown(Cooldowns.work, interaction, "work");
         } catch (error) {
             errorHandler(error, client, interaction, EmbedBuilder);
         }

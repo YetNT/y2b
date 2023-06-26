@@ -8,25 +8,23 @@ const {
 } = require("discord.js");
 const errorHandler = require("../../utils/handlers/errorHandler");
 
-let eco = [
-    "daily",
-    "rob",
-    "work",
-    "balance",
-    "deposit",
-    "withdraw",
-    "buy",
-    "promocode",
-    "share",
-    "shop",
-    "inventory",
-    "leaderboard",
-    "item",
-    "challenge",
-];
-let other = ["help", "ping", "command", "info"];
+const other = ["help", "ping", "command", "info"];
+const no = ["blacklist", "eval", "slash-test", "grid"];
 
-const makeWebsiteObject = (commands) => {
+const createVars = (commands) => {
+    const itemNames = Array.from(commands.values()).map((item) => item.name);
+    let eco = [];
+    for (let item of itemNames) {
+        if (other.includes(item) || no.includes(item)) {
+            continue;
+        } else {
+            eco.push(item);
+        }
+    }
+    return eco;
+};
+
+const makeWebsiteObject = (commands, eco, other) => {
     let outputObject = {
         economy: [],
         other: [],
@@ -64,6 +62,8 @@ module.exports = {
         try {
             await interaction.deferReply();
             const commands = await client.application?.commands.fetch();
+            const eco = createVars(commands);
+            console.log(makeWebsiteObject(commands, eco, other));
 
             const select = new StringSelectMenuBuilder()
                 .setCustomId("help")
@@ -99,8 +99,6 @@ module.exports = {
                 content: "help",
                 components: [row1, row2],
             });
-
-            console.log(makeWebsiteObject(commands));
 
             client.on("interactionCreate", async (interaction) => {
                 if (

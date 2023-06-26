@@ -69,7 +69,7 @@ setInterval(editMessage, 120000);
 eventHandler(client);
 client.login(process.env.TOKEN);
 
-if (client.id == "701280304182067251") {
+if (client.token === process.env.MAIN) {
     client.on("ready", () => {
         const routes = setRoutes(client);
 

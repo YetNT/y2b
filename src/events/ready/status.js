@@ -2,7 +2,7 @@ const { ActivityType } = require("discord.js");
 
 const presences = (client, status) => {
     let st = {};
-    if (client.id == "701280304182067251") {
+    if (client.token === process.env.MAIN) {
         let random = Math.floor(Math.random() * status.main.length);
         st = {
             status: "dnd",

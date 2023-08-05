@@ -1,59 +1,20 @@
 const {
-    ApplicationCommandOptionType,
     PermissionFlagsBits,
     EmbedBuilder,
 } = require("discord.js");
 const ServerCommand = require("../../models/ServerCommand");
 const errorHandler = require("../../utils/handlers/errorHandler");
 
+const subcommands = require("./commandSubcommands/index");
+
 module.exports = {
     name: "command",
     description:
         "Server Command Disbale/Enable/List (This command has subcommands.)",
     options: [
-        {
-            name: "list",
-            description: "List enabled and disabled commands in the server.",
-            type: ApplicationCommandOptionType.Subcommand,
-        },
-        {
-            name: "enable",
-            description: "Enable a command in this server",
-            type: ApplicationCommandOptionType.Subcommand,
-            options: [
-                {
-                    name: "command",
-                    description: "Which command you enablin?",
-                    choices: [
-                        {
-                            name: "Rob",
-                            value: "rob",
-                        },
-                    ],
-                    type: ApplicationCommandOptionType.String,
-                    required: true,
-                },
-            ],
-        },
-        {
-            name: "disable",
-            description: "Disable a command in this server",
-            type: ApplicationCommandOptionType.Subcommand,
-            options: [
-                {
-                    name: "command",
-                    description: "Which command you disablin?",
-                    choices: [
-                        {
-                            name: "Rob",
-                            value: "rob",
-                        },
-                    ],
-                    type: ApplicationCommandOptionType.String,
-                    required: true,
-                },
-            ],
-        },
+        subcommands.list.body,
+        subcommands.enable.body,
+        subcommands.disable.body,
     ],
 
     permissionsRequired: [PermissionFlagsBits.ManageMessages],
@@ -78,19 +39,7 @@ module.exports = {
                     return;
                 }
 
-                interaction.editReply({
-                    embeds: [
-                        new EmbedBuilder().setTitle("Command list").setFields([
-                            {
-                                name: "Rob",
-                                value:
-                                    serverCommand.rob == false
-                                        ? ":moyai: Enabled"
-                                        : ":skull_crossbones: Disabled",
-                            },
-                        ]),
-                    ],
-                });
+                await subcommands.list.callback(client, interaction, serverCommand);
             } else if (subcommand === "enable") {
                 let command = interaction.options.getString("command");
 
@@ -103,17 +52,12 @@ module.exports = {
                     return;
                 }
 
-                serverCommand[command] = false;
-                await interaction.editReply({
-                    embeds: [
-                        new EmbedBuilder()
-                            .setTitle(`${command} has been enabled`)
-                            .setDescription(
-                                `The command \`${command}\` has been enabled. Users can now run this command in this server.`
-                            ),
-                    ],
-                });
-                await serverCommand.save();
+                await subcommands.enable.callback(
+                    client,
+                    interaction,
+                    serverCommand,
+                    command
+                );
             } else if (subcommand === "disable") {
                 let command = interaction.options.getString("command");
 
@@ -131,16 +75,12 @@ module.exports = {
                     });
                 }
 
-                await interaction.editReply({
-                    embeds: [
-                        new EmbedBuilder()
-                            .setTitle(`${command} has been disabled`)
-                            .setDescription(
-                                `The command \`${command}\` has been disabled. Users can no longer run this command in this server.`
-                            ),
-                    ],
-                });
-                await serverCommand.save();
+                subcommands.disable.callback(
+                    client,
+                    interaction,
+                    serverCommand,
+                    command
+                );
             }
         } catch (error) {
             errorHandler(error, client, interaction, EmbedBuilder);

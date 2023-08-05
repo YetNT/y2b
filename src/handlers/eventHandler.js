@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require("fs");
 const getAllFiles = require("../utils/getAllFiles");
 
 module.exports = (client) => {
@@ -25,6 +26,8 @@ module.exports = (client) => {
                     } else {
                         continue;
                     }
+                } else if (fs.lstatSync(eventFile).isDirectory()) {
+                    continue;
                 } else {
                     await eventFunction(client, arg);
                 }

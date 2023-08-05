@@ -5,7 +5,7 @@ module.exports = {
             wrong: "10mins",
         },
     },
-	 work: "10mins",
-	 daily: "23h",
-	 rob: "55mins"
+    work: "10mins",
+    daily: "23h",
+    rob: "55mins",
 };

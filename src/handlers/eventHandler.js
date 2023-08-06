@@ -27,6 +27,7 @@ module.exports = (client) => {
                         continue;
                     }
                 } else if (fs.lstatSync(eventFile).isDirectory()) {
+                    //skip sub directories for subcommands
                     continue;
                 } else {
                     await eventFunction(client, arg);

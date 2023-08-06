@@ -1,6 +1,9 @@
 #env
 .env
 
+# tests commands that wont be added to the final release.
+src/commands/test/
+
 #promocodes
 promocodes.json
 

@@ -9,9 +9,11 @@ const User = require("../../models/User");
 const Inventory = require("../../models/Inventory");
 const Blacklist = require("../../models/Blacklist");
 const { itemNamesNoShield } = require("../../utils/misc/items/items");
-const { comma, coin } = require("../../utils/formatters/beatify");
+const { comma, coin, coinEmoji } = require("../../utils/formatters/beatify");
 const { newCooldown, checkCooldown } = require("../../utils/handlers/cooldown");
 const errorHandler = require("../../utils/handlers/errorHandler");
+const Items = require("../../utils/misc/items/items.json");
+const { emojiToUnicode } = require("../../utils/misc/emojiManipulation");
 
 module.exports = {
     name: "share",
@@ -53,6 +55,7 @@ module.exports = {
             const amount = interaction.options.get("amount").value;
             const item = interaction.options.get("item")?.value;
             let shareVar;
+            let emoji;
             let warning = ``;
             let t = await coin(amount);
 
@@ -117,7 +120,8 @@ module.exports = {
             if (item) {
                 // it is an item
                 shareVar = `Share ${item}`;
-                warning = `Are you sure that you'd like to share ${amount} ${item}s with <@${userToGiveId}>`;
+                emoji = emojiToUnicode(Items[item].emoji);
+                warning = `Are you sure that you'd like to share ${amount} ${Items[item].emoji} ${Items[item].name}s with <@${userToGiveId}>`;
                 if (authorInv.inv[item] < amount) {
                     interaction.editReply({
                         embeds: [
@@ -133,6 +137,7 @@ module.exports = {
             } else {
                 // it not is an item
                 shareVar = "Share Coins";
+                emoji = emojiToUnicode(coinEmoji);
                 warning = `Are you sure that you'd like to share ${t} with <@${userToGiveId}>`;
                 if (author.balance < amount) {
                     interaction.editReply({
@@ -151,6 +156,7 @@ module.exports = {
             const confirm = new ButtonBuilder()
                 .setCustomId("confirm")
                 .setLabel(shareVar)
+                .setEmoji(emoji)
                 .setStyle(ButtonStyle.Danger);
             const cancel = new ButtonBuilder()
                 .setCustomId("cancel")
@@ -159,6 +165,7 @@ module.exports = {
             const confirmDisabled = new ButtonBuilder()
                 .setCustomId("confirm")
                 .setLabel(shareVar)
+                .setEmoji(emoji)
                 .setStyle(ButtonStyle.Danger)
                 .setDisabled(true);
             const cancelDisabled = new ButtonBuilder()

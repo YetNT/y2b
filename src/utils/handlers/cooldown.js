@@ -86,7 +86,7 @@ const checkCooldown = async (
     let description = ``;
 
     let cooldown = await Cooldown.findOne(query);
-	 if (!cooldown) {
+	if (!cooldown) {
         return 0;
     }
     let result =

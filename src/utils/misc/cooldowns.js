@@ -8,4 +8,5 @@ module.exports = {
     work: "10mins",
     daily: "23h",
     rob: "55mins",
+    crystalize: "20mins",
 };

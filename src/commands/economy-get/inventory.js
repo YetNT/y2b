@@ -1,4 +1,10 @@
-const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
+const {
+    ApplicationCommandOptionType,
+    EmbedBuilder,
+    ComponentType,
+    ButtonBuilder,
+    ButtonStyle,
+} = require("discord.js");
 const { all, withoutShield } = require("../../utils/misc/items/items");
 const { comma } = require("../../utils/formatters/beatify");
 const Inventory = require("../../models/Inventory");
@@ -6,6 +12,16 @@ const Badges = require("../../models/Badges");
 const allBadges = require("../../utils/misc/badges/badges.json");
 const { progressBar } = require("@yetnt/progressbar");
 const errorHandler = require("../../utils/handlers/errorHandler");
+
+const { pageCreator, pagerButtons } = require("../../utils/handlers/pages");
+let nextPage = new ButtonBuilder()
+    .setCustomId("nextPage")
+    .setLabel("Next Page")
+    .setStyle(ButtonStyle.Secondary);
+let previousPage = new ButtonBuilder()
+    .setCustomId("prevPage")
+    .setLabel("Previous Page")
+    .setStyle(ButtonStyle.Secondary);
 
 module.exports = {
     name: "inventory",
@@ -125,8 +141,17 @@ module.exports = {
                 shieldOutput = `*[Inactive](https://discord.com "${inventory.inv.shield.amt} Shields")*`;
             }
 
+            let pageItems = pageCreator(invOutput, 5);
+
+            let initRow =
+                pageItems.length != 1
+                    ? [pagerButtons(nextPage, previousPage, "previous")]
+                    : [];
+
+            var pageIndex = 1;
+
             // send outputs
-            await interaction.editReply({
+            let response = await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle(`${userInfo.username}'s Inventory`)
@@ -143,7 +168,7 @@ module.exports = {
                             },
                             {
                                 name: "Items",
-                                value: invOutput.join("\n \n"),
+                                value: pageItems[pageIndex - 1].join("\n\n"),
                                 inline: true,
                             },
                         ])
@@ -154,8 +179,80 @@ module.exports = {
                                 "/" +
                                 userInfo.avatar +
                                 ".jpeg"
-                        ),
+                        )
+                        .setFooter({
+                            text: `Page ${pageIndex}/${pageItems.length}`,
+                        }),
                 ],
+                components: initRow,
+            });
+
+            const collector = response.createMessageComponentCollector({
+                componentType: ComponentType.Button,
+                time: 3_600_000,
+            });
+
+            collector.on("collect", async (i) => {
+                let id = i.customId;
+                let pagerRow;
+
+                if (id == "prevPage") {
+                    pageIndex--;
+                    if (pageIndex != 1) {
+                        pagerRow = pagerButtons(nextPage, previousPage, null);
+                    } else {
+                        pagerRow = pagerButtons(
+                            nextPage,
+                            previousPage,
+                            "previous"
+                        );
+                    }
+                }
+                if (id == "nextPage") {
+                    pageIndex++;
+                    if (pageIndex != pageItems.length) {
+                        pagerRow = pagerButtons(nextPage, previousPage, null);
+                    } else {
+                        pagerRow = pagerButtons(nextPage, previousPage, "next");
+                    }
+                }
+                await i.update({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle(`${userInfo.username}'s Inventory`)
+                            .setFields([
+                                {
+                                    name: "Shield",
+                                    value: shieldOutput,
+                                    inline: false,
+                                },
+                                {
+                                    name: "Badges",
+                                    value: badgeOutput.join(" "),
+                                    inline: false,
+                                },
+                                {
+                                    name: "Items",
+                                    value: pageItems[pageIndex - 1].join(
+                                        "\n\n"
+                                    ),
+                                    inline: true,
+                                },
+                            ])
+                            .setColor("Blue")
+                            .setThumbnail(
+                                "https://cdn.discordapp.com/avatars/" +
+                                    userInfo.id +
+                                    "/" +
+                                    userInfo.avatar +
+                                    ".jpeg"
+                            )
+                            .setFooter({
+                                text: `Page ${pageIndex}/${pageItems.length}`,
+                            }),
+                    ],
+                    components: [pagerRow],
+                });
             });
         } catch (error) {
             errorHandler(error, client, interaction, EmbedBuilder);

@@ -3,7 +3,11 @@ const User = require("../../models/User");
 const rndInt = require("../../utils/misc/rndInt");
 const Inventory = require("../../models/Inventory");
 const { comma, coin } = require("../../utils/formatters/beatify");
-const { newCooldown, checkCooldown, Cooldowns } = require("../../utils/handlers/cooldown");
+const {
+    newCooldown,
+    checkCooldown,
+    Cooldowns,
+} = require("../../utils/handlers/cooldown");
 const errorHandler = require("../../utils/handlers/errorHandler");
 
 module.exports = {
@@ -26,8 +30,8 @@ module.exports = {
      * @param {Interaction} interaction
      */
     callback: async (client, interaction) => {
+        await interaction.deferReply();
         try {
-            await interaction.deferReply();
             let victimId = interaction.options.get("victim").value;
             const sf = rndInt(1, 2); // 2 = success; 1 = failure
 

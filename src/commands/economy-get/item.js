@@ -25,8 +25,8 @@ module.exports = {
      * @param {Interaction} interaction
      */
     callback: async (client, interaction) => {
+        await interaction.deferReply();
         try {
-            await interaction.deferReply();
             const itemName = interaction.options.get("item").value;
             const item = Items[itemName];
 

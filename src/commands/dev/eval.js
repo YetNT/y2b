@@ -2,6 +2,8 @@
 const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
 
 module.exports = {
+    /*
+    deleted: true,*/
     name: "eval",
     description: "evaluate",
     devOnly: true,

@@ -46,8 +46,8 @@ module.exports = {
      * @returns
      */
     callback: async (client, interaction) => {
+        await interaction.deferReply();
         try {
-            await interaction.deferReply();
             const userToGiveId = interaction.options.get("user").value;
             let utgi = await client.users.fetch(userToGiveId); // cache the user to check if their a bot later on
             const amount = interaction.options.get("amount").value;

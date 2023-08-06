@@ -70,8 +70,8 @@ module.exports = {
     ],
 
     callback: async (client, interaction) => {
+        await interaction.deferReply({ ephemeral: true });
         try {
-            await interaction.deferReply({ ephemeral: true });
             const code = interaction.options.get("code").value;
             let promocodedb = await PromocodeDb.findOne({
                 userId: interaction.user.id,

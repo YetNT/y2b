@@ -11,8 +11,8 @@ module.exports = {
     blacklist: true,
 
     callback: async (client, interaction) => {
+        await interaction.deferReply();
         try {
-            await interaction.deferReply();
             // const randomItemObj = randomItem();
             const server = await client.guilds.cache.get(interaction.guild.id);
             const leaderboard = await User.find({ balance: { $exists: true } })

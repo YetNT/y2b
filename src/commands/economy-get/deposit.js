@@ -21,9 +21,9 @@ module.exports = {
      * @param {Interaction} interaction
      */
     callback: async (client, interaction) => {
-        try {
-            await interaction.deferReply();
+        await interaction.deferReply();
 
+        try {
             const amount = interaction.options.get("amount").value;
             const query = {
                 userId: interaction.user.id,

@@ -19,9 +19,9 @@ module.exports = {
     description: "Vote for the bot on top.gg and discordbotlist",
 
     callback: async (client, interaction) => {
-        try {
-            await interaction.deferReply();
+        await interaction.deferReply();
 
+        try {
             const top = new ButtonBuilder()
                 .setLabel("Top.gg")
                 .setStyle(ButtonStyle.Link)

@@ -27,9 +27,9 @@ module.exports = {
     ],
 
     callback: async (client, interaction) => {
-        try {
-            await interaction.deferReply();
+        await interaction.deferReply();
 
+        try {
             const item = interaction.options.get("item").value;
             const amount = interaction.options.get("amount").value;
             const cost = Items[item].price * amount;

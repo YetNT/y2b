@@ -24,6 +24,7 @@ const createVars = (commands) => {
     return eco;
 };
 
+// eslint-disable-next-line no-unused-vars
 const makeWebsiteObject = (commands, eco, other) => {
     let outputObject = {
         economy: [],
@@ -59,11 +60,11 @@ module.exports = {
      * @param {Interaction} interaction
      */
     callback: async (client, interaction) => {
+        await interaction.deferReply();
         try {
-            await interaction.deferReply();
             const commands = await client.application?.commands.fetch();
             const eco = createVars(commands);
-            console.log(makeWebsiteObject(commands, eco, other));
+            // console.log(makeWebsiteObject(commands, eco, other));
 
             const select = new StringSelectMenuBuilder()
                 .setCustomId("help")

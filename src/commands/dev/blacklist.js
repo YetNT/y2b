@@ -3,7 +3,8 @@ const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
 const Blacklist = require("../../models/Blacklist");
 const errorHandler = require("../../utils/handlers/errorHandler");
 
-module.exports = {
+module.exports = {/*
+    deleted: true,*/
     name: "blacklist",
     description: "blacklist users",
     devOnly: true,

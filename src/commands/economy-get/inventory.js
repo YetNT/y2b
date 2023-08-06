@@ -41,8 +41,8 @@ module.exports = {
      * @param {Interaction} interaction
      */
     callback: async (client, interaction) => {
+        await interaction.deferReply();
         try {
-            await interaction.deferReply();
             let query;
             let user = interaction.options.get("user")?.value;
             let userInfo;

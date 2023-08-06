@@ -15,8 +15,8 @@ module.exports = {
     blacklist: true,
 
     callback: async (client, interaction) => {
+        await interaction.deferReply();
         try {
-            await interaction.deferReply();
             let nextPage = new ButtonBuilder()
                 .setCustomId("nextPage")
                 .setLabel("Next Page")

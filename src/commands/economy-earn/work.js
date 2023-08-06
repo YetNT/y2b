@@ -3,7 +3,11 @@ const User = require("../../models/User");
 const workAr = require("../../utils/misc/work/work.json");
 const workPay = require("../../utils/misc/work/workPay.json");
 const { coin } = require("../../utils/formatters/beatify");
-const { newCooldown, checkCooldown, Cooldowns } = require("../../utils/handlers/cooldown");
+const {
+    newCooldown,
+    checkCooldown,
+    Cooldowns,
+} = require("../../utils/handlers/cooldown");
 const errorHandler = require("../../utils/handlers/errorHandler");
 
 /**
@@ -101,8 +105,8 @@ module.exports = {
      * @param {Interaction} interaction
      */
     callback: async (client, interaction) => {
+        await interaction.deferReply();
         try {
-            await interaction.deferReply();
             const cooldownResult = await checkCooldown(
                 "work",
                 interaction,

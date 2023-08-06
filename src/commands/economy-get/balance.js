@@ -43,8 +43,8 @@ module.exports = {
      * @param {Interaction} interaction
      */
     callback: async (client, interaction) => {
+        await interaction.deferReply();
         try {
-            await interaction.deferReply();
             const option = interaction.options.get("userid")?.value;
             let querySet;
 

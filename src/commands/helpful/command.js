@@ -1,7 +1,4 @@
-const {
-    PermissionFlagsBits,
-    EmbedBuilder,
-} = require("discord.js");
+const { PermissionFlagsBits, EmbedBuilder } = require("discord.js");
 const ServerCommand = require("../../models/ServerCommand");
 const errorHandler = require("../../utils/handlers/errorHandler");
 
@@ -24,8 +21,8 @@ module.exports = {
      * @param {Interaction} interaction
      */
     callback: async (client, interaction) => {
+        await interaction.deferReply();
         try {
-            await interaction.deferReply();
             const guildId = interaction.guild.id;
             let query = {
                 guildId: guildId,
@@ -39,7 +36,11 @@ module.exports = {
                     return;
                 }
 
-                await subcommands.list.callback(client, interaction, serverCommand);
+                await subcommands.list.callback(
+                    client,
+                    interaction,
+                    serverCommand
+                );
             } else if (subcommand === "enable") {
                 let command = interaction.options.getString("command");
 

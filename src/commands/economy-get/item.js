@@ -3,7 +3,7 @@ const Items = require("../../utils/misc/items/items.json");
 const { itemNames } = require("../../utils/misc/items/items");
 const { coin } = require("../../utils/formatters/beatify");
 const errorHandler = require("../../utils/handlers/errorHandler");
-const eti = require("../../utils/misc/emojiToImg");
+const {emojiToImage} = require("../../utils/misc/emojiManipulation");
 
 module.exports = {
     name: "item",
@@ -30,7 +30,7 @@ module.exports = {
             const itemName = interaction.options.get("item").value;
             const item = Items[itemName];
 
-            const image = await eti(client, item.emoji);
+            const image = await emojiToImage(client, item.emoji);
 
             let fields = [
                 {

@@ -28,6 +28,7 @@ module.exports = {
             let reply = [];
 
             for (let item in items) {
+                if (items[item].price === -1) continue;
                 reply.push(
                     `__${items[item].name}__ - ${shopify(items[item].price)}\n${
                         items[item].description
@@ -45,9 +46,11 @@ module.exports = {
             var pageIndex = 1;
             const response = await interaction.editReply({
                 embeds: [
-                    embed.setDescription(reply.join("\n\n")).setFooter({
-                        text: `Page ${pageIndex}/${pageItems.length}`,
-                    }),
+                    embed
+                        .setDescription(pageItems[pageIndex - 1].join("\n\n"))
+                        .setFooter({
+                            text: `Page ${pageIndex}/${pageItems.length}`,
+                        }),
                 ],
                 components: initRow,
             });

@@ -16,7 +16,7 @@ module.exports = {
             description: "Which item you buying?",
             required: true,
             type: ApplicationCommandOptionType.String,
-            choices: itemNames(),
+            choices: itemNames(true),
         },
         {
             name: "amount",

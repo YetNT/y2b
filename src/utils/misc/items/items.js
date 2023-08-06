@@ -8,11 +8,14 @@ const withoutShield = Object.keys(all).reduce((result, key) => {
     return result;
 }, {});
 
-const itemNames = () => {
+const itemNames = (onlyForSale = false) => {
     // let { shield, shieldhp, ...newInv } = all;
 
     let r = [];
     for (let item in all) {
+        if (onlyForSale === true) {
+            if (all[item].price == -1) continue;
+        }
         r.push({
             name: all[item].name,
             value: all[item].id,

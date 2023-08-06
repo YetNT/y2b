@@ -3,6 +3,7 @@ const Items = require("../../utils/misc/items/items.json");
 const { itemNames } = require("../../utils/misc/items/items");
 const { coin } = require("../../utils/formatters/beatify");
 const errorHandler = require("../../utils/handlers/errorHandler");
+const eti = require("../../utils/misc/emojiToImg");
 
 module.exports = {
     name: "item",
@@ -26,38 +27,49 @@ module.exports = {
     callback: async (client, interaction) => {
         try {
             await interaction.deferReply();
-            const item = interaction.options.get("item").value;
+            const itemName = interaction.options.get("item").value;
+            const item = Items[itemName];
+
+            const image = await eti(client, item.emoji);
+
+            let fields = [
+                {
+                    name: "Info",
+                    value: item.description,
+                    inline: true,
+                },
+                {
+                    name: "Uses",
+                    value:
+                        item.uses.length > 0
+                            ? item.uses.join("\n")
+                            : "This item has no uses.",
+                    inline: true,
+                },
+            ];
+            if (item.price !== -1) {
+                fields.push({
+                    name: "Price",
+                    value: coin(item.price),
+                    inline: true,
+                });
+            }
+            fields.push({
+                name: "ID",
+                value: `\`${item.id}\``,
+                inline: true,
+            });
+
+            let embed = new EmbedBuilder()
+                .setTitle(item.name)
+                .setFields(fields)
+                .setFooter({ text: `Rarity: ${item.rarity}` });
+
+            if (item.emoji) {
+                embed.setThumbnail(image);
+            }
             await interaction.editReply({
-                embeds: [
-                    new EmbedBuilder()
-                        .setTitle(Items[item].name)
-                        .setFields([
-                            {
-                                name: "Info",
-                                value: Items[item].description,
-                                inline: true,
-                            },
-                            {
-                                name: "Uses",
-                                value:
-                                    Items[item].uses.length > 0
-                                        ? Items[item].uses.join("\n")
-                                        : "This item has no uses.",
-                                inline: true,
-                            },
-                            {
-                                name: "Price",
-                                value: coin(Items[item].price),
-                                inline: true,
-                            },
-                            {
-                                name: "ID",
-                                value: `\`${Items[item].id}\``,
-                                inline: true,
-                            },
-                        ])
-                        .setFooter({ text: `Rarity: ${Items[item].rarity}` }),
-                ],
+                embeds: [embed],
             });
         } catch (error) {
             errorHandler(error, client, interaction, EmbedBuilder);

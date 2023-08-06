@@ -18,6 +18,7 @@ const calculateInv = (model) => {
     let { shield, shieldhp, ...newInv } = items;
 
     for (let item in newInv) {
+        if (item.price === -1) continue;
         total += model.inv[item] * items[item].price;
     }
 

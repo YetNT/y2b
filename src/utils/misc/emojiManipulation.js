@@ -12,10 +12,8 @@ function extractEmojiName(input) {
     }
 }
 
-module.exports = async (client, input) => {
+const emojiToImgage = async (client, input) => {
     const inputName = extractEmojiName(input);
-
-    console.log(inputName);
 
     if (!inputName) {
         throw new Error("Invalid emoji input format.");
@@ -33,3 +31,29 @@ module.exports = async (client, input) => {
 
     return `${baseUrl}${emoji.id}.${emoji.animated ? "gif" : "png"}`;
 };
+
+const emojiToUnicode = (input) => {
+    let inputName;
+
+    if (input.includes("<")) {
+        return input;
+    } else {
+        inputName = extractEmojiName(input);
+
+        if (!inputName) {
+            throw new Error("Invalid emoji input format.");
+        }
+    }
+
+    let discordEmoji = Emojis.get(`:${inputName}:`);
+    let emojiUnicode;
+    try {
+        emojiUnicode = getUnicode(discordEmoji);
+    } catch (err) {
+        throw new TypeError("Not a valid emoji unicode!");
+    }
+
+    return String.fromCodePoint(parseInt(emojiUnicode, 16));
+};
+
+module.exports = { emojiToImgage, emojiToUnicode };

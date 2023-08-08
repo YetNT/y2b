@@ -1,67 +1,159 @@
-const all = require("./items.json");
-const rndInt = require("../rndInt");
+const sellPercentage = 0.45;
+const r = Object.freeze({
+    common: "Common",
+    uncommon: "Uncommon",
+    rare: "Rare",
+    epic: "Epic",
+    insane: "Insane",
+    godly: "Godly",
+});
 
-const withoutShield = Object.keys(all).reduce((result, key) => {
-    if (all[key].id != "shield" || all[key].id != "shieldhp") {
-        result[key] = all[key];
+class Item {
+    /**
+     *
+     * @param {string} name
+     * @param {string} description
+     * @param {string[]} uses
+     * @param {number} price
+     * @param {boolean|number} canBeSold
+     * @param {string} id
+     * @param {string} rarity
+     * @param {string} emoji
+     */
+    constructor(
+        name,
+        description,
+        uses,
+        price,
+        canBeSold = false,
+        id,
+        rarity,
+        emoji = undefined
+    ) {
+        this.name = name;
+        this.description = description;
+        this.uses = uses;
+        this.price = price;
+        this.sell =
+            canBeSold == false
+                ? -1
+                : typeof canBeSold == "number"
+                ? canBeSold
+                : Math.round(price * sellPercentage);
+        this.id = id;
+        this.rarity = rarity;
+        this.emoji = emoji !== undefined ? emoji : undefined;
     }
-    return result;
-}, {});
+}
 
-const itemNames = (onlyForSale = false) => {
-    // let { shield, shieldhp, ...newInv } = all;
-
-    let r = [];
-    for (let item in all) {
-        if (onlyForSale === true) {
-            if (all[item].price == -1) continue;
-        }
-        r.push({
-            name: all[item].name,
-            value: all[item].id,
-        });
-    }
-
-    return r;
-};
-
-const itemNamesNoShield = () => {
-    // eslint-disable-next-line no-unused-vars
-    let { shield, shieldhp, ...newInv } = all;
-
-    let r = [];
-    for (let item in newInv) {
-        r.push({
-            name: newInv[item].name,
-            value: newInv[item].id,
-        });
-    }
-
-    return r;
-};
-
-/**
- *
- * @returns {{name: String, id: String}} Returns a random item.
- */
-const randomItem = () => {
-    // eslint-disable-next-line no-unused-vars
-    let { shield, shieldhp, ...newInv } = all;
-    const itemIds = Object.values(newInv).map((item) => item.id);
-    const itemNames = Object.values(newInv).map((item) => item.name);
-
-    const int = rndInt(1, itemIds.length);
-
-    return {
-        name: itemNames[int - 1],
-        id: itemIds[int - 1],
-    };
-};
-
+let shield = new Item(
+    "Shield",
+    "It's a shield, not really anything else to it",
+    ["Will protect you from any robbery"],
+    1500,
+    false,
+    "shield",
+    r.common
+);
+let shieldhp = new Item(
+    "Shield's HP",
+    "The amount of hp your shield has before it breaks. It lowers when somebody attempts to rob you.",
+    [],
+    150,
+    false,
+    "shieldhp",
+    r.common
+);
+let rock = new Item(
+    "Rock",
+    "It's a rock. Nothing more, nothing less.",
+    ["Can be turned into crystals using /crystalize"],
+    50,
+    false,
+    "rock",
+    r.common,
+    "<:rock:1106937815738110055>"
+);
+let stick = new Item(
+    "Stick",
+    "A stick that was torn of abranch. Pretty rare if you ask me",
+    [],
+    100,
+    false,
+    "stick",
+    r.common,
+    "<:stick:1106945454572314695>"
+);
+let gem = new Item("Gem", "shine", [], 6000, true, "gem", r.rare, ":gem:");
+let coal = new Item(
+    "Coal",
+    "COAL",
+    [],
+    1200,
+    true,
+    r.uncommon,
+    "<:coal:1106946918954827956>"
+);
+let donut = new Item(
+    "Donut",
+    "Yay a donut!",
+    ["When you fail to rob a user, one donut is subtracted instead of fines."],
+    42e5,
+    true,
+    "donut",
+    r.rare,
+    "<:donut:1109381339947487374>"
+);
+let battery = new Item(
+    "Lithium-ion battery",
+    "Wtf a battery",
+    [],
+    500,
+    true,
+    "battery",
+    r.common,
+    ":battery:"
+);
+let gCrystal = new Item(
+    "Green Crystal",
+    "DAMN DAT SHI RARE!",
+    ["Can be sold"],
+    -1,
+    2_000_000,
+    "greenCrystal",
+    r.epic,
+    "<:greencrystal:1137408975470600272>"
+);
+let wCrystal = new Item(
+    "White Crystal",
+    "Woah a white crystal. Not bad, not bad",
+    ["Can be sold"],
+    -1,
+    rock.price + 5,
+    "whiteCrystal",
+    r.rare,
+    "<:whitecrystal:1137408970391310447>"
+);
+let oCrystal = new Item(
+    "Orange Crystal",
+    "Shii an orange crystal, reflective!",
+    ["Can be sold"],
+    -1,
+    rock.price + 10,
+    "orangeCrystal",
+    r.rare,
+    "<:orangecrystal:1137408967681769492>"
+);
 module.exports = {
-    all,
-    withoutShield,
-    itemNames,
-    itemNamesNoShield,
-    randomItem,
+    shield: shield,
+    shieldhp: shieldhp,
+    rock: rock,
+    stick: stick,
+    gem: gem,
+    coal: coal,
+    donut: donut,
+    battery: battery,
+    greenCrystal: gCrystal,
+    whiteCrystal: wCrystal,
+    orangeCrystal: oCrystal,
 };

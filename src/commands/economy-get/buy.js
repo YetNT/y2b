@@ -1,8 +1,8 @@
 const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
 const User = require("../../models/User");
 const Inventory = require("../../models/Inventory");
-const Items = require("../../utils/misc/items/items.json");
-const { itemNames } = require("../../utils/misc/items/items");
+const Items = require("../../utils/misc/items/items");
+const { itemNames } = require("../../utils/misc/items/getItems");
 const { comma, coin, shopify } = require("../../utils/formatters/beatify");
 const errorHandler = require("../../utils/handlers/errorHandler");
 

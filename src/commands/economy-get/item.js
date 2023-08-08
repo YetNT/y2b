@@ -1,9 +1,9 @@
 const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
-const Items = require("../../utils/misc/items/items.json");
-const { itemNames } = require("../../utils/misc/items/items");
+const Items = require("../../utils/misc/items/items");
+const { itemNames } = require("../../utils/misc/items/getItems");
 const { coin } = require("../../utils/formatters/beatify");
 const errorHandler = require("../../utils/handlers/errorHandler");
-const {emojiToImage} = require("../../utils/misc/emojiManipulation");
+const { emojiToImage } = require("../../utils/misc/emojiManipulation");
 
 module.exports = {
     name: "item",
@@ -30,7 +30,10 @@ module.exports = {
             const itemName = interaction.options.get("item").value;
             const item = Items[itemName];
 
-            const image = await emojiToImage(client, item.emoji);
+            const image =
+                item.emoji !== undefined
+                    ? await emojiToImage(client, item.emoji)
+                    : null;
 
             let fields = [
                 {

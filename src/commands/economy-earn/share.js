@@ -8,11 +8,11 @@ const {
 const User = require("../../models/User");
 const Inventory = require("../../models/Inventory");
 const Blacklist = require("../../models/Blacklist");
-const { itemNamesNoShield } = require("../../utils/misc/items/items");
+const { itemNamesNoShield } = require("../../utils/misc/items/getItems");
 const { comma, coin, coinEmoji } = require("../../utils/formatters/beatify");
 const { newCooldown, checkCooldown } = require("../../utils/handlers/cooldown");
 const errorHandler = require("../../utils/handlers/errorHandler");
-const Items = require("../../utils/misc/items/items.json");
+const Items = require("../../utils/misc/items/items");
 const { emojiToUnicode } = require("../../utils/misc/emojiManipulation");
 
 module.exports = {

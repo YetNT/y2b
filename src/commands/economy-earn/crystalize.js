@@ -2,7 +2,7 @@ const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
 const wait = require("node:timers/promises").setTimeout;
 const errorHandler = require("../../utils/handlers/errorHandler");
 const Inventory = require("../../models/Inventory");
-const Items = require("../../utils/misc/items/items.json");
+const Items = require("../../utils/misc/items/items.js");
 const {
     newCooldown,
     checkCooldown,

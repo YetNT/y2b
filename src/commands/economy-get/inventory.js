@@ -5,7 +5,7 @@ const {
     ButtonBuilder,
     ButtonStyle,
 } = require("discord.js");
-const { all, withoutShield } = require("../../utils/misc/items/items");
+const { all, withoutShield } = require("../../utils/misc/items/getItems");
 const { comma } = require("../../utils/formatters/beatify");
 const Inventory = require("../../models/Inventory");
 const Badges = require("../../models/Badges");

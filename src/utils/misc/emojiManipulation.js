@@ -12,7 +12,7 @@ function extractEmojiName(input) {
     }
 }
 
-const emojiToImgage = async (client, input) => {
+const emojiToImage = async (client, input) => {
     const inputName = extractEmojiName(input);
 
     if (!inputName) {
@@ -56,4 +56,4 @@ const emojiToUnicode = (input) => {
     return String.fromCodePoint(parseInt(emojiUnicode, 16));
 };
 
-module.exports = { emojiToImgage, emojiToUnicode };
+module.exports = { emojiToImage, emojiToUnicode };

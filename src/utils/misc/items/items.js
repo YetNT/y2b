@@ -91,6 +91,7 @@ let coal = new Item(
     [],
     1200,
     true,
+    "coal",
     r.uncommon,
     "<:coal:1106946918954827956>"
 );

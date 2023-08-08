@@ -57,6 +57,13 @@ module.exports = {
                     inline: true,
                 });
             }
+            if (item.sell !== -1) {
+                fields.push({
+                    name: "Sell Price",
+                    value: coin(item.sell),
+                    inline: true,
+                });
+            }
             fields.push({
                 name: "ID",
                 value: `\`${item.id}\``,

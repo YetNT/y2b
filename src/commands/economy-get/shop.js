@@ -29,10 +29,12 @@ module.exports = {
 
             for (let item in items) {
                 if (items[item].price === -1) continue;
+                let emoji =
+                    items[item].emoji !== undefined ? items[item].emoji : "";
                 reply.push(
-                    `__${items[item].name}__ - ${shopify(items[item].price)}\n${
-                        items[item].description
-                    }`
+                    `${emoji} __${items[item].name}__ - ${shopify(
+                        items[item].price
+                    )}\n${items[item].description}`
                 );
             }
 

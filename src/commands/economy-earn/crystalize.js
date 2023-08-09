@@ -49,6 +49,7 @@ async function crystalizeRocks(inventory, amt, inv) {
 module.exports = {
     name: "crystalize",
     description: "Crystalize your rocks.",
+    blacklist: true,
     options: [
         {
             name: "amount",

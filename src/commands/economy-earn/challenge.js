@@ -7,6 +7,7 @@ module.exports = {
     name: "challenge",
     description: "Challenges (contains subcommands)",
     options: [subcommands.buttons.body],
+    blacklist: true,
 
     callback: async (client, interaction) => {
         await interaction.deferReply();

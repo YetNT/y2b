@@ -6,6 +6,14 @@ const { itemNames } = require("../../utils/misc/items/getItems");
 const { comma, coin, shopify } = require("../../utils/formatters/beatify");
 const errorHandler = require("../../utils/handlers/errorHandler");
 
+class EmbedError {
+    constructor(text) {
+        this.output = {
+            embeds: [new EmbedBuilder().setDescription(text)],
+        };
+    }
+}
+
 module.exports = {
     name: "buy",
     description: "Buy from the shop",
@@ -33,6 +41,7 @@ module.exports = {
             const item = interaction.options.get("item").value;
             const amount = interaction.options.get("amount").value;
             const cost = Items[item].price * amount;
+            let emoji = Items[item].emoji != undefined ? Items[item].emoji : "";
             let query = {
                 userId: interaction.user.id,
             };
@@ -40,68 +49,40 @@ module.exports = {
             let user = await User.findOne(query);
             let inventory = await Inventory.findOne(query);
 
-            if (!user) {
-                interaction.editReply({
-                    embeds: [
-                        new EmbedBuilder().setDescription(
-                            "You cannot buy items when you've got nothing"
-                        ),
-                    ],
-                });
-                return;
-            }
-            if (amount < 0) {
-                interaction.editReply({
-                    embeds: [
-                        new EmbedBuilder().setDescription(
-                            "Don't buy amounts lower than 0"
-                        ),
-                    ],
-                });
-                return;
-            }
-            if (cost > user.balance) {
-                interaction.editReply({
-                    embeds: [
-                        new EmbedBuilder().setDescription(
-                            `You cannot afford ${comma(
-                                amount
-                            )} ${item}s\nyou need ${coin(
-                                cost - user.balance
-                            )} more coins`
-                        ),
-                    ],
-                });
-                return;
-            }
+            if (!user)
+                return interaction.editReply(
+                    new EmbedError(
+                        "You cannot buy items when you've got nothing"
+                    ).output
+                );
+            if (amount < 0)
+                return interaction.editReply(
+                    new EmbedError("Don't buy amounts lower than 0").output
+                );
+            if (cost > user.balance)
+                return interaction.editReply(
+                    new EmbedError(
+                        `You cannot afford ${comma(
+                            amount
+                        )} ${item}s\nyou need ${coin(
+                            cost - user.balance
+                        )} more coins`
+                    ).output
+                );
 
             if (inventory) {
-                if (
-                    inventory.inv.shield.amt + amount > 20 &&
-                    item == "shield"
-                ) {
-                    interaction.editReply({
-                        embeds: [
-                            new EmbedBuilder().setDescription(
-                                "You can only have 20 shields."
-                            ),
-                        ],
-                    });
-                    return;
-                }
+                if (inventory.inv.shield.amt + amount > 20 && item == "shield")
+                    return interaction.editReply(
+                        new EmbedError("You can only have 20 shields.").output
+                    );
                 if (
                     inventory.inv.shield.hp + amount > 500 &&
                     item == "shieldhp"
-                ) {
-                    interaction.editReply({
-                        embeds: [
-                            new EmbedBuilder().setDescription(
-                                "You can't buy more than 500 ShieldHP"
-                            ),
-                        ],
-                    });
-                    return;
-                }
+                )
+                    return interaction.editReply(
+                        new EmbedError("You can't buy more than 500 ShieldHP")
+                            .output
+                    );
                 user.balance -= cost;
                 if (item == "shield") {
                     inventory.inv.shield.amt += amount;
@@ -148,9 +129,9 @@ module.exports = {
                     new EmbedBuilder()
                         .setTitle("W Purchase")
                         .setDescription(
-                            `Succesfully bought \`${amount} ${
+                            `Succesfully bought \`${amount}\` ${emoji} ${
                                 Items[item].name
-                            }\` for ${shopify(cost)}`
+                            } for ${shopify(cost)}`
                         )
                         .setColor("Green"),
                 ],

@@ -3,10 +3,10 @@ const Emojis = require("emoji-name-map");
 
 function extractEmojiName(input) {
     // Match both <:name:id> and :name: formats
-    const match = input.match(/<(?::|a)?(\w+):|:(\w+):/);
+    const match = input.match(/<(?::|a)?(\w+):(\d+)>|:(\w+):/);
 
     if (match) {
-        return match[1] || match[2];
+        return match[1] || match[3]; // Return either name from the first or third capturing group
     } else {
         return null; // No valid emoji format found
     }
@@ -56,4 +56,4 @@ const emojiToUnicode = (input) => {
     return String.fromCodePoint(parseInt(emojiUnicode, 16));
 };
 
-module.exports = { emojiToImage, emojiToUnicode };
+module.exports = { emojiToImage, emojiToUnicode, extractEmojiName };

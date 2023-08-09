@@ -145,6 +145,17 @@ let oCrystal = new Item(
     r.rare,
     "<:orangecrystal:1137408967681769492>"
 );
+// eslint-disable-next-line no-unused-vars
+let floCoin = new Item(
+    "Flo's Spinning Coin",
+    "Can you please stop laughing so hard that you pooped into space?\n- Flo",
+    [],
+    27_000_000,
+    false,
+    "floCoin",
+    r.godly,
+    "<a:flocoin:1138787029560336474>"
+);
 module.exports = {
     shield: shield,
     shieldhp: shieldhp,
@@ -157,4 +168,5 @@ module.exports = {
     greenCrystal: gCrystal,
     whiteCrystal: wCrystal,
     orangeCrystal: oCrystal,
+    floCoin: floCoin,
 };

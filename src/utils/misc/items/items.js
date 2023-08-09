@@ -28,7 +28,8 @@ class Item {
         canBeSold = false,
         id,
         rarity,
-        emoji = undefined
+        emoji = undefined,
+        useable = false
     ) {
         this.name = name;
         this.description = description;
@@ -43,6 +44,7 @@ class Item {
         this.id = id;
         this.rarity = rarity;
         this.emoji = emoji !== undefined ? emoji : undefined;
+        this.useable = useable === false ? false : true;
     }
 }
 

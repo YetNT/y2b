@@ -10,6 +10,14 @@ const {
 } = require("../../utils/handlers/cooldown");
 const errorHandler = require("../../utils/handlers/errorHandler");
 
+class EmbedError {
+    constructor(text) {
+        this.output = {
+            embeds: [new EmbedBuilder().setDescription(text)],
+        };
+    }
+}
+
 module.exports = {
     name: "rob",
     description: "Rob other people for some quick cash. Can end badly",
@@ -45,68 +53,45 @@ module.exports = {
                 .catch(() => null); // to dm the user.
             let author = await User.findOne({ userId: interaction.user.id });
 
-            if (victimId == interaction.user.id) {
-                interaction.editReply({
-                    embeds: [
-                        new EmbedBuilder().setDescription(
-                            "don't rob yourself."
-                        ),
-                    ],
-                });
-                return;
-            }
-            if (!author) {
-                interaction.editReply({
-                    embeds: [
-                        new EmbedBuilder().setDescription(
-                            "You cannot rob people when you've got nothing"
-                        ),
-                    ],
-                });
-                return;
-            }
-            if (author.balance < 1000) {
-                interaction.editReply({
-                    embeds: [
-                        new EmbedBuilder().setDescription(
-                            "You cannot rob people when your balance is lower than 1000."
-                        ),
-                    ],
-                });
-                return;
-            }
-            if (!victim) {
-                interaction.editReply({
-                    embeds: [
-                        new EmbedBuilder().setDescription(
-                            "Leave them alone, they've got nothing :sob:"
-                        ),
-                    ],
-                });
-                return;
-            }
-            if (victim.balance < 0) {
-                interaction.editReply({
-                    embeds: [
-                        new EmbedBuilder().setDescription(
-                            "This user is paying off their debts"
-                        ),
-                    ],
-                });
-                return;
-            }
-            if (victim.balance <= 500) {
-                interaction.editReply({
-                    embeds: [
-                        new EmbedBuilder().setDescription(
-                            `It aint worth it, they've only got ${coin(
-                                victim.balance
-                            )}`
-                        ),
-                    ],
-                });
-                return;
-            }
+            if (victimId == interaction.user.id)
+                return interaction.editReply(
+                    new EmbedError("don't rob yourself.").output
+                );
+
+            if (!author)
+                return interaction.editReply(
+                    new EmbedError(
+                        "You cannot rob people when you've got nothing"
+                    ).output
+                );
+
+            if (author.balance < 1000)
+                return interaction.editReply(
+                    new EmbedError(
+                        "You cannot rob people when your balance is lower than 1000."
+                    ).output
+                );
+
+            if (!victim)
+                return interaction.editReply(
+                    new EmbedError(
+                        "Leave them alone, they've got nothing :sob:"
+                    ).output
+                );
+
+            if (victim.balance < 0)
+                return interaction.editReply(
+                    new EmbedError("This user is paying off their debts").output
+                );
+
+            if (victim.balance <= 500)
+                return interaction.editReply(
+                    new EmbedError(
+                        `It aint worth it, they've only got ${coin(
+                            victim.balance
+                        )}`
+                    ).output
+                );
 
             const cooldownResult = await checkCooldown(
                 "rob",

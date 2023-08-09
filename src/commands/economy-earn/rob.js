@@ -104,6 +104,8 @@ module.exports = {
                 return;
             }
 
+            await newCooldown(Cooldowns.rob, interaction, "rob"); // Anything below this code should have a cooldown.
+
             if (inventory) {
                 // check if they have an inventory
                 if (
@@ -270,8 +272,7 @@ module.exports = {
 
             await author.save();
             await victim.save();
-
-            await newCooldown(Cooldowns.rob, interaction, "rob");
+            // Moved new Cooldown below cooldown check because shields returned. (line 107)
         } catch (error) {
             errorHandler(error, client, interaction, EmbedBuilder);
         }

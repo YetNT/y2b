@@ -62,11 +62,9 @@ module.exports = {
             if (cost > user.balance)
                 return interaction.editReply(
                     new EmbedError(
-                        `You cannot afford ${comma(
-                            amount
-                        )} ${item}s\nyou need ${coin(
-                            cost - user.balance
-                        )} more coins`
+                        `You cannot afford ${comma(amount)} ${emoji} ${
+                            Items[item].name
+                        }s\nyou need ${coin(cost - user.balance)} more coins`
                     ).output
                 );
 

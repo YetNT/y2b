@@ -2,11 +2,7 @@
 const { Schema, model } = require("mongoose");
 
 const schemaItems = () => {
-    let {
-        shield,
-        shieldhp,
-        ...newInv
-    } = require("../utils/misc/items/items.json");
+    let { shield, shieldhp, ...newInv } = require("../utils/misc/items/items");
 
     let r = {
         userId: {

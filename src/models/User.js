@@ -56,6 +56,28 @@ let scheme = {
             default: new Date(0),
         },
     },
+    promocode: {
+        promocodeName: {
+            type: Boolean,
+            default: false,
+        },
+        bruh: {
+            type: Boolean,
+            default: false,
+        },
+        newMember: {
+            type: Boolean,
+            default: false,
+        },
+        beta: {
+            type: Boolean,
+            default: false,
+        },
+        website: {
+            type: Boolean,
+            default: false,
+        },
+    },
     cooldown: {
         rob: {
             type: Date,

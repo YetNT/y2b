@@ -3,7 +3,6 @@ const promocodes = require("../../../promocodes.json");
 const { comma, coin } = require("../../utils/formatters/beatify");
 const User = require("../../models/User");
 const items = require("../../utils/misc/items/items");
-const PromocodeDb = require("../../models/Promocodes");
 const { awardBadge } = require("../../utils/misc/badges/badges.js");
 const errorHandler = require("../../utils/handlers/errorHandler");
 /*
@@ -23,8 +22,7 @@ const errorHandler = require("../../utils/handlers/errorHandler");
  * @param {String} itemId item's Id Default is null
  * @returns nothing
  */
-const add = async (amount, UserId, item = false, itemId = null) => {
-    let user = await User.findOne({ userId: UserId });
+const add = async (user, amount, UserId, item = false, itemId = null) => {
     if (item != true) {
         if (user) {
             user.balance += amount;
@@ -38,15 +36,13 @@ const add = async (amount, UserId, item = false, itemId = null) => {
         let inventory = user.inventory;
 
         if (inventory) {
-            inventory.inv[itemId] += amount;
+            inventory[itemId] += amount;
         } else {
             inventory = {
                 [itemId]: amount,
             };
         }
     }
-
-    await user.save();
 };
 
 module.exports = {
@@ -66,9 +62,8 @@ module.exports = {
         await interaction.deferReply({ ephemeral: true });
         try {
             const code = interaction.options.get("code").value;
-            let promocodedb = await PromocodeDb.findOne({
-                userId: interaction.user.id,
-            });
+            let user = await User.findOne({ userId: interaction.user.id });
+            let promocodedb = user.promocode;
 
             if (!Object.values(promocodes).includes(code)) {
                 interaction.editReply({
@@ -105,7 +100,7 @@ module.exports = {
                 .setTitle("Real promocode")
                 .setColor("Green");
             if (code === promocodes.beta) {
-                await add(900, interaction.user.id);
+                await add(user, 900, interaction.user.id);
                 interaction.editReply({
                     embeds: [
                         embed.setDescription(
@@ -117,10 +112,10 @@ module.exports = {
                     ephemeral: true,
                 });
                 if (!promocodedb) {
-                    promocodedb = new PromocodeDb({
+                    promocodedb = {
                         userId: interaction.user.id,
                         beta: true,
-                    });
+                    };
                 } else {
                     promocodedb.beta = true;
                 }
@@ -133,7 +128,7 @@ module.exports = {
                     true
                 );
             } else if (code === promocodes.bruh) {
-                await add(10, interaction.user.id, true, "donut");
+                await add(user, 10, interaction.user.id, true, "donut");
                 interaction.editReply({
                     embeds: [
                         embed.setDescription(
@@ -145,15 +140,15 @@ module.exports = {
                     ephemeral: true,
                 });
                 if (!promocodedb) {
-                    promocodedb = new PromocodeDb({
+                    promocodedb = {
                         userId: interaction.user.id,
                         bruh: true,
-                    });
+                    };
                 } else {
                     promocodedb.bruh = true;
                 }
             } else if (code === promocodes.newMember) {
-                await add(1000, interaction.user.id);
+                await add(user, 1000, interaction.user.id);
                 interaction.editReply({
                     embeds: [
                         embed.setDescription(
@@ -163,15 +158,15 @@ module.exports = {
                     ephemeral: true,
                 });
                 if (!promocodedb) {
-                    promocodedb = new PromocodeDb({
+                    promocodedb = {
                         userId: interaction.user.id,
                         newMember: true,
-                    });
+                    };
                 } else {
                     promocodedb.newMember = true;
                 }
             } else if (code === promocodes.promocodeName) {
-                await add(1, interaction.user.id, true, "gem");
+                await add(user, 1, interaction.user.id, true, "gem");
                 interaction.editReply({
                     embeds: [
                         embed.setDescription(
@@ -183,16 +178,16 @@ module.exports = {
                     ephemeral: true,
                 });
                 if (!promocodedb) {
-                    promocodedb = new PromocodeDb({
+                    promocodedb = {
                         userId: interaction.user.id,
                         promocodeName: true,
-                    });
+                    };
                 } else {
                     promocodedb.promocodeName = true;
                 }
             } else if (code === promocodes.website) {
-                await add(2000, interaction.user.id);
-                await add(2, interaction.user.id, true, "gem");
+                await add(user, 2000, interaction.user.id);
+                await add(user, 2, interaction.user.id, true, "gem");
                 interaction.editReply({
                     embeds: [
                         embed.setDescription(
@@ -204,15 +199,15 @@ module.exports = {
                     ephemeral: true,
                 });
                 if (!promocodedb) {
-                    promocodedb = new PromocodeDb({
+                    promocodedb = {
                         userId: interaction.user.id,
                         website: true,
-                    });
+                    };
                 } else {
                     promocodedb.website = true;
                 }
             }
-            await promocodedb.save();
+            await user.save();
         } catch (error) {
             errorHandler(error, client, interaction, EmbedBuilder);
         }

@@ -13,6 +13,21 @@ const userSchema = new Schema({
         type: Number,
         default: 0,
     },
+    blacklist: {
+        ed: {
+            // blacklisted
+            type: Boolean,
+            default: false,
+        },
+        reason: {
+            type: String,
+            required: true,
+        },
+        time: {
+            type: Date,
+            required: true,
+        },
+    },
     cooldown: {
         rob: {
             type: Date,

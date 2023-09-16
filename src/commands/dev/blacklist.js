@@ -1,9 +1,10 @@
 // ONLY AVAILABLE ON BETA BOT!!!!!!!
 const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
-const Blacklist = require("../../models/Blacklist");
+const User = require("../../models/User");
 const errorHandler = require("../../utils/handlers/errorHandler");
 
-module.exports = {/*
+module.exports = {
+    /*
     deleted: true,*/
     name: "blacklist",
     description: "blacklist users",
@@ -60,31 +61,31 @@ module.exports = {/*
                 userId: victim,
             };
 
-            let blacklist = await Blacklist.findOne(query);
+            let user = await User.findOne(query);
+            let blacklist = user.blacklist;
 
             if (code === "add") {
                 if (blacklist) {
-                    if (blacklist.blacklisted == true) {
+                    if (blacklist.ed == true) {
                         interaction.editReply({
                             content: "This user has already been blacklisted",
                             ephemeral: true,
                         });
                         return;
                     }
-                    blacklist.blacklisted = true;
+                    blacklist.ed = true;
                     blacklist.reason = reason;
                     blacklist.time = time;
                 } else {
-                    blacklist = new Blacklist({
-                        ...query,
-                        blacklisted: true,
+                    blacklist = {
+                        ed: true,
                         reason: reason,
                         time: time,
-                    });
+                    };
                 }
             } else {
                 if (blacklist) {
-                    if (blacklist.blacklisted == false) {
+                    if (blacklist.ed == false) {
                         interaction.editReply({
                             content:
                                 "This user is already removed from the blacklist.",
@@ -92,26 +93,25 @@ module.exports = {/*
                         });
                         return;
                     }
-                    blacklist.blacklisted = false;
+                    blacklist.ed = false;
                     blacklist.reason = reason;
                     blacklist.time = time;
                 } else {
-                    blacklist = new Blacklist({
-                        ...query,
-                        blacklisted: false,
+                    blacklist = {
+                        ed: false,
                         reason: reason,
                         time: time,
-                    });
+                    };
                 }
             }
 
-            await blacklist.save();
+            await user.save();
 
             if (code === "add") {
                 interaction.editReply({
                     embeds: [
                         new EmbedBuilder()
-                            .setTitle("Blacklist")
+                            .setTitle("User")
                             .setDescription(
                                 `The user <@${victim}> has been add to the blacklist`
                             )
@@ -132,7 +132,7 @@ module.exports = {/*
                     .send({
                         embeds: [
                             new EmbedBuilder()
-                                .setTitle("New Blacklist")
+                                .setTitle("New User")
                                 .setFields([
                                     {
                                         name: "User",
@@ -164,7 +164,7 @@ module.exports = {/*
                 interaction.followUp({
                     embeds: [
                         new EmbedBuilder()
-                            .setTitle("Blacklist")
+                            .setTitle("User")
                             .setDescription(
                                 `The user <@${victim}> has been removed from the blacklist`
                             )
@@ -181,7 +181,7 @@ module.exports = {/*
                     .send({
                         embeds: [
                             new EmbedBuilder()
-                                .setTitle("New Blacklist Removal")
+                                .setTitle("New User Removal")
                                 .setFields(
                                     {
                                         name: "User",

@@ -14,7 +14,7 @@ const getLocalCommands = require(path.join(
     "utils",
     "getLocalCommands"
 ));
-const Blacklist = require("../../models/Blacklist");
+const User = require("../../models/User");
 const ServerCommand = require("../../models/ServerCommand");
 
 module.exports = async (client, interaction) => {
@@ -60,10 +60,11 @@ module.exports = async (client, interaction) => {
             let query = {
                 userId: interaction.user.id,
             };
-            let blacklist = await Blacklist.findOne(query);
+            let user = await User.findOne(query);
+            let blacklist = user.blacklist;
 
             if (blacklist) {
-                if (blacklist.blacklisted === true) {
+                if (blacklist.ed === true) {
                     interaction.reply(
                         "You've been blacklisted. Reason = " +
                             `${blacklist.reason}`

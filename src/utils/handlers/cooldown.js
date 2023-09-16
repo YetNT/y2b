@@ -1,4 +1,4 @@
-const Cooldown = require("../../models/Cooldown");
+const User = require("../../models/User");
 const strToMilli = require("../formatters/strToMilli");
 const cds = require("../misc/cooldowns");
 
@@ -15,7 +15,8 @@ const newCooldown = async (time, interaction, name, complex = false) => {
         userId: interaction.user.id,
     };
     let date = Date.now();
-    let cooldown = await Cooldown.findOne(query);
+    let user = await User.findOne(query);
+    let cooldown = user.cooldown;
 
     if (complex === false || complex === undefined) {
         if (cooldown && cooldown[name] && cooldown[name].getTime() > date) {
@@ -44,22 +45,22 @@ const newCooldown = async (time, interaction, name, complex = false) => {
         complex === false || complex === undefined
             ? (cooldown[name] = new Date(date + cooldownTime))
             : (cooldown[name][complex] = new Date(date + cooldownTime));
-        await cooldown.save();
+        await user.save();
     } else {
         if (complex === false || complex === undefined) {
-            cooldown = new Cooldown({
+            cooldown = new User({
                 ...query,
                 [name]: new Date(date + cooldownTime),
             });
         } else {
-            cooldown = new Cooldown({
+            cooldown = new User({
                 ...query,
                 [name]: {
                     [complex]: new Date(date + cooldownTime),
                 },
             });
         }
-        await cooldown.save();
+        await user.save();
     }
 };
 
@@ -85,8 +86,9 @@ const checkCooldown = async (
     let date = Date.now();
     let description = ``;
 
-    let cooldown = await Cooldown.findOne(query);
-	if (!cooldown) {
+    let user = await User.findOne(query);
+    let cooldown = user.cooldown;
+    if (!cooldown) {
         return 0;
     }
     let result =

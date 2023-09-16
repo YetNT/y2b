@@ -47,18 +47,34 @@ const newCooldown = async (time, interaction, name, complex = false) => {
             : (cooldown[name][complex] = new Date(date + cooldownTime));
         await user.save();
     } else {
-        if (complex === false || complex === undefined) {
-            cooldown = new User({
-                ...query,
-                [name]: new Date(date + cooldownTime),
-            });
+        if (!user) {
+            if (complex === false || complex === undefined) {
+                user = new User({
+                    ...query,
+                    cooldown: { [name]: new Date(date + cooldownTime) },
+                });
+            } else {
+                user = new User({
+                    ...query,
+                    cooldown: {
+                        [name]: {
+                            [complex]: new Date(date + cooldownTime),
+                        },
+                    },
+                });
+            }
         } else {
-            cooldown = new User({
-                ...query,
-                [name]: {
-                    [complex]: new Date(date + cooldownTime),
-                },
-            });
+            if (complex === false || complex === undefined) {
+                cooldown = {
+                    [name]: new Date(date + cooldownTime),
+                };
+            } else {
+                cooldown = {
+                    [name]: {
+                        [complex]: new Date(date + cooldownTime),
+                    },
+                };
+            }
         }
         await user.save();
     }

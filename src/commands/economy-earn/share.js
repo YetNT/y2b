@@ -6,8 +6,6 @@ const {
     ButtonStyle,
 } = require("discord.js");
 const User = require("../../models/User");
-const Inventory = require("../../models/Inventory");
-const Blacklist = require("../../models/Blacklist");
 const { itemNamesNoShield } = require("../../utils/misc/items/getItems");
 const { comma, coin, coinEmoji } = require("../../utils/formatters/beatify");
 const { newCooldown, checkCooldown } = require("../../utils/handlers/cooldown");
@@ -60,12 +58,10 @@ module.exports = {
             let t = await coin(amount);
 
             let user = await User.findOne({ userId: userToGiveId });
-            let userInv = await Inventory.findOne({ userId: userToGiveId });
-            let authorInv = await Inventory.findOne({
-                userId: interaction.user.id,
-            });
-            let blacklist = await Blacklist.findOne({ userId: userToGiveId });
+            let userInv = user.inventory;
             let author = await User.findOne({ userId: interaction.user.id });
+            let authorInv = author.inventory;
+            let blacklist = user.blacklist;
 
             if (!author || author.balance < 0 || !authorInv) {
                 interaction.editReply({
@@ -87,7 +83,7 @@ module.exports = {
                 });
                 return;
             }
-            if (blacklist && blacklist.blacklisted == true) {
+            if (blacklist && blacklist.ed == true) {
                 interaction.editReply({
                     embeds: [
                         new EmbedBuilder()
@@ -122,7 +118,7 @@ module.exports = {
                 shareVar = `Share ${item}`;
                 emoji = emojiToUnicode(Items[item].emoji);
                 warning = `Are you sure that you'd like to share ${amount} ${Items[item].emoji} ${Items[item].name}s with <@${userToGiveId}>`;
-                if (authorInv.inv[item] < amount) {
+                if (authorInv[item] < amount) {
                     interaction.editReply({
                         embeds: [
                             new EmbedBuilder()
@@ -194,11 +190,11 @@ module.exports = {
                 });
 
                 if (confirmation.customId === "confirm") {
-                    if (user && userInv) {
+                    if (user) {
                         // If the user exists
                         if (item) {
-                            userInv.inv[item] += amount;
-                            authorInv.inv[item] -= amount;
+                            userInv[item] += amount;
+                            authorInv[item] -= amount;
                         } else {
                             user.balance += amount;
                             author.balance -= amount;
@@ -206,13 +202,13 @@ module.exports = {
                     } else {
                         // User does not exist
                         if (item) {
-                            userInv = new Inventory({
+                            user = new User({
                                 userId: userToGiveId,
-                                inv: {
+                                inventory: {
                                     [item]: amount,
                                 },
                             });
-                            authorInv.inv[item] -= amount;
+                            authorInv[item] -= amount;
                         } else {
                             user = new User({
                                 userId: userToGiveId,
@@ -222,16 +218,15 @@ module.exports = {
                         }
                     }
 
+                    await user.save();
+                    await author.save();
+
                     let response;
                     if (item) {
-                        await userInv.save();
-                        await authorInv.save();
                         response = `Shared ${comma(
                             amount
                         )} ${item} with <@${userToGiveId}>`;
                     } else {
-                        await user.save();
-                        await author.save();
                         response = `Shared ${coin(
                             amount
                         )} with <@${userToGiveId}>`;

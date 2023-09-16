@@ -5,10 +5,9 @@ const {
     ButtonBuilder,
     ButtonStyle,
 } = require("discord.js");
+const User = require("../../models/User");
 const { all, withoutShield } = require("../../utils/misc/items/getItems");
 const { comma } = require("../../utils/formatters/beatify");
-const Inventory = require("../../models/Inventory");
-const Badges = require("../../models/Badges");
 const allBadges = require("../../utils/misc/badges/badges.json");
 const { progressBar } = require("@yetnt/progressbar");
 const errorHandler = require("../../utils/handlers/errorHandler");
@@ -57,9 +56,10 @@ module.exports = {
                 };
                 userInfo = await client.users.cache.get(interaction.user.id);
             }
+            let userl = await User.findOne(query);
 
-            let inventory = await Inventory.findOne(query);
-            let badges = await Badges.findOne(query);
+            let inventory = userl.inventory;
+            let badges = userl.badges;
             if (!badges) {
                 badges = { badges: {} };
             }
@@ -80,13 +80,13 @@ module.exports = {
             for (let item of Object.values(withoutShield)) {
                 let id = item.id;
                 if (
-                    inventory.inv.hasOwnProperty(item.id) == true &&
-                    inventory.inv[item.id] > 0
+                    inventory.hasOwnProperty(item.id) == true &&
+                    inventory[item.id] > 0
                 ) {
                     invOutput.push(
                         `${all[id].emoji} **${
                             withoutShield[id].name
-                        }** - ${comma(inventory.inv[id])}\n_${all[id].rarity}_`
+                        }** - ${comma(inventory[id])}\n_${all[id].rarity}_`
                     );
                 }
             }
@@ -94,8 +94,8 @@ module.exports = {
             for (let badge of Object.values(allBadges)) {
                 let id = badge.id;
                 if (
-                    badges.badges.hasOwnProperty(badge.id) == true &&
-                    badges.badges[badge.id] > 0
+                    badges.hasOwnProperty(badge.id) == true &&
+                    badges[badge.id] > 0
                 ) {
                     badgeOutput.push(`${allBadges[id].emoji}`);
                 }
@@ -117,9 +117,9 @@ module.exports = {
 
             let shieldOutput;
             let bar;
-            if (inventory.inv.shield.amt > 0 && inventory.inv.shield.hp > 0) {
+            if (inventory.shield.amt > 0 && inventory.shield.hp > 0) {
                 bar = progressBar(
-                    inventory.inv.shield.hp / 5,
+                    inventory.shield.hp / 5,
                     10,
                     "<:progressempty:1113377221067931699>",
                     "<:progressfull:1113377216743624705>",
@@ -134,11 +134,11 @@ module.exports = {
                     ]
                 );
                 shieldOutput =
-                    `*[Active](https://discord.com "${inventory.inv.shield.amt} Shields")*\n` +
+                    `*[Active](https://discord.com "${inventory.shield.amt} Shields")*\n` +
                     bar +
-                    ` **${inventory.inv.shield.hp}/500**`;
+                    ` **${inventory.shield.hp}/500**`;
             } else {
-                shieldOutput = `*[Inactive](https://discord.com "${inventory.inv.shield.amt} Shields")*`;
+                shieldOutput = `*[Inactive](https://discord.com "${inventory.shield.amt} Shields")*`;
             }
 
             let pageItems = pageCreator(invOutput, 5);

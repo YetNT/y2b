@@ -1,6 +1,5 @@
 const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
 const User = require("../../models/User");
-const Inventory = require("../../models/Inventory");
 const Items = require("../../utils/misc/items/items");
 const { itemNames } = require("../../utils/misc/items/getItems");
 const { comma, coin, shopify } = require("../../utils/formatters/beatify");
@@ -47,7 +46,7 @@ module.exports = {
             };
 
             let user = await User.findOne(query);
-            let inventory = await Inventory.findOne(query);
+            let inventory = user.inventory;
 
             if (!user)
                 return interaction.editReply(
@@ -69,58 +68,45 @@ module.exports = {
                 );
 
             if (inventory) {
-                if (inventory.inv.shield.amt + amount > 20 && item == "shield")
+                if (inventory.shield.amt + amount > 20 && item == "shield")
                     return interaction.editReply(
                         new EmbedError("You can only have 20 shields.").output
                     );
-                if (
-                    inventory.inv.shield.hp + amount > 500 &&
-                    item == "shieldhp"
-                )
+                if (inventory.shield.hp + amount > 500 && item == "shieldhp")
                     return interaction.editReply(
                         new EmbedError("You can't buy more than 500 ShieldHP")
                             .output
                     );
                 user.balance -= cost;
                 if (item == "shield") {
-                    inventory.inv.shield.amt += amount;
+                    inventory.shield.amt += amount;
                 } else if (item == "shieldhp") {
-                    inventory.inv.shield.hp += amount;
+                    inventory.shield.hp += amount;
                 } else {
-                    inventory.inv[item] += amount;
+                    inventory[item] += amount;
                 }
             } else {
                 user.balance -= cost;
                 if (item == "shield") {
-                    inventory = new Inventory({
-                        ...query,
-                        inv: {
-                            shield: {
-                                amt: amount,
-                            },
+                    inventory = {
+                        shield: {
+                            amt: amount,
                         },
-                    });
+                    };
                 } else if (item == "shieldhp") {
-                    inventory = new Inventory({
-                        ...query,
-                        inv: {
-                            shield: {
-                                hp: amount,
-                            },
+                    inventory = {
+                        shield: {
+                            hp: amount,
                         },
-                    });
+                    };
                 } else {
-                    inventory = new Inventory({
-                        ...query,
-                        inv: {
-                            [item]: amount,
-                        },
-                    });
+                    inventory = {
+                        [item]: amount,
+                    };
                 }
             }
 
             await user.save();
-            await inventory.save();
 
             interaction.editReply({
                 embeds: [

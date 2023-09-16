@@ -1,6 +1,5 @@
 const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
 const User = require("../../models/User");
-const Inventory = require("../../models/Inventory");
 const Items = require("../../utils/misc/items/items");
 const { itemNames } = require("../../utils/misc/items/getItems");
 const { comma, shopify } = require("../../utils/formatters/beatify");
@@ -21,7 +20,7 @@ module.exports = {
     options: [
         {
             name: "item",
-            description: "Which item you buying?",
+            description: "Which item you selling?",
             required: true,
             type: ApplicationCommandOptionType.String,
             choices: itemNames(2),
@@ -47,7 +46,7 @@ module.exports = {
             };
 
             let user = await User.findOne(query);
-            let inventory = await Inventory.findOne(query);
+            let inventory = user.inventory;
 
             if (!inventory)
                 return await interaction.editReply(
@@ -59,7 +58,7 @@ module.exports = {
                 return interaction.editReply(
                     new EmbedError("Don't sell amounts lower than 0").output
                 );
-            if (inventory.inv[item] < amount)
+            if (inventory[item] < amount)
                 return await interaction.editReply(
                     new EmbedError(
                         `You do not have that many ${Items[item].emoji} ${Items[item].name}s!`
@@ -75,10 +74,9 @@ module.exports = {
                 });
             }
 
-            inventory.inv[item] -= amount;
+            inventory[item] -= amount;
 
             await user.save();
-            await inventory.save();
 
             interaction.editReply({
                 embeds: [

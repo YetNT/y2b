@@ -2,7 +2,6 @@ const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
 const promocodes = require("../../../promocodes.json");
 const { comma, coin } = require("../../utils/formatters/beatify");
 const User = require("../../models/User");
-const Inventory = require("../../models/Inventory");
 const items = require("../../utils/misc/items/items");
 const PromocodeDb = require("../../models/Promocodes");
 const { awardBadge } = require("../../utils/misc/badges/badges.js");
@@ -25,9 +24,8 @@ const errorHandler = require("../../utils/handlers/errorHandler");
  * @returns nothing
  */
 const add = async (amount, UserId, item = false, itemId = null) => {
+    let user = await User.findOne({ userId: UserId });
     if (item != true) {
-        let user = await User.findOne({ userId: UserId });
-
         if (user) {
             user.balance += amount;
         } else {
@@ -36,24 +34,19 @@ const add = async (amount, UserId, item = false, itemId = null) => {
                 balance: amount,
             });
         }
-
-        await user.save();
     } else {
-        let inventory = await Inventory.findOne({ userId: UserId });
+        let inventory = user.inventory;
 
         if (inventory) {
             inventory.inv[itemId] += amount;
         } else {
-            inventory = new Inventory({
-                userId: UserId,
-                inv: {
-                    [itemId]: amount,
-                },
-            });
+            inventory = {
+                [itemId]: amount,
+            };
         }
-
-        await inventory.save();
     }
+
+    await user.save();
 };
 
 module.exports = {

@@ -1,7 +1,6 @@
 const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
 const User = require("../../models/User");
 const rndInt = require("../../utils/misc/rndInt");
-const Inventory = require("../../models/Inventory");
 const { comma, coin } = require("../../utils/formatters/beatify");
 const {
     newCooldown,
@@ -44,14 +43,12 @@ module.exports = {
             const sf = rndInt(1, 2); // 2 = success; 1 = failure
 
             let victim = await User.findOne({ userId: victimId });
-            let inventory = await Inventory.findOne({ userId: victimId }); // victim's inventory
-            let authorInventory = await Inventory.findOne({
-                userId: interaction.user.id,
-            }); //author's inventory.
+            let inventory = victim.inventory; // victim's inventory
+            let author = await User.findOne({ userId: interaction.user.id });
+            let authorInventory = author.inventory; //author's inventory.
             const victimDm = await client.users
                 .fetch(victimId)
                 .catch(() => null); // to dm the user.
-            let author = await User.findOne({ userId: interaction.user.id });
 
             if (victimId == interaction.user.id)
                 return interaction.editReply(
@@ -108,13 +105,10 @@ module.exports = {
 
             if (inventory) {
                 // check if they have an inventory
-                if (
-                    inventory.inv.shield.amt > 0 &&
-                    inventory.inv.shield.hp > 0
-                ) {
+                if (inventory.shield.amt > 0 && inventory.shield.hp > 0) {
                     let damage = rndInt(
-                        Math.ceil(inventory.inv.shield.hp / 2),
-                        inventory.inv.shield.hp
+                        Math.ceil(inventory.shield.hp / 2),
+                        inventory.shield.hp
                     );
                     await interaction.editReply({
                         embeds: [
@@ -125,7 +119,7 @@ module.exports = {
                             ),
                         ],
                     });
-                    inventory.inv.shield.hp -= damage;
+                    inventory.shield.hp -= damage;
 
                     await victimDm
                         .send({
@@ -145,13 +139,13 @@ module.exports = {
                             ],
                         })
                         .catch(() => null);
-                    await inventory.save();
-                    if (inventory.inv.shield.hp == 0) {
-                        inventory.inv.shield.amt -= 1;
+                    await victim.save();
+                    if (inventory.shield.hp == 0) {
+                        inventory.shield.amt -= 1;
                         await interaction.followUp(
                             "You broke this user's shield."
                         );
-                        await inventory.save();
+                        await victim.save();
 
                         await victimDm
                             .send({
@@ -217,7 +211,7 @@ module.exports = {
                 });
             } else {
                 // failed
-                if (!authorInventory || authorInventory.inv.donut == 0) {
+                if (!authorInventory || authorInventory.donut == 0) {
                     // Normal fail
                     author.balance -= fRob;
                     victim.balance += fRob;
@@ -240,17 +234,14 @@ module.exports = {
                 } else {
                     // If user has a donut, do not subtract amount and instead give donut to victim.
                     if (inventory) {
-                        inventory.inv.donut += 1;
-                        authorInventory.inv.donut -= 1;
+                        inventory.donut += 1;
                     } else {
-                        inventory = new Inventory({
-                            userId: victimId,
-                            inv: {
-                                donut: 1,
-                            },
-                        });
-                        authorInventory.inv.donut -= 1;
+                        inventory = {
+                            donut: 1,
+                        };
                     }
+
+                    authorInventory.donut -= 1;
 
                     interaction.editReply({
                         embeds: [
@@ -265,8 +256,6 @@ module.exports = {
                                 }),
                         ],
                     });
-                    await inventory.save();
-                    await authorInventory.save();
                 }
             }
 

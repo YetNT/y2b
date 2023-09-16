@@ -1,7 +1,7 @@
 const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
 const wait = require("node:timers/promises").setTimeout;
 const errorHandler = require("../../utils/handlers/errorHandler");
-const Inventory = require("../../models/Inventory");
+const User = require("../../models/User");
 const Items = require("../../utils/misc/items/items.js");
 const {
     newCooldown,
@@ -11,11 +11,11 @@ const {
 
 /**
  *
- * @param {Inventory} inventory
+ * @param {User.inventory} inventory
  * @param {number} amt
  * @returns
  */
-async function crystalizeRocks(inventory, amt, inv) {
+async function crystalizeRocks(inventory, amt, user) {
     // Calculate the number of rocks that will become orange crystals (2-9%)
     const orangeCrystals = Math.floor(((Math.random() * 8 + 2) / 100) * amt);
 
@@ -37,7 +37,7 @@ async function crystalizeRocks(inventory, amt, inv) {
     inventory.orangeCrystal += orangeCrystalsUser;
     inventory.whiteCrystal += whiteCrystalsUser;
 
-    await inv.save();
+    await user.save();
 
     return {
         orangeCrystals: orangeCrystalsUser,
@@ -68,13 +68,13 @@ module.exports = {
                 userId: interaction.user.id,
             };
 
-            const inv = await Inventory.findOne(query);
-            if (!inv)
+            const user = await User.findOne(query);
+            const inventory = user.inventory;
+            if (!inventory)
                 return interaction.editReply({
                     content: "You have.. no items?",
                     ephemeral: true,
                 });
-            const inventory = inv.inv;
             if (inventory.rock < 50)
                 return interaction.editReply({
                     content: "You don't own 50 or more rocks",
@@ -100,7 +100,7 @@ module.exports = {
             }
 
             await interaction.editReply("Crystalizing...");
-            let result = await crystalizeRocks(inventory, amt, inv);
+            let result = await crystalizeRocks(inventory, amt, user);
             wait(5000);
             await interaction.editReply({
                 content: "_ _",

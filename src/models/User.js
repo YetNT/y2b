@@ -1,14 +1,19 @@
 const { Schema, model } = require("mongoose");
 let Badges = require("../utils/misc/badges/badges.json");
-
+// eslint-disable-next-line no-unused-vars
+let { shield, shieldhp, ...newInv } = require("../utils/misc/items/items");
 /**
  * @typedef {Object} user
- * @property {string} userId
- * @property {number} balance
- * @property {number} bank
- * @property {Object} blacklist
- * @property {Object} badges
- * @property {Object} cooldown
+ * @property {string} userId User's ID
+ * @property {number} balance User's Balance
+ * @property {number} bank User's Bank balance
+ * @property {Object} inventory User's Inventory
+ * @property {Object} inventory.shield
+ * @property {number} inventory.shield.amt The amount of shields the user has
+ * @property {number} inventory.shield.hp the shield's hp
+ * @property {Object} blacklist User's Blacklist status
+ * @property {Object} badges User's Badges
+ * @property {Object} cooldown User's Cooldowns
  */
 let scheme = {
     userId: {
@@ -24,6 +29,18 @@ let scheme = {
         default: 0,
     },
     badges: {},
+    inventory: {
+        shield: {
+            amt: {
+                type: Number,
+                default: 0,
+            },
+            hp: {
+                type: Number,
+                default: 0,
+            },
+        },
+    },
     blacklist: {
         ed: {
             // blacklisted
@@ -32,11 +49,11 @@ let scheme = {
         },
         reason: {
             type: String,
-            required: true,
+            default: "null",
         },
         time: {
             type: Date,
-            required: true,
+            default: new Date(0),
         },
     },
     cooldown: {
@@ -69,6 +86,14 @@ for (let badge in Badges) {
     scheme.badges[Badges[badge].id] = {
         type: Boolean,
         default: false,
+    };
+}
+
+for (let item in newInv) {
+    let defaultAmount = newInv[item].id === "rock" ? 10 : 0;
+    scheme.inventory[newInv[item].id] = {
+        type: Number,
+        default: defaultAmount,
     };
 }
 

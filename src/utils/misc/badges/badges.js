@@ -1,5 +1,5 @@
 const badgesJSON = require("./badges.json");
-const Badges = require("../../../models/Badges");
+const User = require("../../../models/User");
 
 /**
  *
@@ -27,24 +27,31 @@ const giveBadge = async (userId, badgeId) => {
         throw new Error(`Badge id (${badgeId}) not found!`);
     }
 
-    let badges = await Badges.findOne({ userId: userId });
+    let user = await User.findOne({ userId: userId });
+    let badges = user.badges;
 
     if (badges) {
-        if (badges.badges[badgeId] == true) {
+        if (badges[badgeId] == true) {
             return true;
         } else {
-            badges.badges[badgeId] = true;
+            badges[badgeId] = true;
         }
     } else {
-        badges = new Badges({
-            userId: userId.toString(),
-            badges: {
+        if (!user) {
+            user = new User({
+                userId: userId.toString(),
+                badges: {
+                    [badgeId]: true,
+                },
+            });
+        } else {
+            badges = {
                 [badgeId]: true,
-            },
-        });
+            };
+        }
     }
 
-    await badges.save();
+    await user.save();
 };
 
 /**

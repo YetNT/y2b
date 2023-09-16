@@ -1,6 +1,16 @@
 const { Schema, model } = require("mongoose");
+let Badges = require("../utils/misc/badges/badges.json");
 
-const userSchema = new Schema({
+/**
+ * @typedef {Object} user
+ * @property {string} userId
+ * @property {number} balance
+ * @property {number} bank
+ * @property {Object} blacklist
+ * @property {Object} badges
+ * @property {Object} cooldown
+ */
+let scheme = {
     userId: {
         type: String,
         required: true,
@@ -13,6 +23,7 @@ const userSchema = new Schema({
         type: Number,
         default: 0,
     },
+    badges: {},
     blacklist: {
         ed: {
             // blacklisted
@@ -52,6 +63,15 @@ const userSchema = new Schema({
             },
         },
     },
-});
+};
+
+for (let badge in Badges) {
+    scheme.badges[Badges[badge].id] = {
+        type: Boolean,
+        default: false,
+    };
+}
+
+const userSchema = new Schema(scheme);
 
 module.exports = model("user", userSchema);

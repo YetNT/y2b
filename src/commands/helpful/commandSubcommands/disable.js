@@ -1,6 +1,7 @@
 const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
 
 module.exports = {
+	isCommand: false,
     body: {
         name: "disable",
         description: "Disable a command in this server",

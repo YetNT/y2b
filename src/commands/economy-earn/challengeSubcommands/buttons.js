@@ -104,6 +104,7 @@ module.exports = {
         description: "Click the right button for a reward!",
         type: ApplicationCommandOptionType.Subcommand,
     },
+isCommand: false,
     callback: async (client, interaction) => {
         try {
             const cooldownResult = await checkCooldown(

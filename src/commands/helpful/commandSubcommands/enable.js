@@ -1,7 +1,8 @@
 const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
 
 module.exports = {
-    body: {
+	isCommand: false,
+	body: {
         name: "enable",
         description: "Enable a command in this server",
         type: ApplicationCommandOptionType.Subcommand,

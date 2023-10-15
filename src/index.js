@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 require("dotenv").config();
 const {
     Client,
@@ -5,12 +6,15 @@ const {
     EmbedBuilder /* ActionRowBuilder, ButtonBuilder, ButtonStyle,*/,
 } = require("discord.js");
 const mongoose = require("mongoose");
-const eventHandler = require("./handlers/eventHandler");
+const { CommandHandler, ReadyHandler } = require("ic4d");
+const middleware = require("./events/middleware");
+const status = require("./events/status");
 const moment = require("moment");
+const path = require("path");
 require("moment-duration-format");
 
 const express = require("express");
-const { setRoutes } = require("./events/ready/dbPost.js");
+const { setRoutes } = require("./events/dbPost.js");
 
 const app = express();
 app.use(express.json());
@@ -22,8 +26,41 @@ const client = new Client({
     ],
 });
 
+const handler = new CommandHandler(client, path.join(__dirname, "commands"), {
+    devs: ["32434"],
+});
+const ready = new ReadyHandler(
+    client,
+    (client) => {
+        if (client.token === process.env.MAIN) {
+            const routes = setRoutes(client);
+
+            app.use(routes);
+
+            app.listen(1284, () => {
+                console.log(
+                    ":+1: waiting for topgg and discordbotlist to respond now..."
+                );
+            });
+        } else {
+            console.log(
+                "Express server not setup (Client id is not 701280304182067251)"
+            );
+        }
+    },
+    async () => {
+        await handler.registerCommands();
+    },
+    status,
+    (client) => {
+        console.log(`${client.user.tag} is online.`);
+    }
+);
+
 (async () => {
     try {
+        await handler.handleCommands(...middleware);
+        ready.execute();
         await mongoose.connect(process.env.MONGODB_URI);
         console.log("connected to DB");
 
@@ -66,23 +103,4 @@ async function editMessage() {
 }
 
 setInterval(editMessage, 120000);
-eventHandler(client);
 client.login(process.env.TOKEN);
-
-if (client.token === process.env.MAIN) {
-    client.on("ready", () => {
-        const routes = setRoutes(client);
-
-        app.use(routes);
-
-        app.listen(1284, () => {
-            console.log(
-                ":+1: waiting for topgg and discordbotlist to respond now..."
-            );
-        });
-    });
-} else {
-    console.log(
-        "Express server not setup (Client id is not 701280304182067251)"
-    );
-}

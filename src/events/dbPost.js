@@ -2,9 +2,9 @@ const { createDjsClient, upvoteListener } = require("discordbotlist");
 const { AutoPoster } = require("topgg-autoposter");
 const express = require("express");
 const Topgg = require("@top-gg/sdk");
-const User = require("../../models/User");
+const User = require("../models/User");
 const { EmbedBuilder } = require("discord.js");
-const { coin } = require("../../utils/formatters/beatify");
+const { coin } = require("../utils/formatters/beatify");
 
 const webhook = new Topgg.Webhook(process.env.TOPGG_auth);
 

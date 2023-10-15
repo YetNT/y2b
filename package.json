@@ -19,11 +19,12 @@
     "emoji-name-map": "^1.2.9",
     "emoji-unicode": "^2.0.1",
     "express": "^4.18.2",
+    "fs": "^0.0.1-security",
+    "ic4d": "^1.0.1",
     "moment": "^2.29.4",
     "moment-duration-format": "^2.3.2",
     "mongoose": "^7.2.3",
     "path": "^0.12.7",
-    "rambar": "^1.1.2",
     "topgg-autoposter": "^2.0.1"
   },
   "devDependencies": {

@@ -4,7 +4,7 @@ const errorHandler = require("../../utils/handlers/errorHandler");
 module.exports = {
     name: "ping",
     description: "Pong!",
-    // devOnly: Boolean,
+    // devOnly: true,
     // testOnly: true,
     // options: Object[],
     // deleted: Boolean,

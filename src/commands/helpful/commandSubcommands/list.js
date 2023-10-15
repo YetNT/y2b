@@ -1,6 +1,7 @@
 const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
 
 module.exports = {
+	isCommand: false,
     body: {
         name: "list",
         description: "List enabled and disabled commands in the server.",

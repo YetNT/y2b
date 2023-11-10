@@ -9,7 +9,8 @@ const User = require("../../../models/User");
 const { all, withoutShield } = require("../../../utils/misc/items/getItems");
 const { comma } = require("../../../utils/formatters/beatify");
 const allBadges = require("../../../utils/misc/badges/badges.json");
-const { progressBar } = require("@yetnt/progressbar");
+const { empty, filled, firstFill, firstEmpty, lastFill, lastEmpty, split } = require("../../../pbEmojis.json")
+const { ProgressBar } = require("@yetnt/progressbar");
 const errorHandler = require("../../../utils/handlers/errorHandler");
 
 const { pageCreator, pagerButtons } = require("../../../utils/handlers/pages");
@@ -118,24 +119,12 @@ module.exports = {
             let shieldOutput;
             let bar;
             if (inventory.shield.amt > 0 && inventory.shield.hp > 0) {
-                bar = progressBar(
-                    inventory.shield.hp / 5,
-                    10,
-                    "<:progressempty:1113377221067931699>",
-                    "<:progressfull:1113377216743624705>",
-                    false,
-                    [
-                        "<:firstempty:1113377223567736832>",
-                        "<:firstfull:1113377227069997137>",
-                    ],
-                    [
-                        "<:lastempty:1113377233248198687>",
-                        "<:lastfull:1113377230693879821>",
-                    ]
-                );
+                bar = new ProgressBar(
+                    inventory.shield.hp / 5, 10, empty, filled, [firstEmpty, firstFill], [lastEmpty, lastFill]);
+		bar.charSplit(split);
                 shieldOutput =
                     `*[Active](https://discord.com "${inventory.shield.amt} Shields")*\n` +
-                    bar +
+                    bar.bar +
                     ` **${inventory.shield.hp}/500**`;
             } else {
                 shieldOutput = `*[Inactive](https://discord.com "${inventory.shield.amt} Shields")*`;

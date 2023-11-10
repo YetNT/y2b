@@ -10,8 +10,8 @@ async function canBeServerDisabled(commandObject, interaction) {
         let serverCommand = await ServerCommand.findOne(query);
         if (serverCommand) {
             if (serverCommand[interaction.commandName] == true) {
-                interaction.reply({
-                    ephemerel: true,
+                await interaction.reply({
+                    ephemeral: true,
                     content:
                         "This command has been disabled in this server. Ask a mod to enable it or run another comamnd.",
                 });
@@ -31,9 +31,10 @@ async function blacklist(commandObject, interaction) {
 
         if (blacklist) {
             if (blacklist.ed === true) {
-                interaction.reply(
-                    "You've been blacklisted. Reason = " + `${blacklist.reason}`
-                );
+                await interaction.reply({
+			ephemeral: true,
+                    content:"You've been blacklisted. Reason = " + `${blacklist.reason}`
+		});
                 return 1;
             }
         }
@@ -43,7 +44,7 @@ async function blacklist(commandObject, interaction) {
 async function testOnly(commandObject, interaction) {
     if (commandObject.testOnly) {
         if (interaction.guild.id != testServer) {
-            interaction.reply({
+            await interaction.reply({
                 content: "This command cannot be ran here.",
                 ephemeral: true,
             });

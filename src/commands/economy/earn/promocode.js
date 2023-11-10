@@ -1,10 +1,10 @@
 const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
-const promocodes = require("../../../promocodes.json");
-const { comma, coin } = require("../../utils/formatters/beatify");
-const User = require("../../models/User");
-const items = require("../../utils/misc/items/items");
-const { awardBadge } = require("../../utils/misc/badges/badges.js");
-const errorHandler = require("../../utils/handlers/errorHandler");
+const promocodes = require("../../../../promocodes.json");
+const { comma, coin } = require("../../../utils/formatters/beatify");
+const User = require("../../../models/User");
+const items = require("../../../utils/misc/items/items");
+const { awardBadge } = require("../../../utils/misc/badges/badges.js");
+const errorHandler = require("../../../utils/handlers/errorHandler");
 /*
     If you clone the git and use this command, json looks something like this
     {

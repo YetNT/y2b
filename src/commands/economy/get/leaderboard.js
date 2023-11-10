@@ -1,9 +1,9 @@
 const { EmbedBuilder } = require("discord.js");
-const User = require("../../models/User");
+const User = require("../../../models/User");
 // const Inventory = require("../../models/Inventory");
-const { /*comma,*/ coin } = require("../../utils/formatters/beatify");
+const { /*comma,*/ coin } = require("../../../utils/formatters/beatify");
 // const { randomItem } = require("../../utils/misc/items/items");
-const errorHandler = require("../../utils/handlers/errorHandler");
+const errorHandler = require("../../../utils/handlers/errorHandler");
 
 module.exports = {
     name: "leaderboard",

@@ -4,10 +4,10 @@ const {
     ButtonBuilder,
     ButtonStyle,
 } = require("discord.js");
-const items = require("../../utils/misc/items/items");
-const { shopify } = require("../../utils/formatters/beatify");
-const errorHandler = require("../../utils/handlers/errorHandler");
-const { pageCreator, pagerButtons } = require("../../utils/handlers/pages");
+const items = require("../../../utils/misc/items/items");
+const { shopify } = require("../../../utils/formatters/beatify");
+const errorHandler = require("../../../utils/handlers/errorHandler");
+const { pageCreator, pagerButtons } = require("../../../utils/handlers/pages");
 
 module.exports = {
     name: "shop",

@@ -1,9 +1,9 @@
 const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
-const User = require("../../models/User");
-const Items = require("../../utils/misc/items/items");
-const { itemNames } = require("../../utils/misc/items/getItems");
-const { comma, coin, shopify } = require("../../utils/formatters/beatify");
-const errorHandler = require("../../utils/handlers/errorHandler");
+const User = require("../../../models/User");
+const Items = require("../../../utils/misc/items/items");
+const { itemNames } = require("../../../utils/misc/items/getItems");
+const { comma, coin, shopify } = require("../../../utils/formatters/beatify");
+const errorHandler = require("../../../utils/handlers/errorHandler");
 
 class EmbedError {
     constructor(text) {

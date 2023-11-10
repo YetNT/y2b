@@ -5,14 +5,14 @@ const {
     ButtonBuilder,
     ButtonStyle,
 } = require("discord.js");
-const User = require("../../models/User");
-const { all, withoutShield } = require("../../utils/misc/items/getItems");
-const { comma } = require("../../utils/formatters/beatify");
-const allBadges = require("../../utils/misc/badges/badges.json");
+const User = require("../../../models/User");
+const { all, withoutShield } = require("../../../utils/misc/items/getItems");
+const { comma } = require("../../../utils/formatters/beatify");
+const allBadges = require("../../../utils/misc/badges/badges.json");
 const { progressBar } = require("@yetnt/progressbar");
-const errorHandler = require("../../utils/handlers/errorHandler");
+const errorHandler = require("../../../utils/handlers/errorHandler");
 
-const { pageCreator, pagerButtons } = require("../../utils/handlers/pages");
+const { pageCreator, pagerButtons } = require("../../../utils/handlers/pages");
 let nextPage = new ButtonBuilder()
     .setCustomId("nextPage")
     .setLabel("Next Page")

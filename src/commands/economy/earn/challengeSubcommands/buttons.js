@@ -5,16 +5,16 @@ const {
     ButtonStyle,
     ApplicationCommandOptionType,
 } = require("discord.js");
-const errorHandler = require("../../../utils/handlers/errorHandler");
-const rndInt = require("../../../utils/misc/rndInt");
-const User = require("../../../models/User");
+const errorHandler = require("../../../../utils/handlers/errorHandler");
+const rndInt = require("../../../../utils/misc/rndInt");
+const User = require("../../../../models/User");
 const reward = 5000;
-const { coin } = require("../../../utils/formatters/beatify");
+const { coin } = require("../../../../utils/formatters/beatify");
 const {
     newCooldown,
     checkCooldown,
     Cooldowns,
-} = require("../../../utils/handlers/cooldown");
+} = require("../../../../utils/handlers/cooldown");
 
 const createButtonActionRows = (rightButton) => {
     let wrongButtonArr = [

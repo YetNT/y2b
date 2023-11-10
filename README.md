@@ -15,7 +15,7 @@
 
 # Commands
 
-**[Commands](https://yetbot.tk/commands)**
+**[Commands](https://y2b.pages.dev/commands)**
 
 # Contributions
 

@@ -1,13 +1,13 @@
 const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
 const wait = require("node:timers/promises").setTimeout;
-const errorHandler = require("../../utils/handlers/errorHandler");
-const User = require("../../models/User");
-const Items = require("../../utils/misc/items/items.js");
+const errorHandler = require("../../../utils/handlers/errorHandler");
+const User = require("../../../models/User");
+const Items = require("../../../utils/misc/items/items.js");
 const {
     newCooldown,
     checkCooldown,
     Cooldowns,
-} = require("../../utils/handlers/cooldown");
+} = require("../../../utils/handlers/cooldown");
 
 /**
  *

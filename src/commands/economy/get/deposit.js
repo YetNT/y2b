@@ -1,20 +1,20 @@
 const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
-const User = require("../../models/User");
-const { coin } = require("../../utils/formatters/beatify");
-const errorHandler = require("../../utils/handlers/errorHandler");
+const User = require("../../../models/User");
+const { coin } = require("../../../utils/formatters/beatify");
+const errorHandler = require("../../../utils/handlers/errorHandler");
 
 module.exports = {
-    name: "withdraw",
-    description: "Withdraw coins from your bank",
-    blacklist: true,
+    name: "deposit",
+    description: "Deposit coins into your bank",
     options: [
         {
             name: "amount",
-            description: "how much to withdraw",
+            description: "how much to deposit",
             required: true,
             type: ApplicationCommandOptionType.Number,
         },
     ],
+    blacklist: true,
 
     /**
      * @param {Client} client
@@ -32,25 +32,25 @@ module.exports = {
 
             if (!user) {
                 await interaction.followUp({
-                    content: "Why withdraw when you've got nothing?",
+                    content: "Why deposit when you've got nothing?",
                     ephemeral: true,
                 });
                 return;
             }
 
-            if (!user.bank) {
+            if (!user.balance) {
                 await interaction.followUp({
                     content:
-                        "You exist in the database but have no money in your banl weird",
+                        "You exist in the database but have no money weird",
                     ephemeral: true,
                 });
                 return;
             }
 
-            if (amount > user.bank) {
+            if (amount > user.balance) {
                 await interaction.followUp({
                     content: `${coin(amount)} is **__${
-                        amount - user.bank
+                        amount - user.balance
                     }__** more than what you have`,
                     ephemeral: true,
                 });
@@ -59,23 +59,23 @@ module.exports = {
 
             if (amount < 0) {
                 await interaction.followUp({
-                    content: "You can't withdraw numbers smaller than zerp",
+                    content: "You can't deposit numbers smaller than zerp",
                     ephemeral: true,
                 });
                 return;
             }
 
-            user.bank -= amount;
-            user.balance += amount;
+            user.balance -= amount;
+            user.bank += amount;
 
             await user.save();
 
             interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
-                        .setTitle("Successful Withdrawal.")
+                        .setTitle("Successful Deposit.")
                         .setDescription(
-                            `Successfully withdrew ${coin(
+                            `Successfully deposited ${coin(
                                 amount
                             )}. Your balance is now ${coin(user.balance)}`
                         ),

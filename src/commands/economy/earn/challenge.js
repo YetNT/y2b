@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
-const errorHandler = require("../../utils/handlers/errorHandler");
+const errorHandler = require("../../../utils/handlers/errorHandler");
 
 const subcommands = require("./challengeSubcommands/index");
 

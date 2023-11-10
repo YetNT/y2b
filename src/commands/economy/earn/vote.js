@@ -1,5 +1,5 @@
-const errorHandler = require("../../utils/handlers/errorHandler");
-const { coin } = require("../../utils/formatters/beatify");
+const errorHandler = require("../../../utils/handlers/errorHandler");
+const { coin } = require("../../../utils/formatters/beatify");
 const {
     EmbedBuilder,
     ButtonBuilder,

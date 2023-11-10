@@ -1,13 +1,13 @@
 const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
-const User = require("../../models/User");
-const rndInt = require("../../utils/misc/rndInt");
-const { comma, coin } = require("../../utils/formatters/beatify");
+const User = require("../../../models/User");
+const rndInt = require("../../../utils/misc/rndInt");
+const { comma, coin } = require("../../../utils/formatters/beatify");
 const {
     newCooldown,
     checkCooldown,
     Cooldowns,
-} = require("../../utils/handlers/cooldown");
-const errorHandler = require("../../utils/handlers/errorHandler");
+} = require("../../../utils/handlers/cooldown");
+const errorHandler = require("../../../utils/handlers/errorHandler");
 
 class EmbedError {
     constructor(text) {

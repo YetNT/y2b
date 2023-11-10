@@ -1,9 +1,9 @@
 const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
-const Items = require("../../utils/misc/items/items");
-const { itemNames } = require("../../utils/misc/items/getItems");
-const { coin } = require("../../utils/formatters/beatify");
-const errorHandler = require("../../utils/handlers/errorHandler");
-const { emojiToImage } = require("../../utils/misc/emojiManipulation");
+const Items = require("../../../utils/misc/items/items");
+const { itemNames } = require("../../../utils/misc/items/getItems");
+const { coin } = require("../../../utils/formatters/beatify");
+const errorHandler = require("../../../utils/handlers/errorHandler");
+const { emojiToImage } = require("../../../utils/misc/emojiManipulation");
 
 module.exports = {
     name: "item",

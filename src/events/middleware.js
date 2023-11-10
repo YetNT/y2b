@@ -53,4 +53,9 @@ async function testOnly(commandObject, interaction) {
     return 0;
 }
 
+async function ms(commandObject, interaction) {
+	await interaction.followUp(`${commandObject.name} test`)
+	return 0
+}
+
 module.exports = [blacklist, canBeServerDisabled, testOnly];

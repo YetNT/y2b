@@ -1,14 +1,14 @@
 const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
-const User = require("../../models/User");
-const workAr = require("../../utils/misc/work/work.json");
-const workPay = require("../../utils/misc/work/workPay.json");
-const { coin } = require("../../utils/formatters/beatify");
+const User = require("../../../models/User");
+const workAr = require("../../../utils/misc/work/work.json");
+const workPay = require("../../../utils/misc/work/workPay.json");
+const { coin } = require("../../../utils/formatters/beatify");
 const {
     newCooldown,
     checkCooldown,
     Cooldowns,
-} = require("../../utils/handlers/cooldown");
-const errorHandler = require("../../utils/handlers/errorHandler");
+} = require("../../../utils/handlers/cooldown");
+const errorHandler = require("../../../utils/handlers/errorHandler");
 
 /**
  *

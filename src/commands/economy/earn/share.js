@@ -5,13 +5,13 @@ const {
     ButtonBuilder,
     ButtonStyle,
 } = require("discord.js");
-const User = require("../../models/User");
-const { itemNamesNoShield } = require("../../utils/misc/items/getItems");
-const { comma, coin, coinEmoji } = require("../../utils/formatters/beatify");
-const { newCooldown, checkCooldown } = require("../../utils/handlers/cooldown");
-const errorHandler = require("../../utils/handlers/errorHandler");
-const Items = require("../../utils/misc/items/items");
-const { emojiToUnicode } = require("../../utils/misc/emojiManipulation");
+const User = require("../../../models/User");
+const { itemNamesNoShield } = require("../../../utils/misc/items/getItems");
+const { comma, coin, coinEmoji } = require("../../../utils/formatters/beatify");
+const { newCooldown, checkCooldown } = require("../../../utils/handlers/cooldown");
+const errorHandler = require("../../../utils/handlers/errorHandler");
+const Items = require("../../../utils/misc/items/items");
+const { emojiToUnicode } = require("../../../utils/misc/emojiManipulation");
 
 module.exports = {
     name: "share",
@@ -115,7 +115,7 @@ module.exports = {
 
             if (item) {
                 // it is an item
-                shareVar = `Share ${item}`;
+                shareVar = `Share ${Items[item].name}`;
                 emoji = emojiToUnicode(Items[item].emoji);
                 warning = `Are you sure that you'd like to share ${amount} ${Items[item].emoji} ${Items[item].name}s with <@${userToGiveId}>`;
                 if (authorInv[item] < amount) {
@@ -225,7 +225,7 @@ module.exports = {
                     if (item) {
                         response = `Shared ${comma(
                             amount
-                        )} ${item} with <@${userToGiveId}>`;
+                        )} ${Item[item]} with <@${userToGiveId}>`;
                     } else {
                         response = `Shared ${coin(
                             amount

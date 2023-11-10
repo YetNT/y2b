@@ -7,7 +7,7 @@ const {
 } = require("discord.js");
 const config = require("../config.json");
 const mongoose = require("mongoose");
-const { CommandHandler, ReadyHandler } = require("../../../code/ic4d/dist/index");
+const { CommandHandler, ReadyHandler } = require("ic4d");
 const middleware = require("./events/middleware");
 const status = require("./events/status");
 const moment = require("moment");

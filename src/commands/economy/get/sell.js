@@ -4,6 +4,7 @@ const Items = require("../../../utils/misc/items/items");
 const { itemNames } = require("../../../utils/misc/items/getItems");
 const { comma, shopify } = require("../../../utils/formatters/beatify");
 const errorHandler = require("../../../utils/handlers/errorHandler");
+const { SlashCommandObject } = require("ic4d");
 
 class EmbedError {
     constructor(text) {
@@ -13,7 +14,7 @@ class EmbedError {
     }
 }
 
-module.exports = {
+const sell = new SlashCommandObject({
     name: "sell",
     description: "Sell an item for some coins",
     blacklist: true,
@@ -94,4 +95,9 @@ module.exports = {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+
+sell.blacklist = true;
+sell.category = "economy";
+
+module.exports = sell;

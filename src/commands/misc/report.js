@@ -1,5 +1,6 @@
 const errorHandler = require("../../utils/handlers/errorHandler");
 const { EmbedBuilder } = require("discord.js");
+const { SlashCommandObject } = require("ic4d");
 
 const subcommands = require("./reportSubcommands/index");
 
@@ -21,7 +22,7 @@ function arrToObj(originalArray) {
     return transformedObject;
 }
 
-module.exports = {
+const report = new SlashCommandObject({
     name: "report",
     description: "Report stuff (Contains subcommands)",
     options: [
@@ -29,7 +30,6 @@ module.exports = {
         subcommands.user.body,
         subcommands.server.body,
     ],
-    blacklist: true,
 
     callback: async (client, interaction) => {
         await interaction.deferReply({ ephemeral: true });
@@ -74,4 +74,9 @@ module.exports = {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+
+report.blacklist = true;
+report.category = "misc";
+
+module.exports = report;

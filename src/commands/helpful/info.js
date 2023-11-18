@@ -1,10 +1,11 @@
 const { EmbedBuilder } = require("discord.js");
+const { SlashCommandObject } = require("ic4d");
 const pkg = require("../../../package.json");
 const errorHandler = require("../../utils/handlers/errorHandler");
 const moment = require("moment");
 require("moment-duration-format");
 
-module.exports = {
+const info = new SlashCommandObject({
     name: "info",
     description: "Bot's info and other stuff",
 
@@ -70,4 +71,8 @@ module.exports = {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+
+info.category = "misc";
+
+module.exports = info;

@@ -1,14 +1,14 @@
 const { /*PermissionFlagsBits,*/ EmbedBuilder } = require("discord.js");
 const errorHandler = require("../../utils/handlers/errorHandler");
+const { SlashCommandObject } = require("ic4d");
 
-module.exports = {
+const ping = new SlashCommandObject({
     name: "ping",
     description: "Pong!",
     // devOnly: true,
     // testOnly: true,
     // options: Object[],
     // deleted: Boolean,
-    // cooldown: 10000,
     // blacklist: true,
     // permissionsRequired: [PermissionFlagsBits.Administrator],
     // botPermissions: [PermissionFlagsBits.Administrator],
@@ -51,4 +51,7 @@ module.exports = {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+ping.category = "misc";
+
+module.exports = ping;

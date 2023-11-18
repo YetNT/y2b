@@ -8,12 +8,16 @@ const {
 const User = require("../../../models/User");
 const { itemNamesNoShield } = require("../../../utils/misc/items/getItems");
 const { comma, coin, coinEmoji } = require("../../../utils/formatters/beatify");
-const { newCooldown, checkCooldown } = require("../../../utils/handlers/cooldown");
+const {
+    newCooldown,
+    checkCooldown,
+} = require("../../../utils/handlers/cooldown");
 const errorHandler = require("../../../utils/handlers/errorHandler");
 const Items = require("../../../utils/misc/items/items");
 const { emojiToUnicode } = require("../../../utils/misc/emojiManipulation");
 
-module.exports = {
+const { SlashCommandObject } = require("ic4d");
+const share = new SlashCommandObject({
     name: "share",
     description: "Share your wealth (or items) with other people",
     options: [
@@ -37,7 +41,6 @@ module.exports = {
             choices: itemNamesNoShield(),
         },
     ],
-    blacklist: true,
 
     /**
      *
@@ -223,9 +226,9 @@ module.exports = {
 
                     let response;
                     if (item) {
-                        response = `Shared ${comma(
-                            amount
-                        )} ${Item[item]} with <@${userToGiveId}>`;
+                        response = `Shared ${comma(amount)} ${
+                            Items[item]
+                        } with <@${userToGiveId}>`;
                     } else {
                         response = `Shared ${coin(
                             amount
@@ -282,4 +285,8 @@ module.exports = {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+
+share.category = "economy";
+share.blacklist = true;
+module.exports = share;

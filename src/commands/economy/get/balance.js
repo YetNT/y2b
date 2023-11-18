@@ -3,6 +3,8 @@ const User = require("../../../models/User");
 const items = require("../../../utils/misc/items/items");
 const { comma } = require("../../../utils/formatters/beatify");
 const errorHandler = require("../../../utils/handlers/errorHandler");
+const { SlashCommandObject } = require("ic4d");
+
 
 /**
  *
@@ -24,7 +26,7 @@ const calculateInv = (model) => {
     return total;
 };
 
-module.exports = {
+const bal = new SlashCommandObject({
     name: "balance",
     description: "View your or another user's coin balance, bank and networth",
     blacklist: true,
@@ -167,4 +169,9 @@ module.exports = {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+})
+
+bal.category = "economy"
+bal.blacklist = true
+
+module.exports = bal

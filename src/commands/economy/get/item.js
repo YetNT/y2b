@@ -4,8 +4,9 @@ const { itemNames } = require("../../../utils/misc/items/getItems");
 const { coin } = require("../../../utils/formatters/beatify");
 const errorHandler = require("../../../utils/handlers/errorHandler");
 const { emojiToImage } = require("../../../utils/misc/emojiManipulation");
+const { SlashCommandObject } = require("ic4d");
 
-module.exports = {
+const item = new SlashCommandObject({
     name: "item",
     description: "View an item's information.",
     blacklist: true,
@@ -85,4 +86,9 @@ module.exports = {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+
+item.blacklist = true;
+item.category = "economy";
+
+module.exports = item;

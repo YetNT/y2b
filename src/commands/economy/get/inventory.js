@@ -2,28 +2,27 @@ const {
     ApplicationCommandOptionType,
     EmbedBuilder,
     ComponentType,
-    ButtonBuilder,
     ButtonStyle,
 } = require("discord.js");
 const User = require("../../../models/User");
 const { all, withoutShield } = require("../../../utils/misc/items/getItems");
 const { comma } = require("../../../utils/formatters/beatify");
 const allBadges = require("../../../utils/misc/badges/badges.json");
-const { empty, filled, firstFill, firstEmpty, lastFill, lastEmpty, split } = require("../../../pbEmojis.json")
+const {
+    empty,
+    filled,
+    firstFill,
+    firstEmpty,
+    lastFill,
+    lastEmpty,
+    split,
+} = require("../../../pbEmojis.json");
 const { ProgressBar } = require("@yetnt/progressbar");
 const errorHandler = require("../../../utils/handlers/errorHandler");
+const { SlashCommandObject } = require("ic4d");
+const { Pager } = require("@fyleto/dpager");
 
-const { pageCreator, pagerButtons } = require("../../../utils/handlers/pages");
-let nextPage = new ButtonBuilder()
-    .setCustomId("nextPage")
-    .setLabel("Next Page")
-    .setStyle(ButtonStyle.Secondary);
-let previousPage = new ButtonBuilder()
-    .setCustomId("prevPage")
-    .setLabel("Previous Page")
-    .setStyle(ButtonStyle.Secondary);
-
-module.exports = {
+const inv = new SlashCommandObject({
     name: "inventory",
     description: "View your or another user's inventory",
     blacklist: true,
@@ -120,8 +119,14 @@ module.exports = {
             let bar;
             if (inventory.shield.amt > 0 && inventory.shield.hp > 0) {
                 bar = new ProgressBar(
-                    inventory.shield.hp / 5, 10, empty, filled, [firstEmpty, firstFill], [lastEmpty, lastFill]);
-		bar.charSplit(split);
+                    inventory.shield.hp / 5,
+                    10,
+                    empty,
+                    filled,
+                    [firstEmpty, firstFill],
+                    [lastEmpty, lastFill]
+                );
+                bar.charSplit(split);
                 shieldOutput =
                     `*[Active](https://discord.com "${inventory.shield.amt} Shields")*\n` +
                     bar.bar +
@@ -130,17 +135,22 @@ module.exports = {
                 shieldOutput = `*[Inactive](https://discord.com "${inventory.shield.amt} Shields")*`;
             }
 
-            let pageItems = pageCreator(invOutput, 5);
-
-            let initRow =
-                pageItems.length != 1
-                    ? [pagerButtons(nextPage, previousPage, "previous")]
-                    : [];
-
-            var pageIndex = 1;
+            const pages = new Pager(`${userInfo.username}'s Inventory`);
+            pages.addDynamicPages(invOutput, 5, "\n\n");
+            pages.config({
+                nextPage: {
+                    label: "Next Page",
+                    style: ButtonStyle.Secondary,
+                },
+                prevPage: {
+                    label: "Previous Page",
+                    style: ButtonStyle.Secondary,
+                },
+            });
+            let initPage = await pages.currentPage();
 
             // send outputs
-            let response = await interaction.editReply({
+            await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle(`${userInfo.username}'s Inventory`)
@@ -157,7 +167,7 @@ module.exports = {
                             },
                             {
                                 name: "Items",
-                                value: pageItems[pageIndex - 1].join("\n\n"),
+                                value: initPage.raw.content,
                                 inline: true,
                             },
                         ])
@@ -170,41 +180,24 @@ module.exports = {
                                 ".jpeg"
                         )
                         .setFooter({
-                            text: `Page ${pageIndex}/${pageItems.length}`,
+                            text: `Page ${pages.index + 1}/${
+                                pages.pages.length
+                            }`,
                         }),
                 ],
-                components: initRow,
+                components: initPage.components,
             });
 
-            const collector = response.createMessageComponentCollector({
+            const res = await interaction.fetchReply();
+
+            const collector = res.createMessageComponentCollector({
                 componentType: ComponentType.Button,
                 time: 3_600_000,
             });
 
             collector.on("collect", async (i) => {
-                let id = i.customId;
-                let pagerRow;
+                let page = await pages.currentPage(i.customId);
 
-                if (id == "prevPage") {
-                    pageIndex--;
-                    if (pageIndex != 1) {
-                        pagerRow = pagerButtons(nextPage, previousPage, null);
-                    } else {
-                        pagerRow = pagerButtons(
-                            nextPage,
-                            previousPage,
-                            "previous"
-                        );
-                    }
-                }
-                if (id == "nextPage") {
-                    pageIndex++;
-                    if (pageIndex != pageItems.length) {
-                        pagerRow = pagerButtons(nextPage, previousPage, null);
-                    } else {
-                        pagerRow = pagerButtons(nextPage, previousPage, "next");
-                    }
-                }
                 await i.update({
                     embeds: [
                         new EmbedBuilder()
@@ -222,9 +215,7 @@ module.exports = {
                                 },
                                 {
                                     name: "Items",
-                                    value: pageItems[pageIndex - 1].join(
-                                        "\n\n"
-                                    ),
+                                    value: page.raw.content,
                                     inline: true,
                                 },
                             ])
@@ -237,14 +228,20 @@ module.exports = {
                                     ".jpeg"
                             )
                             .setFooter({
-                                text: `Page ${pageIndex}/${pageItems.length}`,
+                                text: `Page ${pages.index + 1}/${
+                                    pages.pages.length
+                                }`,
                             }),
                     ],
-                    components: [pagerRow],
+                    components: page.components,
                 });
             });
         } catch (error) {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+inv.category = "economy";
+inv.blacklist = true;
+
+module.exports = inv;

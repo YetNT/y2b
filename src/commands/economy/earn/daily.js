@@ -1,15 +1,18 @@
 const { EmbedBuilder } = require("discord.js");
 const User = require("../../../models/User");
 const { comma, coin } = require("../../../utils/formatters/beatify");
-const { newCooldown, checkCooldown, Cooldowns } = require("../../../utils/handlers/cooldown");
+const {
+    newCooldown,
+    checkCooldown,
+    Cooldowns,
+} = require("../../../utils/handlers/cooldown");
 const errorHandler = require("../../../utils/handlers/errorHandler");
 
 const dailyAmount = 1000;
-
-module.exports = {
+const { SlashCommandObject } = require("ic4d");
+const daily = new SlashCommandObject({
     name: "daily",
     description: "Receive your daily reward of 1000",
-    blacklist: true,
 
     /**
      *
@@ -65,4 +68,8 @@ module.exports = {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+daily.category = "economy";
+daily.blacklist = true;
+
+module.exports = daily;

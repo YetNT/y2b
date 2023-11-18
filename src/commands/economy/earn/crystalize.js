@@ -8,6 +8,7 @@ const {
     checkCooldown,
     Cooldowns,
 } = require("../../../utils/handlers/cooldown");
+const { SlashCommandObject } = require("ic4d");
 
 /**
  *
@@ -46,10 +47,9 @@ async function crystalizeRocks(inventory, amt, user) {
     };
 }
 
-module.exports = {
+const crystalize = new SlashCommandObject({
     name: "crystalize",
     description: "Crystalize your rocks.",
-    blacklist: true,
     options: [
         {
             name: "amount",
@@ -121,4 +121,8 @@ module.exports = {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+crystalize.category = "economy";
+crystalize.blacklist = true;
+
+module.exports = crystalize;

@@ -2,13 +2,12 @@
 const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
 const User = require("../../models/User");
 const errorHandler = require("../../utils/handlers/errorHandler");
+const { SlashCommandObject } = require("ic4d");
 
-module.exports = {
-    /*
-    deleted: true,*/
+const blacklist = new SlashCommandObject({
+    deleted: true, // set to true by default, but another file will change it depending on bot.
     name: "blacklist",
     description: "blacklist users",
-    devOnly: true,
     options: [
         {
             name: "query",
@@ -209,4 +208,9 @@ module.exports = {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+
+blacklist.devOnly = true;
+blacklist.category = "dev";
+
+module.exports = blacklist;

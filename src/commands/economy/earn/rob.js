@@ -8,7 +8,7 @@ const {
     Cooldowns,
 } = require("../../../utils/handlers/cooldown");
 const errorHandler = require("../../../utils/handlers/errorHandler");
-
+const { SlashCommandObject } = require("ic4d");
 class EmbedError {
     constructor(text) {
         this.output = {
@@ -17,7 +17,7 @@ class EmbedError {
     }
 }
 
-module.exports = {
+const rob = new SlashCommandObject({
     name: "rob",
     description: "Rob other people for some quick cash. Can end badly",
     options: [
@@ -266,4 +266,8 @@ module.exports = {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+rob.category = "economy";
+rob.blacklist = true;
+
+module.exports = rob;

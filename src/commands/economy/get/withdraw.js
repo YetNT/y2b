@@ -2,8 +2,9 @@ const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
 const User = require("../../../models/User");
 const { coin } = require("../../../utils/formatters/beatify");
 const errorHandler = require("../../../utils/handlers/errorHandler");
+const { SlashCommandObject } = require("ic4d");
 
-module.exports = {
+const withdraw = new SlashCommandObject({
     name: "withdraw",
     description: "Withdraw coins from your bank",
     blacklist: true,
@@ -85,4 +86,9 @@ module.exports = {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+
+withdraw.category = "economy";
+withdraw.blacklist = true;
+
+module.exports = withdraw;

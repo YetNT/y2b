@@ -7,6 +7,7 @@ const {
     ButtonStyle,
 } = require("discord.js");
 
+const { SlashCommandObject } = require("ic4d");
 const links = {
     dbl: "https://discordbotlist.com/bots/yet-20/upvote",
     top: "https://top.gg/bot/701280304182067251/vote",
@@ -14,7 +15,7 @@ const links = {
 
 let amt = 10_000;
 
-module.exports = {
+const vote = new SlashCommandObject({
     name: "vote",
     description: "Vote for the bot on top.gg and discordbotlist",
 
@@ -48,4 +49,9 @@ module.exports = {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+
+vote.category = "economy";
+vote.blacklist = true;
+
+module.exports = vote;

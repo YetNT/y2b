@@ -1,10 +1,11 @@
 const { PermissionFlagsBits, EmbedBuilder } = require("discord.js");
 const ServerCommand = require("../../models/ServerCommand");
 const errorHandler = require("../../utils/handlers/errorHandler");
+const { SlashCommandObject } = require("ic4d");
 
 const subcommands = require("./commandSubcommands/index");
 
-module.exports = {
+const command = new SlashCommandObject({
     name: "command",
     description:
         "Server Command Disbale/Enable/List (This command has subcommands.)",
@@ -87,4 +88,7 @@ module.exports = {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+command.category = "mod";
+
+module.exports = command;

@@ -1,30 +1,19 @@
-const {
-    EmbedBuilder,
-    ComponentType,
-    ButtonBuilder,
-    ButtonStyle,
-} = require("discord.js");
+const { EmbedBuilder, ComponentType, ButtonStyle } = require("discord.js");
 const items = require("../../../utils/misc/items/items");
 const { shopify } = require("../../../utils/formatters/beatify");
 const errorHandler = require("../../../utils/handlers/errorHandler");
-const { pageCreator, pagerButtons } = require("../../../utils/handlers/pages");
+const { SlashCommandObject } = require("ic4d");
+const { Pager } = require("@fyleto/dpager");
 
-module.exports = {
+const shop = new SlashCommandObject({
     name: "shop",
     description: "Shop for items that are definitely not overpriced",
     blacklist: true,
 
     callback: async (client, interaction) => {
         await interaction.deferReply();
+        const pages = new Pager();
         try {
-            let nextPage = new ButtonBuilder()
-                .setCustomId("nextPage")
-                .setLabel("Next Page")
-                .setStyle(ButtonStyle.Secondary);
-            let previousPage = new ButtonBuilder()
-                .setCustomId("prevPage")
-                .setLabel("Previous Page")
-                .setStyle(ButtonStyle.Secondary);
             let reply = [];
 
             for (let item in items) {
@@ -38,23 +27,28 @@ module.exports = {
                 );
             }
 
-            let pageItems = pageCreator(reply, 5);
-            let embed = new EmbedBuilder().setTitle("Shop").setColor("Fuchsia");
-            let initRow =
-                pageItems.length != 1
-                    ? [pagerButtons(nextPage, previousPage, "previous")]
-                    : [];
+            pages.addDynamicPages(reply, 5, "\n\n");
 
-            var pageIndex = 1;
+            pages.config({
+                nextPage: {
+                    label: "Next Page",
+                    style: ButtonStyle.Secondary,
+                },
+                prevPage: {
+                    label: "Previous Page",
+                    style: ButtonStyle.Secondary,
+                },
+            });
+            let page = await pages.currentPage();
+            let embed = new EmbedBuilder().setTitle("Shop").setColor("Fuchsia");
+
             const response = await interaction.editReply({
                 embeds: [
-                    embed
-                        .setDescription(pageItems[pageIndex - 1].join("\n\n"))
-                        .setFooter({
-                            text: `Page ${pageIndex}/${pageItems.length}`,
-                        }),
+                    embed.setDescription(page.raw.content).setFooter({
+                        text: `Page ${pages.index + 1}/${pages.pages.length}`,
+                    }),
                 ],
-                components: initRow,
+                components: page.components,
             });
 
             const collector = response.createMessageComponentCollector({
@@ -63,44 +57,24 @@ module.exports = {
             });
 
             collector.on("collect", async (i) => {
-                let id = i.customId;
-                let pagerRow;
-
-                if (id == "prevPage") {
-                    pageIndex--;
-                    if (pageIndex != 1) {
-                        pagerRow = pagerButtons(nextPage, previousPage, null);
-                    } else {
-                        pagerRow = pagerButtons(
-                            nextPage,
-                            previousPage,
-                            "previous"
-                        );
-                    }
-                }
-                if (id == "nextPage") {
-                    pageIndex++;
-                    if (pageIndex != pageItems.length) {
-                        pagerRow = pagerButtons(nextPage, previousPage, null);
-                    } else {
-                        pagerRow = pagerButtons(nextPage, previousPage, "next");
-                    }
-                }
+                let page = await pages.currentPage(i.customId);
                 await i.update({
                     embeds: [
-                        embed
-                            .setDescription(
-                                pageItems[pageIndex - 1].join("\n\n")
-                            )
-                            .setFooter({
-                                text: `Page ${pageIndex}/${pageItems.length}`,
-                            }),
+                        embed.setDescription(page.raw.content).setFooter({
+                            text: `Page ${pages.index + 1}/${
+                                pages.pages.length
+                            }`,
+                        }),
                     ],
-                    components: [pagerRow],
+                    components: page.components,
                 });
             });
         } catch (error) {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+shop.category = "economy";
+shop.blacklist = true;
+
+module.exports = shop;

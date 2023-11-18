@@ -5,6 +5,7 @@ const User = require("../../../models/User");
 const items = require("../../../utils/misc/items/items");
 const { awardBadge } = require("../../../utils/misc/badges/badges.js");
 const errorHandler = require("../../../utils/handlers/errorHandler");
+const { SlashCommandObject } = require("ic4d");
 /*
     If you clone the git and use this command, json looks something like this
     {
@@ -45,7 +46,7 @@ const add = async (user, amount, UserId, item = false, itemId = null) => {
     }
 };
 
-module.exports = {
+const promocode = new SlashCommandObject({
     name: "promocode",
     description: "Redeem promocodes hidden around anywhere for coins and items",
     blacklist: true,
@@ -212,4 +213,8 @@ module.exports = {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+promocode.category = "economy";
+promocode.blacklist = true;
+
+module.exports = promocode;

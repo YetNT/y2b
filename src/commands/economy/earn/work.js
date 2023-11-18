@@ -9,6 +9,7 @@ const {
     Cooldowns,
 } = require("../../../utils/handlers/cooldown");
 const errorHandler = require("../../../utils/handlers/errorHandler");
+const { SlashCommandObject } = require("ic4d");
 
 /**
  *
@@ -32,7 +33,7 @@ const rnd = (ar, pay, option) => {
     };
 };
 
-module.exports = {
+const work = new SlashCommandObject({
     name: "work",
     description: "Work for cash",
     blacklist: true,
@@ -185,4 +186,8 @@ module.exports = {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+work.blacklist = true;
+work.category = "economy";
+
+module.exports = work;

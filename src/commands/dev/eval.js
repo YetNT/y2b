@@ -1,12 +1,11 @@
 // ONLY AVAILABLE ON BETA BOT!!!!!!!
 const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
+const { SlashCommandObject } = require("ic4d");
 
-module.exports = {
-    /*
-    deleted: true,*/
+const ev = new SlashCommandObject({
+    deleted: true,
     name: "eval",
     description: "evaluate",
-    devOnly: true,
     options: [
         {
             name: "eval",
@@ -78,4 +77,9 @@ ${error}
             interaction.editReply({ embeds: [embed] });
         }
     },
-};
+});
+
+ev.devOnly = true;
+ev.category = "dev";
+
+module.exports = ev;

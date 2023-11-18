@@ -2,8 +2,9 @@ const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
 const User = require("../../../models/User");
 const { coin } = require("../../../utils/formatters/beatify");
 const errorHandler = require("../../../utils/handlers/errorHandler");
+const { SlashCommandObject } = require("ic4d");
 
-module.exports = {
+const dep = new SlashCommandObject({
     name: "deposit",
     description: "Deposit coins into your bank",
     options: [
@@ -85,4 +86,8 @@ module.exports = {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+dep.category = "economy";
+dep.blacklist = "economy";
+
+module.exports = dep;

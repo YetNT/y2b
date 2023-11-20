@@ -1,0 +1,221 @@
+const {
+    ComponentType,
+    EmbedBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    ActionRowBuilder,
+} = require("discord.js");
+const User = require("../../../models/User");
+const Items = require("../../../utils/misc/items/items");
+const { getForgableItemNames } = require("../../../utils/misc/items/getItems");
+// const { comma, coin, shopify } = require("../../../utils/formatters/beatify");
+const errorHandler = require("../../../utils/handlers/errorHandler");
+const { SlashCommandObject, CommandInteractionObject } = require("ic4d");
+const { Pager } = require("@fyleto/dpager");
+const { emojiToUnicode } = require("../../../utils/misc/emojiManipulation");
+
+class EmbedError {
+    constructor(text) {
+        this.output = {
+            embeds: [new EmbedBuilder().setDescription(text)],
+        };
+    }
+}
+
+const separator = {
+    title: "$(TITLE)$",
+    item: "$(ITEM)$",
+};
+
+/**
+ *
+ * @param {User} user
+ * @param {*} obj
+ */
+function getRecipeItems(user, obj) {
+    let str = ["\n"];
+    let keys = Object.keys(obj);
+    for (const key of keys) {
+        if (key == "_amt" || key == "amt") continue;
+        let amtNeeded = obj[key]; // amount needed by the recipe
+        let userAmt = user.inventory[key]; // amount the user has
+        let amtStr = `\`${userAmt}/${amtNeeded}\``;
+
+        let emoji = Items[key].emoji;
+        let itemName = Items[key].name;
+        let itemStr = `${amtStr} ${emoji} ___${itemName}___`;
+        str.push(itemStr);
+    }
+
+    return str.join("\n");
+}
+
+function joinArrayPairs(arr) {
+    const result = [];
+
+    for (let i = 0; i < arr.length; i += 2) {
+        if (i + 1 < arr.length) {
+            result.push(arr[i] + separator.item + arr[i + 1]);
+        } else {
+            result.push(arr[i]);
+        }
+    }
+
+    return result;
+}
+
+function newFields(field1, field2) {
+    let arr = [];
+    const [field1Title, field1Recipe] = field1.split(separator.title);
+    arr.push({
+        name: field1Title,
+        value: field1Recipe,
+        inline: true,
+    });
+    if (field2 !== undefined) {
+        /* Field 2 */ const [field2Title, field2Recipe] = field2.split(
+            separator.title
+        );
+        arr.push({
+            name: field2Title,
+            value: field2Recipe,
+            inline: true,
+        });
+    }
+
+    return arr;
+}
+
+let f = getForgableItemNames();
+
+const makeInteractions = () => {
+    let arr = [];
+    for (const item of f) {
+        const int = new CommandInteractionObject({
+            type: "button",
+            authorOnly: true,
+            customId: `forge-${item.item.name}`,
+            callback: (interaction) => {
+                interaction.update({
+                    content: `ok i'll make ${item.item.name}`,
+                    components: [],
+                    embeds: [],
+                });
+            },
+        });
+        let emoji = emojiToUnicode(item.item.emoji);
+        int.button = new ButtonBuilder()
+            .setLabel(`Forge ${item.item.name}`)
+            .setCustomId(`forge-${item.item.name}`)
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji(emoji);
+        arr.push(int);
+    }
+    return arr;
+};
+
+const buttons = makeInteractions();
+
+const forge = new SlashCommandObject(
+    {
+        name: "forge",
+        description: "Forge a new item from other items!",
+        callback: async (c, interaction) => {
+            await interaction.deferReply();
+            try {
+                const user = await User.findOne({
+                    userId: interaction.user.id,
+                });
+                if (!user)
+                    return interaction.editReply(
+                        new EmbedError(
+                            "You cannot forge items when you've got nothing."
+                        ).output
+                    );
+                let pageArray = [];
+                for (let i in f) {
+                    let recipe = f[i].recipe;
+                    let item = f[i].item;
+                    let recipeStr = getRecipeItems(user, recipe);
+                    let forgeStr = `Forges \`${recipe._amt}\` ${item.emoji} ${item.name}`;
+
+                    pageArray.push(
+                        `${item.name}${separator.title}${forgeStr}\n\n**Recipe:**${recipeStr}`
+                    );
+                }
+                pageArray = joinArrayPairs(pageArray);
+                const pager = new Pager();
+                pager.addDynamicPages(pageArray, 2);
+                let page = await pager.currentPage();
+                const [field1, field2] = page.raw.content.split(separator.item);
+                let fieldsArray = newFields(field1, field2);
+
+                await interaction.editReply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle("Forge!")
+                            .setFields(...fieldsArray),
+                    ],
+                    components: [
+                        ...page.components,
+                        new ActionRowBuilder().addComponents(
+                            ...(buttons[1] !== undefined
+                                ? [buttons[0].button, buttons[1].button]
+                                : [buttons[0].button])
+                        ),
+                    ],
+                });
+
+                const res = await interaction.fetchReply();
+
+                const collector = res.createMessageComponentCollector({
+                    componentType: ComponentType.Button,
+                    time: 3_600_600,
+                });
+
+                collector.on("collect", async (interaction) => {
+                    if (
+                        ![
+                            "prevMaxPage",
+                            "prevPage",
+                            "nextPage",
+                            "nextMaxpage",
+                        ].includes(interaction.customId)
+                    )
+                        return; // only listen for page changes and not custom buttons
+                    let page = await pager.currentPage(interaction.customId);
+                    const [field1, field2] = page.raw.content.split(
+                        separator.item
+                    );
+                    let fieldsArray = newFields(field1, field2);
+
+                    await interaction.update({
+                        embeds: [
+                            new EmbedBuilder()
+                                .setTitle("Forge!")
+                                .setFields(...fieldsArray),
+                        ],
+                        components: [
+                            ...page.components,
+                            new ActionRowBuilder().addComponents(
+                                ...(buttons[pager.index * 2 + 1] !== undefined
+                                    ? [
+                                          buttons[pager.index * 2].button,
+                                          buttons[pager.index * 2 + 1].button,
+                                      ]
+                                    : [buttons[pager.index * 2].button])
+                            ),
+                        ],
+                    });
+                });
+            } catch (error) {
+                errorHandler(error, c, interaction, EmbedBuilder);
+            }
+        },
+    },
+    ...buttons
+);
+forge.category = "economy";
+forge.blacklist = true;
+
+module.exports = forge;

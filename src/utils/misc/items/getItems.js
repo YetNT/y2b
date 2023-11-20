@@ -33,6 +33,20 @@ const itemNames = (onlyForSale = false) => {
     return r;
 };
 
+const getForgableItemNames = () => {
+    let r = [];
+    for (let i in all) {
+        let item = all[i];
+        if (item.craftingRecipe === undefined) continue;
+        r.push({
+            recipe: item.craftingRecipe,
+            item: item,
+        });
+    }
+
+    return r;
+};
+
 const itemNamesNoShield = () => {
     // eslint-disable-next-line no-unused-vars
     let { shield, shieldhp, ...newInv } = all;
@@ -72,4 +86,5 @@ module.exports = {
     itemNames,
     itemNamesNoShield,
     randomItem,
+    getForgableItemNames,
 };

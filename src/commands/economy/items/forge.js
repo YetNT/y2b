@@ -95,8 +95,59 @@ const makeInteractions = () => {
             type: "button",
             authorOnly: true,
             customId: `forge-${item.item.name}`,
-            callback: (interaction) => {
-                interaction.update({
+            callback: async (interaction) => {
+                await interaction.update({
+                    content: "Trying to purchase....",
+                    embeds: [],
+                    components: [],
+                });
+
+                const keys = Object.keys(item.recipe);
+
+                const user = await User.findOne({
+                    userId: interaction.user.id,
+                });
+                let errors = [];
+                if (!user)
+                    return interaction.followUp(
+                        new EmbedError(
+                            "You cannot forge items when you've got nothing."
+                        ).output
+                    );
+
+                for (const key of keys) {
+                    if (key === "_amt") continue;
+                    if (!user.inventory[key]) {
+                        errors.push(
+                            `You do not have even \`1\` ${Items[key].name}!`
+                        );
+                    }
+                    if (user.inventory[key] < item.recipe[key]) {
+                        errors.push(
+                            `You do not have enough ${Items[key].emoji} **${
+                                Items[key].name
+                            }** (You need ${
+                                item.recipe[key] - user.inventory[key]
+                            } more)`
+                        );
+                    }
+                }
+
+                if (errors.length != 0)
+                    return await interaction.followUp(
+                        new EmbedError(errors.join("\n")).output
+                    );
+
+                for (const key of keys) {
+                    let amt = item.recipe[key];
+                    user.inventory[key] -= amt;
+                }
+
+                user.inventory[item.item.id] += item.recipe._amt;
+
+                await user.save();
+
+                await interaction.followUp({
                     content: `ok i'll make ${item.item.name}`,
                     components: [],
                     embeds: [],

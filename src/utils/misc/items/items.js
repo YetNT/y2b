@@ -30,9 +30,12 @@ class Item {
         rarity,
         emoji = undefined,
         useable = false,
-	craftingRecipe = {}
+        craftingRecipe = {}
     ) {
-	this.craftingRecipe = Object.entries(craftingRecipe).length === 0 ? undefined : craftingRecipe
+        this.craftingRecipe =
+            Object.entries(craftingRecipe).length === 0
+                ? undefined
+                : craftingRecipe;
         this.name = name;
         this.description = description;
         this.uses = uses;
@@ -107,10 +110,12 @@ let donut = new Item(
     false,
     "donut",
     r.rare,
-    "<:donut:1109381339947487374>",false, {
-	    "_amt": 1,
-	    "gem": 2_000,
-	    "coal": 20
+    "<:donut:1109381339947487374>",
+    false,
+    {
+        _amt: 1,
+        gem: 2_000,
+        coal: 20,
     }
 );
 let battery = new Item(
@@ -162,7 +167,7 @@ let floCoin = new Item(
     false,
     "floCoin",
     r.godly,
-    "<a:flocoin:1138787029560336474>",
+    "<a:flocoin:1138787029560336474>"
 );
 module.exports = {
     shield: shield,

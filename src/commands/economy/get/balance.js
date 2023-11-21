@@ -76,7 +76,7 @@ const bal = new SlashCommandObject({
             let totalNetworth = 0;
 
             if (user) {
-                if (user.inventory) {
+                if (!user.inventory) {
                     networth += user.balance + user.bank;
                     totalNetworth += networth;
                 } else {

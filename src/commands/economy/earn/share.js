@@ -15,6 +15,7 @@ const {
 const errorHandler = require("../../../utils/handlers/errorHandler");
 const Items = require("../../../utils/misc/items/items");
 const { emojiToUnicode } = require("../../../utils/misc/emojiManipulation");
+const { EmbedError } = require("../../../utils/handlers/embedError");
 
 const { SlashCommandObject } = require("ic4d");
 const share = new SlashCommandObject({
@@ -53,6 +54,11 @@ const share = new SlashCommandObject({
         try {
             const userToGiveId = interaction.options.get("user").value;
             let utgi = await client.users.fetch(userToGiveId); // cache the user to check if their a bot later on
+
+            if (utgi.bot)
+                return interaction.editReply(
+                    new EmbedError("You can't share with bots.").output
+                );
             const amount = interaction.options.get("amount").value;
             const item = interaction.options.get("item")?.value;
             let shareVar;
@@ -66,46 +72,18 @@ const share = new SlashCommandObject({
             let authorInv = author.inventory;
             let blacklist = user.blacklist;
 
-            if (!author || author.balance < 0 || !authorInv) {
-                interaction.editReply({
-                    embeds: [
-                        new EmbedBuilder()
-                            .setDescription("You've got nothing to give.")
-                            .setColor("Red"),
-                    ],
-                });
-                return;
-            }
-            if (utgi.bot == true) {
-                interaction.editReply({
-                    embeds: [
-                        new EmbedBuilder()
-                            .setDescription("You can't share with bots.")
-                            .setColor("Red"),
-                    ],
-                });
-                return;
-            }
-            if (blacklist && blacklist.ed == true) {
-                interaction.editReply({
-                    embeds: [
-                        new EmbedBuilder()
-                            .setDescription("that user is blacklisted.")
-                            .setColor("Red"),
-                    ],
-                });
-                return;
-            }
-            if (userToGiveId == interaction.user.id) {
-                interaction.editReply({
-                    embeds: [
-                        new EmbedBuilder()
-                            .setDescription("You cannot share with yourself")
-                            .setColor("Red"),
-                    ],
-                });
-                return;
-            }
+            if (!author || author.balance < 0 || !authorInv)
+                return interaction.editReply(
+                    new EmbedError("You've got nothing to give.").output
+                );
+            if (blacklist && blacklist.ed == true)
+                return interaction.editReply(
+                    new EmbedError("that user is blacklisted.").output
+                );
+            if (userToGiveId == interaction.user.id)
+                return interaction.editReply(
+                    new EmbedError("You cannot share with yourself").output
+                );
 
             const cooldownResult = await checkCooldown(
                 "share",

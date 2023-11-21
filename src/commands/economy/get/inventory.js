@@ -21,6 +21,7 @@ const { ProgressBar } = require("@yetnt/progressbar");
 const errorHandler = require("../../../utils/handlers/errorHandler");
 const { SlashCommandObject } = require("ic4d");
 const { Pager } = require("@fyleto/dpager");
+const { EmbedError } = require("../../../utils/handlers/embedError");
 
 const inv = new SlashCommandObject({
     name: "inventory",
@@ -44,6 +45,14 @@ const inv = new SlashCommandObject({
         try {
             let query;
             let user = interaction.options.get("user")?.value;
+            if (user) {
+                user = await client.users.fetch(user);
+                if (user.bot)
+                    return interaction.editReply(
+                        new EmbedError("A beep boop cant have an inventory")
+                            .output
+                    );
+            }
             let userInfo;
             if (user) {
                 query = {
@@ -58,12 +67,12 @@ const inv = new SlashCommandObject({
             }
             let userl = await User.findOne(query);
 
-            let inventory = userl.inventory;
+            let inventory;
             let badges = userl.badges;
             if (!badges) {
                 badges = { badges: {} };
             }
-            if (!inventory) {
+            if (!userl.inventory) {
                 interaction.editReply({
                     embeds: [
                         new EmbedBuilder()
@@ -73,6 +82,7 @@ const inv = new SlashCommandObject({
                 });
                 return;
             }
+            inventory = userl.inventory;
             let invOutput = [];
             let badgeOutput = [];
 

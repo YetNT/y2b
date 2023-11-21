@@ -4,7 +4,7 @@ const items = require("../../../utils/misc/items/items");
 const { comma } = require("../../../utils/formatters/beatify");
 const errorHandler = require("../../../utils/handlers/errorHandler");
 const { SlashCommandObject } = require("ic4d");
-
+const { EmbedError } = require("../../../utils/handlers/embedError");
 
 /**
  *
@@ -47,6 +47,13 @@ const bal = new SlashCommandObject({
         await interaction.deferReply();
         try {
             const option = interaction.options.get("userid")?.value;
+            if (option) {
+                let u = client.users.fetch(option);
+                if (u.bot)
+                    return interaction.editReply(
+                        new EmbedError("Bots are broke.").output
+                    );
+            }
             let querySet;
 
             if (option) {
@@ -62,17 +69,18 @@ const bal = new SlashCommandObject({
             };
 
             let user = await User.findOne(query);
-            let inventory = user.inventory;
+            let inventory;
 
             let networth = 0;
             let inventoryNetworth = 0;
             let totalNetworth = 0;
 
             if (user) {
-                if (!inventory) {
+                if (user.inventory) {
                     networth += user.balance + user.bank;
                     totalNetworth += networth;
                 } else {
+                    inventory = user.inventory;
                     networth += user.balance + user.bank;
                     inventoryNetworth += calculateInv(inventory);
                     totalNetworth += networth + inventoryNetworth;
@@ -160,7 +168,7 @@ const bal = new SlashCommandObject({
             } else {
                 // if the user does not exist in the database =
                 if (option !== null) {
-                    interaction.editReply(`${option} has nothing`);
+                    interaction.editReply(`<@${option}> has nothing`);
                 } else {
                     interaction.editReply(`You do not have anything`);
                 }
@@ -169,9 +177,9 @@ const bal = new SlashCommandObject({
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-})
+});
 
-bal.category = "economy"
-bal.blacklist = true
+bal.category = "economy";
+bal.blacklist = true;
 
-module.exports = bal
+module.exports = bal;

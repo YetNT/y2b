@@ -43,6 +43,10 @@ const rob = new SlashCommandObject({
             const victimDm = await client.users
                 .fetch(victimId)
                 .catch(() => null); // to dm the user.
+            if (victimDm.bot)
+                return interaction.editReply(
+                    new EmbedError("You can't rob bots tf").output
+                );
 
             if (victimId == interaction.user.id)
                 return interaction.editReply(
@@ -263,5 +267,6 @@ const rob = new SlashCommandObject({
 });
 rob.category = "economy";
 rob.blacklist = true;
+rob.canBeServerDisabled = true;
 
 module.exports = rob;

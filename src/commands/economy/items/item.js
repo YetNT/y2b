@@ -1,6 +1,9 @@
 const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
 const Items = require("../../../utils/misc/items/items");
-const { itemNames } = require("../../../utils/misc/items/getItems");
+const {
+    itemNames,
+    getRecipeItems,
+} = require("../../../utils/misc/items/getItems");
 const { coin } = require("../../../utils/formatters/beatify");
 const errorHandler = require("../../../utils/handlers/errorHandler");
 const { emojiToImage } = require("../../../utils/misc/emojiManipulation");
@@ -62,6 +65,13 @@ const item = new SlashCommandObject({
                 fields.push({
                     name: "Sell Price",
                     value: coin(item.sell),
+                    inline: true,
+                });
+            }
+            if (item.craftingRecipe !== undefined) {
+                fields.push({
+                    name: "Forge Recipe",
+                    value: getRecipeItems(item.craftingRecipe),
                     inline: true,
                 });
             }

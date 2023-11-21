@@ -91,7 +91,22 @@ let stick = new Item(
     r.common,
     "<:stick:1106945454572314695>"
 );
-let gem = new Item("Gem", "shine", [], 6000, true, "gem", r.rare, ":gem:");
+let gem = new Item(
+    "Gem",
+    "shine",
+    [],
+    -1,
+    2.8e4,
+    "gem",
+    r.rare,
+    ":gem:",
+    false,
+    {
+        _amt: 1,
+        greenCrystal: 20,
+        whiteCrystal: 2000,
+    }
+);
 let coal = new Item(
     "Coal",
     "COAL",
@@ -131,7 +146,7 @@ let battery = new Item(
 let gCrystal = new Item(
     "Green Crystal",
     "DAMN DAT SHI RARE!",
-    ["Can be sold"],
+    [],
     -1,
     2_000_000,
     "greenCrystal",
@@ -141,7 +156,7 @@ let gCrystal = new Item(
 let wCrystal = new Item(
     "White Crystal",
     "Woah a white crystal. Not bad, not bad",
-    ["Can be sold"],
+    [],
     -1,
     rock.price + 5,
     "whiteCrystal",
@@ -158,7 +173,6 @@ let oCrystal = new Item(
     r.rare,
     "<:orangecrystal:1137408967681769492>"
 );
-// eslint-disable-next-line no-unused-vars
 let floCoin = new Item(
     "Flo's Spinning Coin",
     "Can you please stop laughing so hard that you pooped into space?\n- Flo",

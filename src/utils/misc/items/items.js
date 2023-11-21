@@ -104,7 +104,7 @@ let coal = new Item(
 );
 let donut = new Item(
     "Donut",
-    "Yay a donut!",
+    "Yay a donut! Wait why tf can you forge it with coal and a mineral?",
     ["When you fail to rob a user, one donut is subtracted instead of fines."],
     -1,
     false,

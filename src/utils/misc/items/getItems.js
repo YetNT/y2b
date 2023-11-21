@@ -80,10 +80,37 @@ const randomItem = () => {
     };
 };
 
+/**
+ *
+ * @param {*} obj Recipe object
+ * @param {User} user User object
+ */
+function getRecipeItems(obj, user = undefined) {
+    let str = ["\n"];
+    let keys = Object.keys(obj);
+    for (const key of keys) {
+        if (key == "_amt" || key == "amt") continue;
+        let amtNeeded = obj[key]; // amount needed by the recipe
+        let userAmt = user !== undefined ? user.inventory[key] : undefined; // amount the user has
+        let amtStr =
+            userAmt !== undefined
+                ? `\`${userAmt}/${amtNeeded}\``
+                : `\`${amtNeeded}\``;
+
+        let emoji = all[key].emoji;
+        let itemName = all[key].name;
+        let itemStr = `${amtStr} ${emoji} ___${itemName}___`;
+        str.push(itemStr);
+    }
+
+    return str.join("\n");
+}
+
 module.exports = {
     all,
     withoutShield,
     itemNames,
+    getRecipeItems,
     itemNamesNoShield,
     randomItem,
     getForgableItemNames,

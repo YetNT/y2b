@@ -7,7 +7,10 @@ const {
 } = require("discord.js");
 const User = require("../../../models/User");
 const Items = require("../../../utils/misc/items/items");
-const { getForgableItemNames } = require("../../../utils/misc/items/getItems");
+const {
+    getForgableItemNames,
+    getRecipeItems,
+} = require("../../../utils/misc/items/getItems");
 // const { comma, coin, shopify } = require("../../../utils/formatters/beatify");
 const errorHandler = require("../../../utils/handlers/errorHandler");
 const { SlashCommandObject, CommandInteractionObject } = require("ic4d");
@@ -26,29 +29,6 @@ const separator = {
     title: "$(TITLE)$",
     item: "$(ITEM)$",
 };
-
-/**
- *
- * @param {User} user
- * @param {*} obj
- */
-function getRecipeItems(user, obj) {
-    let str = ["\n"];
-    let keys = Object.keys(obj);
-    for (const key of keys) {
-        if (key == "_amt" || key == "amt") continue;
-        let amtNeeded = obj[key]; // amount needed by the recipe
-        let userAmt = user.inventory[key]; // amount the user has
-        let amtStr = `\`${userAmt}/${amtNeeded}\``;
-
-        let emoji = Items[key].emoji;
-        let itemName = Items[key].name;
-        let itemStr = `${amtStr} ${emoji} ___${itemName}___`;
-        str.push(itemStr);
-    }
-
-    return str.join("\n");
-}
 
 function joinArrayPairs(arr) {
     const result = [];
@@ -148,9 +128,16 @@ const makeInteractions = () => {
                 await user.save();
 
                 await interaction.followUp({
-                    content: `ok i'll make ${item.item.name}`,
+                    embeds: [
+                        new EmbedBuilder()
+                            .setDescription(
+                                `Succesfully forged ${item.recipe._amt} ${item.item.emoji} ${item.item.name}`
+                            )
+                            .setTitle("Succesful Forge!")
+                            .setColor("Green"),
+                    ],
                     components: [],
-                    embeds: [],
+                    content: "_ _",
                 });
             },
         });
@@ -187,7 +174,7 @@ const forge = new SlashCommandObject(
                 for (let i in f) {
                     let recipe = f[i].recipe;
                     let item = f[i].item;
-                    let recipeStr = getRecipeItems(user, recipe);
+                    let recipeStr = getRecipeItems(recipe, user);
                     let forgeStr = `Forges \`${recipe._amt}\` ${item.emoji} ${item.name}`;
 
                     pageArray.push(

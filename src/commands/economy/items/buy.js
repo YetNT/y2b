@@ -5,14 +5,7 @@ const { itemNames } = require("../../../utils/misc/items/getItems");
 const { comma, coin, shopify } = require("../../../utils/formatters/beatify");
 const errorHandler = require("../../../utils/handlers/errorHandler");
 const { SlashCommandObject } = require("ic4d");
-
-class EmbedError {
-    constructor(text) {
-        this.output = {
-            embeds: [new EmbedBuilder().setDescription(text)],
-        };
-    }
-}
+const { EmbedError } = require("../../../utils/handlers/embedError");
 
 const buy = new SlashCommandObject({
     name: "buy",

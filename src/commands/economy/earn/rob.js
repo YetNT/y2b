@@ -9,13 +9,7 @@ const {
 } = require("../../../utils/handlers/cooldown");
 const errorHandler = require("../../../utils/handlers/errorHandler");
 const { SlashCommandObject } = require("ic4d");
-class EmbedError {
-    constructor(text) {
-        this.output = {
-            embeds: [new EmbedBuilder().setDescription(text)],
-        };
-    }
-}
+const { EmbedError } = require("../../../utils/handlers/embedError");
 
 const rob = new SlashCommandObject({
     name: "rob",

@@ -16,14 +16,7 @@ const errorHandler = require("../../../utils/handlers/errorHandler");
 const { SlashCommandObject, CommandInteractionObject } = require("ic4d");
 const { Pager } = require("@fyleto/dpager");
 const { emojiToUnicode } = require("../../../utils/misc/emojiManipulation");
-
-class EmbedError {
-    constructor(text) {
-        this.output = {
-            embeds: [new EmbedBuilder().setDescription(text)],
-        };
-    }
-}
+const { EmbedError } = require("../../../utils/handlers/embedError");
 
 const separator = {
     title: "$(TITLE)$",

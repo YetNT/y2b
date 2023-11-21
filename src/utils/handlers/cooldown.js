@@ -1,6 +1,8 @@
 const User = require("../../models/User");
 const strToMilli = require("../formatters/strToMilli");
 const cds = require("../misc/cooldowns");
+require("dotenv").config();
+const { devs } = require("../../../config.json");
 
 /**
  *
@@ -96,6 +98,10 @@ const checkCooldown = async (
     complex = false,
     custom = null
 ) => {
+    if (interaction.client.token == process.env.TOKEN) {
+        // beta bot, so dont cooldown devs for testing reasons.
+        if (devs.includes(interaction.user.id)) return;
+    }
     let query = {
         userId: interaction.user.id,
     };

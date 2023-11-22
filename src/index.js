@@ -33,7 +33,13 @@ const handler = new CommandHandler(client, path.join(__dirname, "commands"), {
 const ints = new InteractionHandler(
     client,
     path.join(__dirname, "commands"),
-    {},
+    {
+        loadedNoChanges: "(CM) NAME was loaded. No changes were made",
+        loaded: "(cm) NAME was loaded",
+        deleted: "(cm) NAME was deleted",
+        skipped: "(cm) NAME was skipped",
+        edited: "(cm) NAME was edited",
+    },
     true
 );
 const ready = new ReadyHandler(
@@ -57,6 +63,7 @@ const ready = new ReadyHandler(
     },
     async () => {
         await handler.registerCommands();
+        await ints.registerContextMenus(true);
     },
     status,
     (client) => {

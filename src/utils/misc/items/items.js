@@ -183,6 +183,16 @@ let floCoin = new Item(
     r.godly,
     "<a:flocoin:1138787029560336474>"
 );
+let flobirthday = new Item(
+    "Flo's Lost birthday present",
+    "Once upon a time, a guy named Flo got a birthday present from his friend yet",
+    [],
+    27_119_000,
+    true,
+    "floBirthday",
+    r.insane,
+    ":birthday:"
+);
 module.exports = {
     shield: shield,
     shieldhp: shieldhp,
@@ -196,4 +206,5 @@ module.exports = {
     whiteCrystal: wCrystal,
     orangeCrystal: oCrystal,
     floCoin: floCoin,
+    floBirthday: flobirthday,
 };

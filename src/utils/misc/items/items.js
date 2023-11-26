@@ -191,7 +191,7 @@ let flobirthday = new Item(
     true,
     "floBirthday",
     r.insane,
-    ":birthday:"
+    ":gift:"
 );
 module.exports = {
     shield: shield,

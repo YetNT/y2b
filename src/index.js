@@ -12,6 +12,7 @@ const middleware = require("./events/middleware");
 const status = require("./events/status");
 const moment = require("moment");
 const path = require("path");
+const items = require("./utils/misc/items/items.js")
 require("moment-duration-format");
 
 const express = require("express");
@@ -66,6 +67,21 @@ const ready = new ReadyHandler(
         await ints.registerContextMenus(true);
     },
     status,
+    async (client) => {
+        if (client.token !== process.env.MAIN) return;
+        const b = [
+            items,
+            await client.application.commands.fetch({ locale: "en-GB" }),
+        ];
+        fetch("http://dono-03.danbot.host:5297/y2b/update", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "api-authority-key": process.env.Y2B_API_KEY,
+            },
+            body: JSON.stringify(b),
+        }).catch((err) => console.error(err));
+    },
     (client) => {
         console.log(`${client.user.tag} is online.`);
     }
@@ -75,7 +91,7 @@ const ready = new ReadyHandler(
     try {
         await handler.handleCommands(...middleware);
         ints.start("This aint your interaction!");
-        ready.execute();
+        await ready.execute();
         await mongoose.connect(process.env.MONGODB_URI);
         console.log("connected to DB");
 

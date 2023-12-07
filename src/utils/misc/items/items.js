@@ -50,6 +50,7 @@ class Item {
         this.rarity = rarity;
         this.emoji = emoji !== undefined ? emoji : undefined;
         this.useable = useable === false ? false : true;
+        this.image = undefined
     }
 }
 

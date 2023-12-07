@@ -12,7 +12,8 @@ const middleware = require("./events/middleware");
 const status = require("./events/status");
 const moment = require("moment");
 const path = require("path");
-const items = require("./utils/misc/items/items.js")
+const items = require("./utils/misc/items/items.js");
+const { emojiToImage } = require("./utils/misc/emojiManipulation");
 require("moment-duration-format");
 
 const express = require("express");
@@ -69,6 +70,13 @@ const ready = new ReadyHandler(
     status,
     async (client) => {
         if (client.token !== process.env.MAIN) return;
+        Object.keys(items).forEach(async (key) => {
+            const emoji = items[key].emoji;
+            items[key].image =
+                emoji !== undefined
+                    ? await emojiToImage(client, emoji)
+                    : undefined;
+        });
         const b = [
             items,
             await client.application.commands.fetch({ locale: "en-GB" }),

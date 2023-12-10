@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const {CachedSchema} = require("./cache.js");
 let Badges = require("../utils/misc/badges/badges.json");
 // eslint-disable-next-line no-unused-vars
 let { shield, shieldhp, ...newInv } = require("../utils/misc/items/items");
@@ -103,22 +103,20 @@ let scheme = {
         },
     },
 };
+(async () => {
+    for (let badge in Badges) {
+        scheme.badges[Badges[badge].id] = {
+            type: Boolean,
+            default: false,
+        };
+    }
 
-for (let badge in Badges) {
-    scheme.badges[Badges[badge].id] = {
-        type: Boolean,
-        default: false,
-    };
-}
-
-for (let item in newInv) {
-    let defaultAmount = newInv[item].id === "rock" ? 10 : 0;
-    scheme.inventory[newInv[item].id] = {
-        type: Number,
-        default: defaultAmount,
-    };
-}
-
-const userSchema = new Schema(scheme);
-
-module.exports = model("user", userSchema);
+    for (let item in newInv) {
+        let defaultAmount = newInv[item].id === "rock" ? 10 : 0;
+        scheme.inventory[newInv[item].id] = {
+            type: Number,
+            default: defaultAmount,
+        };
+    }
+})();
+module.exports = new CachedSchema("user", scheme);

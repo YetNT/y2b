@@ -1,14 +1,14 @@
-const { Schema, model } = require('mongoose')
+const {CachedSchema} = require("./cache.js");
 
-const serverCommandSchema = new Schema({
+const serverCommandSchema = {
     guildId: {
         type: String,
-        required: true
+        required: true,
     },
-    rob : {
+    rob: {
         type: Boolean,
-        default: false
-    }
-})
+        default: false,
+    },
+};
 
-module.exports = model('serverCommand', serverCommandSchema)
+module.exports = new CachedSchema("serverCommand", serverCommandSchema);

@@ -1,0 +1,143 @@
+const { Schema, model } = require("mongoose");
+const NodeCache = require("node-cache");
+const _ = require("lodash");
+
+// Create a new instance of NodeCache
+const cache = new NodeCache();
+
+class CachedSchema {
+    constructor(name, body) {
+        this.name = name;
+        /**
+         * Id which to get. User schema uses it's own parameter, userId, and ServerCommand uses guildId
+         */
+        this.id =
+            name === "user"
+                ? "userId"
+                : name === "serverCommand"
+                ? "guildId"
+                : undefined;
+        const scheme = new Schema(body);
+        // model('user', schema: Schema)
+        this.model = model(name, scheme);
+        this.cache = cache;
+    }
+
+    /**
+ * Save an array (Collection) to the cache.
+ * @param {{}[]} existing
+ */
+#cacheSave(existing) {
+    const serializedData = JSON.stringify(existing);
+    this.cache.set(this.name, serializedData);
+}
+
+/**
+ * Get one array (Collection) from cache
+ * @returns {{}[]}
+ */
+#cacheGet() {
+    const serializedData = this.cache.get(this.name);
+    return serializedData ? JSON.parse(serializedData) : [];
+}
+
+
+    /**
+     * Add one document to the class's collection's cache.
+     * @param {{*}} doc
+     */
+    addDocument(doc) {
+        const existing = this.#cacheGet();
+        existing.push(doc);
+        this.#cacheSave(existing);
+    }
+
+    /**
+     * Get a single document with a mongodb query like {userId: "id"}
+     * @returns {{}}
+     */
+    async getDocument(query) {
+
+        let existing = this.#cacheGet();
+        if (existing.length === 0) {
+            const doc = await this.model.findOne(query);
+            existing.push(doc);
+            this.#cacheSave(existing);
+            return doc;
+        }
+
+
+        for (const key of Object.keys(query)) {
+            existing = existing.filter((e) => {const isEqual = _.isEqual(e[key], query[key])
+                return isEqual;
+            });
+        }
+        return existing.length > 0 ? existing[0] : undefined;
+    }
+
+    async getDocuments(filter) {
+        const existing = this.#cacheGet();
+        if (existing.length < 2) {
+            return existing.filter(filter);
+        } else {
+            const docs = await this.model.find();
+            existing.push(docs);
+            this.#cacheSave(existing);
+            return docs.filter(filter);
+        }
+    }
+
+    /**
+     * MongoDB get document equalvalent with caching though.
+     * @param {{*}} query Object query
+     * @returns
+     */
+    async findOne(query) {
+        return await this.getDocument(query);
+    }
+
+    /**
+     * @param {(({}) => {})} filter
+     * @param {number?} limit
+     * @returns {{}[]}
+     */
+    async find(filter, limit = undefined) {
+        let docs = await this.getDocuments(filter);
+
+        // Apply the limit if it's provided
+        if (limit !== undefined) {
+            docs = docs.slice(0, limit);
+        }
+
+        return docs;
+    }
+
+    /**
+     * MongoDB save document. Saves a single document to both the database, then copies over the entries to the cache.
+     */
+    async save(doc) {
+        const result = await this.model.updateOne({ id: doc.id }, { $set: doc }); // since this is a single document, we can just use mongodb's save method
+        let existing = this.#cacheGet();
+
+        if (existing.length !== 0) {
+            existing = existing.filter((e) => {
+                e[this.id] !== doc[this.id];
+            }); // removes old entries (i hope)
+        }
+        existing.push(doc);
+        this.#cacheSave(existing);
+    }
+
+    /**
+     * MongoDB equavlianet for Document.save(). Since i cant find  way to append this method to the actual document to keep old code the same, this has to be used.
+     * @param {{*}} obj
+     * @returns
+     */
+    newDoc(obj) {
+        return new this.model(obj);
+    }
+
+    // (only the functions i need will be added)
+}
+
+module.exports = {CachedSchema, cache};

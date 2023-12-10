@@ -1,7 +1,7 @@
 const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
 
 module.exports = {
-	isCommand: false,
+    isCommand: false,
     body: {
         name: "disable",
         description: "Disable a command in this server",
@@ -21,7 +21,7 @@ module.exports = {
             },
         ],
     },
-    callback: async (client, interaction, serverCommand, command) => {
+    callback: async (client, interaction, sc, serverCommand, command) => {
         await interaction.editReply({
             embeds: [
                 new EmbedBuilder()
@@ -31,6 +31,6 @@ module.exports = {
                     ),
             ],
         });
-        await serverCommand.save();
+        await sc.save(serverCommand);
     },
 };

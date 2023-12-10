@@ -118,7 +118,7 @@ const makeInteractions = () => {
 
                 user.inventory[item.item.id] += item.recipe._amt;
 
-                await user.save();
+                await User.save(user);
 
                 await interaction.followUp({
                     embeds: [

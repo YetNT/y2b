@@ -28,7 +28,7 @@ const add = async (user, amount, UserId, item = false, itemId = null) => {
         if (user) {
             user.balance += amount;
         } else {
-            user = new User({
+            user = User.newDoc({
                 userId: UserId,
                 balance: amount,
             });
@@ -208,7 +208,7 @@ const promocode = new SlashCommandObject({
                     promocodedb.website = true;
                 }
             }
-            await user.save();
+            await User.save(user);
         } catch (error) {
             errorHandler(error, client, interaction, EmbedBuilder);
         }

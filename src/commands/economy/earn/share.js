@@ -183,7 +183,7 @@ const share = new SlashCommandObject({
                     } else {
                         // User does not exist
                         if (item) {
-                            user = new User({
+                            user = User.newDoc({
                                 userId: userToGiveId,
                                 inventory: {
                                     [item]: amount,
@@ -191,7 +191,7 @@ const share = new SlashCommandObject({
                             });
                             authorInv[item] -= amount;
                         } else {
-                            user = new User({
+                            user = User.newDoc({
                                 userId: userToGiveId,
                                 balance: amount,
                             });
@@ -199,8 +199,8 @@ const share = new SlashCommandObject({
                         }
                     }
 
-                    await user.save();
-                    await author.save();
+                    await User.save(user);
+                    await User.save(author);
 
                     let response;
                     if (item) {

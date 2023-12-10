@@ -104,7 +104,7 @@ module.exports = {
         description: "Click the right button for a reward!",
         type: ApplicationCommandOptionType.Subcommand,
     },
-isCommand: false,
+    isCommand: false,
     callback: async (client, interaction) => {
         try {
             const cooldownResult = await checkCooldown(
@@ -147,7 +147,7 @@ isCommand: false,
                     if (user) {
                         user.balance += reward;
                     } else {
-                        user = new User({
+                        user = User.newDoc({
                             userId: interaction.user.id,
                             balance: reward,
                         });
@@ -165,7 +165,7 @@ isCommand: false,
                         ],
                         components: [],
                     });
-                    await user.save();
+                    await User.save(user);
                     newCooldown(
                         Cooldowns.challenge.buttons.right,
                         interaction,

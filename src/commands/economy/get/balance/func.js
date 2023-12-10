@@ -46,11 +46,7 @@ async function balance(interaction, query, option, cachedUser) {
             interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
-                        .setTitle(
-                            `${
-                                cachedUser.username
-                            }'s Balance`
-                        )
+                        .setTitle(`${cachedUser.username}'s Balance`)
                         .setFields(
                             {
                                 name: "Balance",
@@ -122,6 +118,7 @@ async function balance(interaction, query, option, cachedUser) {
     } else {
         // if the user does not exist in the database =
         if (option !== null) {
+            console.log(option);
             interaction.editReply(`<@${option}> has nothing`);
         } else {
             interaction.editReply(`You do not have anything`);

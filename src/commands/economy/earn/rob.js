@@ -137,13 +137,13 @@ const rob = new SlashCommandObject({
                             ],
                         })
                         .catch(() => null);
-                    await victim.save();
+                    await User.save(victim);
                     if (inventory.shield.hp == 0) {
                         inventory.shield.amt -= 1;
                         await interaction.followUp(
                             "You broke this user's shield."
                         );
-                        await victim.save();
+                        await User.save(victim);
 
                         await victimDm
                             .send({
@@ -257,8 +257,8 @@ const rob = new SlashCommandObject({
                 }
             }
 
-            await author.save();
-            await victim.save();
+            await User.save(author);
+            await User.save(victim);
             // Moved new Cooldown below cooldown check because shields returned. (line 107)
         } catch (error) {
             errorHandler(error, client, interaction, EmbedBuilder);

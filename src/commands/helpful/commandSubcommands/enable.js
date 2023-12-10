@@ -1,8 +1,8 @@
 const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
 
 module.exports = {
-	isCommand: false,
-	body: {
+    isCommand: false,
+    body: {
         name: "enable",
         description: "Enable a command in this server",
         type: ApplicationCommandOptionType.Subcommand,
@@ -21,7 +21,7 @@ module.exports = {
             },
         ],
     },
-    callback: async (client, interaction, serverCommand, command) => {
+    callback: async (client, interaction, sc, serverCommand, command) => {
         serverCommand[command] = false;
         await interaction.editReply({
             embeds: [
@@ -32,6 +32,6 @@ module.exports = {
                     ),
             ],
         });
-        await serverCommand.save();
+        await sc.save(serverCommand);
     },
 };

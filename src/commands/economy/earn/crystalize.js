@@ -38,7 +38,7 @@ async function crystalizeRocks(inventory, amt, user) {
     inventory.orangeCrystal += orangeCrystalsUser;
     inventory.whiteCrystal += whiteCrystalsUser;
 
-    await user.save();
+    await User.save(user);
 
     return {
         orangeCrystals: orangeCrystalsUser,

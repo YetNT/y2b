@@ -40,6 +40,7 @@ const command = new SlashCommandObject({
                 await subcommands.list.callback(
                     client,
                     interaction,
+                    ServerCommand,
                     serverCommand
                 );
             } else if (subcommand === "enable") {
@@ -57,6 +58,7 @@ const command = new SlashCommandObject({
                 await subcommands.enable.callback(
                     client,
                     interaction,
+                    ServerCommand,
                     serverCommand,
                     command
                 );
@@ -71,7 +73,7 @@ const command = new SlashCommandObject({
                 if (serverCommand) {
                     serverCommand[command] = true;
                 } else {
-                    serverCommand = new ServerCommand({
+                    serverCommand = ServerCommand.newDoc({
                         guildId: guildId,
                         [command]: true,
                     });
@@ -80,6 +82,7 @@ const command = new SlashCommandObject({
                 subcommands.disable.callback(
                     client,
                     interaction,
+                    ServerCommand,
                     serverCommand,
                     command
                 );

@@ -69,7 +69,7 @@ const dep = new SlashCommandObject({
             user.balance -= amount;
             user.bank += amount;
 
-            await user.save();
+            await User.save(user);
 
             interaction.editReply({
                 embeds: [

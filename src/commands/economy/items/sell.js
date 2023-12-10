@@ -69,7 +69,7 @@ const sell = new SlashCommandObject({
             if (user) {
                 user.balance += cost;
             } else {
-                user = new User({
+                user = User.newDoc({
                     ...query,
                     balance: cost,
                 });
@@ -77,7 +77,7 @@ const sell = new SlashCommandObject({
 
             inventory[item] -= amount;
 
-            await user.save();
+            await User.save(user);
 
             interaction.editReply({
                 embeds: [

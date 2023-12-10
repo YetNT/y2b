@@ -17,10 +17,19 @@ const { Pager } = require("@fyleto/dpager");
 
 async function inventory(interaction, query, userInfo) {
     let userl = await User.findOne(query);
-if (!userl) return interaction.editReply({embeds: [new EmbedBuilder().setTitle(`${userInfo.username}'s Inventory`).setDescription("User does not have an inventory, nor a balance.")]})
+    if (!userl)
+        return interaction.editReply({
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle(`${userInfo.username}'s Inventory`)
+                    .setDescription(
+                        "User does not have an inventory, nor a balance."
+                    ),
+            ],
+        });
     let inventory;
     let badges;
-    if (!"badges" in userl) {
+    if ("badges" in userl == false) {
         badges = { badges: {} };
     } else {
         badges = userl.badges;

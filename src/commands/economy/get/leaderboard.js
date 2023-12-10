@@ -13,18 +13,20 @@ const lb = new SlashCommandObject({
         await interaction.deferReply();
         try {
             const server = await client.guilds.cache.get(interaction.guild.id);
-            const leaderboard = await User.find({ balance: { $exists: true } })
-                .sort({ balance: -1 })
-                .limit(5)
-                .select("userId balance -_id");
+            const leaderboard = await User.find((doc) => {
+                return doc.hasOwnProperty("balance") === true;
+            });
+				leaderboard.sort((a, b) => a.balance - b.balance)
+				console.log(leaderboard)
 
             let serverLeaderboard = [];
-            const sL = await User.find({
-                balance: { $exists: true },
-            })
-                .sort({ balance: -1 })
-                .select("userId balance -_id");
-            for (let user of sL) {
+            const sL = await User.find(
+                (doc) => {return doc.hasOwnProperty("balance") === true}
+            )
+				sL.sort((a, b) => a.balance - b.balance)
+				console.log(sL)
+            //    .select("userId balance -_id");
+            for (let user of leaderboard) {
                 let isMember = await server.members
                     .fetch(user.userId)
                     .then(() => true)
@@ -33,13 +35,12 @@ const lb = new SlashCommandObject({
                     serverLeaderboard.push(user);
                 }
             }
-            console.log(serverLeaderboard);
 
             let usernames = { lb: [], item: [], slb: [] };
 
             let globalLb = [];
             let globalPos = 0;
-            for (let i = 0; i < leaderboard.length; i++) {
+            for (let i = 0; i < 5; i++) {
                 let cachedUser = await client.users
                     .fetch(leaderboard[i].userId)
                     .catch(() => null);
@@ -64,7 +65,7 @@ const lb = new SlashCommandObject({
 
             let serverLb = [];
             let serverPos = 0;
-            for (let i = 0; i < serverLeaderboard.length; i++) {
+            for (let i = 0; i < 5; i++) {
                 let cachedUser = await client.users
                     .fetch(serverLeaderboard[i].userId)
                     .catch(() => null);

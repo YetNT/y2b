@@ -69,7 +69,7 @@ const withdraw = new SlashCommandObject({
             user.bank -= amount;
             user.balance += amount;
 
-            await user.save();
+            await User.save(user);
 
             interaction.editReply({
                 embeds: [

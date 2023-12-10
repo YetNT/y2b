@@ -40,13 +40,13 @@ const daily = new SlashCommandObject({
             if (user) {
                 user.balance += dailyAmount;
             } else {
-                user = new User({
+                user = User.newDoc({
                     ...query,
                     balance: dailyAmount,
                 });
             }
 
-            await user.save();
+            await User.save(user);
 
             interaction.editReply({
                 embeds: [

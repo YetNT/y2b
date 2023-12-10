@@ -144,6 +144,7 @@ const work = new SlashCommandObject({
                   );
 
             let user = await User.findOne(query);
+				console.log(user)
 
             if (user) {
                 if (earn === true) {
@@ -155,11 +156,11 @@ const work = new SlashCommandObject({
                     if (/\{AMT\}/.test(reply) == true) user.balance -= payment;
                 }
 
-                await user.save();
+                await User.save(user);
             } else {
                 if (earn === true) {
                     interaction.editReply({ embeds: embed });
-                    user = new User({
+                    user = User.newDoc({
                         ...query,
                         balance: payment,
                     });
@@ -172,13 +173,13 @@ const work = new SlashCommandObject({
                             )
                     );
                     interaction.editReply({ embeds: embed });
-                    user = new User({
+                    user = User.newDoc({
                         ...query,
                         balance: payment,
                     });
                 }
 
-                await user.save();
+                await User.save(user);
             }
 
             await newCooldown(Cooldowns.work, interaction, "work");

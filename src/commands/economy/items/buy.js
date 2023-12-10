@@ -100,7 +100,7 @@ const buy = new SlashCommandObject({
                 }
             }
 
-            await user.save();
+            await User.save(user);
 
             interaction.editReply({
                 embeds: [

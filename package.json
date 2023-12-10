@@ -22,9 +22,11 @@
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
     "ic4d": "^2.1.0",
+    "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "moment-duration-format": "^2.3.2",
     "mongoose": "^8.0.1",
+    "node-cache": "^5.1.2",
     "path": "^0.12.7",
     "topgg-autoposter": "^2.0.1"
   },

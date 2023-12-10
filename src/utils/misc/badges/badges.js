@@ -38,7 +38,7 @@ const giveBadge = async (userId, badgeId) => {
         }
     } else {
         if (!user) {
-            user = new User({
+            user = User.newDoc({
                 userId: userId.toString(),
                 badges: {
                     [badgeId]: true,
@@ -51,7 +51,7 @@ const giveBadge = async (userId, badgeId) => {
         }
     }
 
-    await user.save();
+    await User.save(user);
 };
 
 /**

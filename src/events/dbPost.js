@@ -49,12 +49,12 @@ const response = async (client, userId, siteName) => {
     if (user) {
         user.balance += amt;
     } else {
-        user = new User({
+        user = User.newDoc({
             userId: userId,
             balance: amt,
         });
     }
-    await user.save();
+    await User.save(user);
     await dm
         .send({
             embeds: [

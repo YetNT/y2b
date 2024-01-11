@@ -1,0 +1,197 @@
+{
+    "tailor": {
+        "type": "tailor",
+        "name": "Tailor",
+        "s": [
+            "You made a lovely dress for an elderly lady and earned {AMT} coins.",
+            "You altered a suit for a businessman and earned {AMT} coins."
+        ],
+        "f": [
+            "You tried to sew a shirt, but ended up with a mess of tangled thread.",
+            "You ruined a dress while trying to sew on a button."
+        ],
+        "min": 500,
+        "max": 1500
+    },
+    "farmer": {
+        "type": "farmer",
+        "name": "Farmer",
+        "s": [
+            "You harvested a bumper crop of wheat and earned {AMT} coins.",
+            "You sold fresh milk from your dairy farm and earned {AMT} coins."
+        ],
+        "f": [
+            "You lost a valuable herd of cattle to disease.",
+            "A hailstorm destroyed your fields, leaving you with no harvest to sell."
+        ],
+        "min": 1000,
+        "max": 3000
+    },
+    "gamer": {
+        "type": "gamer",
+        "name": "Gamer",
+        "s": [
+            "You won a tournament and earned {AMT} coins.",
+            "You sold a rare item for a high price and earned {AMT} coins."
+        ],
+        "f": [
+            "You lost all your progress in a game due to a bug.",
+            "You got scammed by someone promising to sell you in-game currency."
+        ],
+        "min": 100,
+        "max": 4200
+    },
+    "youtuber": {
+        "type": "youtuber",
+        "name": "YouTuber",
+        "s": [
+            "Your latest video went viral and earned you {AMT} coins from ad revenue.",
+            "You got a brand deal for your channel and earned {AMT} coins."
+        ],
+        "f": [
+            "Your channel got demonetized for violating community guidelines.",
+            "Your latest video got a lot of dislikes and negative comments."
+        ],
+        "min": 2000,
+        "max": 5000
+    },
+    "twitch-streamer": {
+        "type": "twitch-streamer",
+        "name": "Twitch Streamer",
+        "s": [
+            "You got a lot of donations during your last stream and earned {AMT} coins.",
+            "You got a sponsor for your channel and earned {AMT} coins."
+        ],
+        "f": [
+            "Your internet went out during a stream, causing you to lose viewers and potential income.",
+            "You accidentally broke a game"
+        ],
+        "min": 1500,
+        "max": 3500
+    },
+    "discord-mod": {
+        "type": "discord-mod",
+        "name": "Discord Moderator",
+        "s": [
+            "You successfully handled a sensitive situation and earned {AMT}.",
+            "You helped a new user navigate the server and earned {AMT}."
+        ],
+        "f": [
+            "You accidentally deleted a channel and had to spend time restoring it.",
+            "You had to deal with a toxic user and it took up a lot of your time and energy."
+        ],
+        "min": 500,
+        "max": 1000
+    },
+    "teacher": {
+        "type": "teacher",
+        "name": "Teacher",
+        "s": [
+            "You helped a struggling student improve their grades and earned {AMT}.",
+            "You received excellent feedback from students and earned {AMT}."
+        ],
+        "f": [
+            "You had to spend extra time grading a difficult assignment.",
+            "You had to deal with a disruptive student and it took up a lot of your time and energy."
+        ],
+        "min": 2500,
+        "max": 4000
+    },
+    "chef": {
+        "type": "chef",
+        "name": "Chef",
+        "s": [
+            "You created a new dish that was a hit with customers and earned {AMT}.",
+            "You received a great review from a food critic and earned {AMT}."
+        ],
+        "f": [
+            "You burned a dish and had to remake it, costing you extra time and resources.",
+            "You had to deal with a difficult customer and it took up a lot of your time and energy."
+        ],
+        "min": 1500,
+        "max": 3500
+    },
+    "pilot": {
+        "type": "pilot",
+        "name": "Pilot",
+        "s": [
+            "You flew a successful flight and earned {AMT}.",
+            "You received positive feedback from passengers and earned {AMT}."
+        ],
+        "f": [
+            "You experienced turbulence and had to spend extra time trying to stabilize the plane.",
+            "You had to deal with an unruly passenger and it took up a lot of your time and energy."
+        ],
+        "min": 8000,
+        "max": 12000
+    },
+    "servant": {
+        "type": "servant",
+        "name": "Servant",
+        "s": [
+            "You completed all your tasks efficiently and earned {AMT}.",
+            "You received a bonus from your employer for your excellent work and earned {AMT}."
+        ],
+        "f": [
+            "You accidentally broke a valuable item and had to pay for it out of your own pocket."
+        ],
+        "min": 500,
+        "max": 2000
+    },
+    "police": {
+        "type": "police",
+        "name": "Police",
+        "s": [
+            "You caught a robber and received {AMT} as a reward from the grateful shop owner.",
+            "You solved a difficult case and received {AMT} as a bonus from your superiors."
+        ],
+        "f": [
+            "You couldn't catch the criminal and got reprimanded by your boss.",
+            "You let a criminal get away and received a warning from your superiors."
+        ],
+        "min": 3000,
+        "max": 5000
+    },
+    "miner": {
+        "type": "miner",
+        "name": "Miner",
+        "s": [
+            "You found a rare mineral and sold it for {AMT} to a wealthy collector.",
+            "You worked overtime and received {AMT} in extra pay from your boss."
+        ],
+        "f": [
+            "You accidentally caused a cave-in and had to pay {AMT} for the damages.",
+            "You got lost in the mine and had to be rescued, but received no pay for that day."
+        ],
+        "min": 2000,
+        "max": 5000
+    },
+    "construction-worker": {
+        "type": "construction-worker",
+        "name": "Construction Worker",
+        "s": [
+            "You finished the project ahead of schedule and received {AMT} as a bonus from your boss.",
+            "You found a lost wallet on the construction site and returned it to its owner, who gave you {AMT} as a reward."
+        ],
+        "f": [
+            "You damaged some expensive equipment and had to pay {AMT} for the repairs.",
+            "You got into a fight with a coworker and got suspended for a week without pay."
+        ],
+        "min": 1500,
+        "max": 3000
+    },
+    "roblox-dev": {
+        "type":"roblox-dev",
+        "name":"Roblox Developer",
+        "s": [
+            "You worked on a commision and got payed {AMT} for your service",
+            "Some random group made an accidental group payout, you devexed it into {AMT}"
+        ],
+        "f":[
+            "DevEx rates were so high you couldn't get your cash :(",
+            "You finished a commision in time... but the dev blocked you. RIP"
+        ],
+        "min":1000,
+        "max":4000
+    }
+}

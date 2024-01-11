@@ -1,37 +1,15 @@
 const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
-const User = require("../../../models/User");
-const workAr = require("../../../utils/misc/work/work.json");
-const workPay = require("../../../utils/misc/work/workPay.json");
-const { coin } = require("../../../utils/formatters/beatify");
+const User = require("../../../../models/User");
+const { coin } = require("../../../../utils/formatters/beatify");
 const {
     newCooldown,
     checkCooldown,
     Cooldowns,
-} = require("../../../utils/handlers/cooldown");
-const errorHandler = require("../../../utils/handlers/errorHandler");
+} = require("../../../../utils/handlers/cooldown");
+const errorHandler = require("../../../../utils/handlers/errorHandler");
 const { SlashCommandObject } = require("ic4d");
+const { makeChoices, rnd } = require("./workUtil");
 
-/**
- *
- * @param {Object[]} ar
- * @param {Integer} amt
- * @param {Boolean} pay
- * @returns String
- */
-const rnd = (ar, pay, option) => {
-    let filteredAr;
-    if (pay === true) {
-        filteredAr = ar.filter((el) => el.pay === true);
-    } else if (pay === false) {
-        filteredAr = ar.filter((el) => el.pay === false);
-    }
-    let ans = filteredAr.filter((job) => job.type === option);
-    var lastAns = ans[Math.floor(Math.random() * ans.length)];
-    return {
-        answer: lastAns.cont,
-        type: lastAns.type,
-    };
-};
 
 const work = new SlashCommandObject({
     name: "work",
@@ -42,60 +20,7 @@ const work = new SlashCommandObject({
             name: "job",
             description: "Where do you want to work.",
             required: true,
-            choices: [
-                {
-                    name: "Tailor",
-                    value: "tailor",
-                },
-                {
-                    name: "Farmer",
-                    value: "farmer",
-                },
-                {
-                    name: "Gamer",
-                    value: "gamer",
-                },
-                {
-                    name: "Youtuber",
-                    value: "youtuber",
-                },
-                {
-                    name: "Twitch Streamer",
-                    value: "twitch-streamer",
-                },
-                {
-                    name: "Discord Moderator",
-                    value: "discord-mod",
-                },
-                {
-                    name: "Teacher",
-                    value: "teacher",
-                },
-                {
-                    name: "Chef",
-                    value: "chef",
-                },
-                {
-                    name: "Pilot",
-                    value: "pilot",
-                },
-                {
-                    name: "Servant",
-                    value: "servant",
-                },
-                {
-                    name: "Police",
-                    value: "police",
-                },
-                {
-                    name: "Miner",
-                    value: "miner",
-                },
-                {
-                    name: "Construction worker",
-                    value: "construction-worker",
-                },
-            ],
+            choices: makeChoices(),
             type: ApplicationCommandOptionType.String,
         },
     ],
@@ -123,10 +48,8 @@ const work = new SlashCommandObject({
             let earn = Math.random() <= 0.25 ? false : true;
 
             let option = interaction.options.get("job").value;
-            let reply = rnd(workAr, earn, option);
-            let job = workPay.find((job) => job.type === option);
-            let payment =
-                Math.floor(Math.random() * (job.max - job.min)) + job.min;
+            let reply = rnd(earn, option);
+            let payment = reply.payment
             let work = reply.answer.replace("{AMT}", `${coin(payment)}`);
 
             earn == true
@@ -144,7 +67,6 @@ const work = new SlashCommandObject({
                   );
 
             let user = await User.findOne(query);
-				console.log(user)
 
             if (user) {
                 if (earn === true) {

@@ -13,11 +13,14 @@ const lb = new SlashCommandObject({
         await interaction.deferReply();
         try {
             const server = await client.guilds.cache.get(interaction.guild.id);
-            const leaderboard = await User.find((doc) => {
-                return doc.hasOwnProperty("balance") === true;
-            });
-				leaderboard.sort((a, b) => a.balance - b.balance)
-				console.log(leaderboard)
+            const leaderboard = await User.runDb(async m=>{
+                return (await m.find({ balance: { $exists: true } })
+                .sort({ balance: -1 })
+                .limit(5)
+                .select("userId balance -_id"))
+            })
+            
+				leaderboard.sort((a, b) => b.balance - a.balance)
 
             let serverLeaderboard = [];
             /* const sL = await User.find(
@@ -35,15 +38,11 @@ const lb = new SlashCommandObject({
                 }
             }
 
-            let usernames = { lb: [], item: [], slb: [] };
+            /*let usernames = { lb: [], item: [], slb: [] };*/
 
             let globalLb = [];
             let globalPos = 0;
             for (let i = 0; i < 5; i++) {
-                let cachedUser = await client.users
-                    .fetch(leaderboard[i].userId)
-                    .catch(() => null);
-                usernames.lb.push(cachedUser);
                 let position =
                     i == 0
                         ? ":first_place:"
@@ -53,7 +52,7 @@ const lb = new SlashCommandObject({
                         ? ":third_place:"
                         : `${i + 1}.`;
                 globalLb.push(
-                    `${position} ${usernames.lb[i].username} - ${coin(
+                    `${position} ${`<@${leaderboard[i].userId}>`} - ${coin(
                         leaderboard[i].balance
                     )}`
                 );
@@ -61,7 +60,7 @@ const lb = new SlashCommandObject({
                     globalPos = i + 1;
                 }
             }
-
+/*
             let serverLb = [];
             let serverPos = 0;
             for (let i = 0; i < 5; i++) {
@@ -85,7 +84,8 @@ const lb = new SlashCommandObject({
                 if (serverLeaderboard[i].userId == interaction.user.id) {
                     serverPos = i + 1;
                 }
-            }
+                
+            }*/
 
             await interaction.editReply({
                 embeds: [
@@ -97,15 +97,15 @@ const lb = new SlashCommandObject({
                                 name: "Global",
                                 value: globalLb.join("\n"),
                                 inline: true,
-                            },
+                            },/*
                             {
                                 name: "Server",
                                 value: serverLb.join("\n"),
                                 inline: true,
-                            },
+                            },*/
                         ])
                         .setFooter({
-                            text: `Server Position: #${serverPos} | Global Position: #${globalPos}`,
+                            text: /*`Server Position: #${serverPos}`*/` Global Position: #${globalPos}`,
                         }),
                 ],
             });

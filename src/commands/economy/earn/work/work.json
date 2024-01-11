@@ -193,11 +193,20 @@
         "name":"Roblox Developer",
         "s": [
             "You worked on a commision and got payed {AMT} for your service",
-            "Some random group made an accidental group payout, you devexed it into {AMT}"
+            "Some random group made an accidental group payout, you devexed it into {AMT}",
+				"You made a popular game which earned you {AMT}.",
+				"Your dev friend retired and has given you {AMT} for being his friend. W friend fr",
+				"You added loot boxes to your game and it made you {AMT}.",
+				"You sold one of your games for {AMT}."
         ],
         "f":[
             "DevEx rates were so high you couldn't get your cash :(",
-            "You finished a commision in time... but the dev blocked you. RIP"
+            "You finished a commision in time... but the dev blocked you. RIP",
+				"You finished a commission but your DevEx request got declined.",
+				"You uploaded some assets but Roblox moderation banned you.",
+				"Someone used hacks in your game and ruined the game's economy",
+				"You invested {AMT} in a game! but the developer has ghosted you. :skull:",
+				"You spent {AMT} on making a game but it made you nothin"
         ],
         "min":1000,
         "max":4000

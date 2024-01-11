@@ -3,7 +3,6 @@ const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
 const { SlashCommandObject } = require("ic4d");
 
 const ev = new SlashCommandObject({
-    deleted: true,
     name: "eval",
     description: "evaluate",
     options: [

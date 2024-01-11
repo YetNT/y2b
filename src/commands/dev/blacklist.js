@@ -5,7 +5,7 @@ const errorHandler = require("../../utils/handlers/errorHandler");
 const { SlashCommandObject } = require("ic4d");
 
 const blacklist = new SlashCommandObject({
-    deleted: true, // set to true by default, but another file will change it depending on bot.
+    deleted: false, // set to true by default, but another file will change it depending on bot.
     name: "blacklist",
     description: "blacklist users",
     options: [

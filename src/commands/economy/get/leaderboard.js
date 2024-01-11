@@ -20,12 +20,11 @@ const lb = new SlashCommandObject({
 				console.log(leaderboard)
 
             let serverLeaderboard = [];
-            const sL = await User.find(
+            /* const sL = await User.find(
                 (doc) => {return doc.hasOwnProperty("balance") === true}
             )
 				sL.sort((a, b) => a.balance - b.balance)
-				console.log(sL)
-            //    .select("userId balance -_id");
+            //    .select("userId balance -_id"); */
             for (let user of leaderboard) {
                 let isMember = await server.members
                     .fetch(user.userId)

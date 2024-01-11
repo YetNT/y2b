@@ -7,7 +7,7 @@ const {
 } = require("discord.js");
 const config = require("../config.json");
 const mongoose = require("mongoose");
-const { cache } = require("./models/cache.js")
+const { cache } = require("./models/cache.js");
 const { CommandHandler, ReadyHandler, InteractionHandler } = require("ic4d");
 const middleware = require("./events/middleware");
 const status = require("./events/status");
@@ -47,7 +47,10 @@ const ints = new InteractionHandler(
 );
 const ready = new ReadyHandler(
     client,
-	 () => {console.log("clearing cache."); cache.flushAll();},
+    () => {
+        console.log("clearing cache.");
+        cache.flushAll();
+    },
     (client) => {
         if (client.token === process.env.MAIN) {
             const routes = setRoutes(client);

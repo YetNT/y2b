@@ -119,4 +119,17 @@ let scheme = {
         };
     }
 })();
-module.exports = new CachedSchema("user", scheme);
+
+const user = new CachedSchema("user", scheme)
+
+function invPlace() {
+	let obj = {shield:{amt:0,hp:0}}
+	for (let item in newInv) {
+        let defaultAmount = newInv[item].id === "rock" ? 10 : 0;
+        obj[newInv[item].id] = 0
+    }
+}
+
+user.invPlace = invPlace
+
+module.exports = user;

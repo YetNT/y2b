@@ -67,7 +67,7 @@ const share = new SlashCommandObject({
             let t = await coin(amount);
 
             let user = await User.findOne({ userId: userToGiveId });
-            let userInv = user.inventory;
+            let userInv = user.inventory ?? {};
             let author = await User.findOne({ userId: interaction.user.id });
             let authorInv = author.inventory;
             let blacklist = user.blacklist;

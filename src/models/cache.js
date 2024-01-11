@@ -24,23 +24,22 @@ class CachedSchema {
     }
 
     /**
- * Save an array (Collection) to the cache.
- * @param {{}[]} existing
- */
-#cacheSave(existing) {
-    const serializedData = JSON.stringify(existing);
-    this.cache.set(this.name, serializedData);
-}
+     * Save an array (Collection) to the cache.
+     * @param {{}[]} existing
+     */
+    #cacheSave(existing) {
+        const serializedData = JSON.stringify(existing);
+        this.cache.set(this.name, serializedData);
+    }
 
-/**
- * Get one array (Collection) from cache
- * @returns {{}[]}
- */
-#cacheGet() {
-    const serializedData = this.cache.get(this.name);
-    return serializedData ? JSON.parse(serializedData) : [];
-}
-
+    /**
+     * Get one array (Collection) from cache
+     * @returns {{}[]}
+     */
+    #cacheGet() {
+        const serializedData = this.cache.get(this.name);
+        return serializedData ? JSON.parse(serializedData) : [];
+    }
 
     /**
      * Add one document to the class's collection's cache.
@@ -57,7 +56,6 @@ class CachedSchema {
      * @returns {{}}
      */
     async getDocument(query) {
-
         let existing = this.#cacheGet();
         if (existing.length === 0) {
             const doc = await this.model.findOne(query);
@@ -66,23 +64,31 @@ class CachedSchema {
             return doc;
         }
 
-
         for (const key of Object.keys(query)) {
-            existing = existing.filter((e) => {const isEqual = _.isEqual(e[key], query[key])
+            existing = existing.filter((e) => {
+                const isEqual = _.isEqual(e[key], query[key]);
                 return isEqual;
             });
         }
-        return existing.length > 0 ? existing[0] : undefined;
+        if (existing.length > 0) {
+            return existing[0];
+        } else {
+            const doc = await this.model.findOne(query);
+            this.addDocument(doc);
+            return doc;
+        }
     }
 
     async getDocuments(filter) {
         const existing = this.#cacheGet();
-        if (existing.length < 2) {
+        const docs = await this.model.find();
+        if (existing.length === docs.length) {
+            console.log(existing);
             return existing.filter(filter);
         } else {
-            const docs = await this.model.find();
-            existing.push(docs);
+            existing.push(...docs);
             this.#cacheSave(existing);
+            console.log(docs);
             return docs.filter(filter);
         }
     }
@@ -98,16 +104,10 @@ class CachedSchema {
 
     /**
      * @param {(({}) => {})} filter
-     * @param {number?} limit
      * @returns {{}[]}
      */
-    async find(filter, limit = undefined) {
+    async find(filter) {
         let docs = await this.getDocuments(filter);
-
-        // Apply the limit if it's provided
-        if (limit !== undefined) {
-            docs = docs.slice(0, limit);
-        }
 
         return docs;
     }
@@ -116,7 +116,10 @@ class CachedSchema {
      * MongoDB save document. Saves a single document to both the database, then copies over the entries to the cache.
      */
     async save(doc) {
-        const result = await this.model.updateOne({ id: doc.id }, { $set: doc }); // since this is a single document, we can just use mongodb's save method
+        delete doc._id;
+        delete doc.__v;
+        console.log(doc);
+        await this.model.updateOne({ [this.id]: doc[this.id] }, { $set: doc }); // since this is a single document, we can just use mongodb's save method
         let existing = this.#cacheGet();
 
         if (existing.length !== 0) {
@@ -140,4 +143,4 @@ class CachedSchema {
     // (only the functions i need will be added)
 }
 
-module.exports = {CachedSchema, cache};
+module.exports = { CachedSchema, cache };

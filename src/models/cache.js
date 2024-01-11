@@ -83,12 +83,10 @@ class CachedSchema {
         const existing = this.#cacheGet();
         const docs = await this.model.find();
         if (existing.length === docs.length) {
-            console.log(existing);
             return existing.filter(filter);
         } else {
             existing.push(...docs);
             this.#cacheSave(existing);
-            console.log(docs);
             return docs.filter(filter);
         }
     }
@@ -118,7 +116,6 @@ class CachedSchema {
     async save(doc) {
         delete doc._id;
         delete doc.__v;
-        console.log(doc);
         await this.model.updateOne({ [this.id]: doc[this.id] }, { $set: doc }); // since this is a single document, we can just use mongodb's save method
         let existing = this.#cacheGet();
 

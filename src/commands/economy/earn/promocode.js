@@ -100,7 +100,10 @@ const promocode = new SlashCommandObject({
             let embed = new EmbedBuilder()
                 .setTitle("Real promocode")
                 .setColor("Green");
-            if (code === promocodes.beta) {
+
+            switch (code) {
+
+            case promocodes.beta:
                 await add(user, 900, interaction.user.id);
                 interaction.editReply({
                     embeds: [
@@ -128,7 +131,11 @@ const promocode = new SlashCommandObject({
                     "betaTester",
                     true
                 );
-            } else if (code === promocodes.bruh) {
+                
+                break;
+
+
+            case promocodes.bruh: 
                 await add(user, 10, interaction.user.id, true, "donut");
                 interaction.editReply({
                     embeds: [
@@ -147,8 +154,10 @@ const promocode = new SlashCommandObject({
                     };
                 } else {
                     promocodedb.bruh = true;
-                }
-            } else if (code === promocodes.newMember) {
+                }break;
+
+                
+            case promocodes.newMember:
                 await add(user, 1000, interaction.user.id);
                 interaction.editReply({
                     embeds: [
@@ -166,7 +175,10 @@ const promocode = new SlashCommandObject({
                 } else {
                     promocodedb.newMember = true;
                 }
-            } else if (code === promocodes.promocodeName) {
+                break
+
+
+            case promocodes.promocodeName:
                 await add(user, 1, interaction.user.id, true, "gem");
                 interaction.editReply({
                     embeds: [
@@ -186,7 +198,10 @@ const promocode = new SlashCommandObject({
                 } else {
                     promocodedb.promocodeName = true;
                 }
-            } else if (code === promocodes.website) {
+                break;
+
+
+            case promocodes.website:
                 await add(user, 2000, interaction.user.id);
                 await add(user, 2, interaction.user.id, true, "gem");
                 interaction.editReply({
@@ -207,6 +222,7 @@ const promocode = new SlashCommandObject({
                 } else {
                     promocodedb.website = true;
                 }
+                break
             }
             await User.save(user);
         } catch (error) {

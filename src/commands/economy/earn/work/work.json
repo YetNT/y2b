@@ -4,11 +4,13 @@
         "name": "Tailor",
         "s": [
             "You made a lovely dress for an elderly lady and earned {AMT} coins.",
-            "You altered a suit for a businessman and earned {AMT} coins."
+            "You altered a suit for a businessman and earned {AMT} coins.",
+            "You made a snazzy suit for a wealthy guy and earned yourself {AMT}."
         ],
         "f": [
             "You tried to sew a shirt, but ended up with a mess of tangled thread.",
-            "You ruined a dress while trying to sew on a button."
+            "You ruined a dress while trying to sew on a button.",
+            "You tried making the magic suit Regular Show, then remembered... you're a tailor, not a scientist."
         ],
         "min": 500,
         "max": 1500
@@ -18,11 +20,13 @@
         "name": "Farmer",
         "s": [
             "You harvested a bumper crop of wheat and earned {AMT} coins.",
-            "You sold fresh milk from your dairy farm and earned {AMT} coins."
+            "You sold fresh milk from your dairy farm and earned {AMT} coins.",
+            "The rain brought you got produce which earned you {AMT} coins."
         ],
         "f": [
             "You lost a valuable herd of cattle to disease.",
-            "A hailstorm destroyed your fields, leaving you with no harvest to sell."
+            "A hailstorm destroyed your fields, leaving you with no harvest to sell.",
+            "You went to go harvest your crops, and noticed your farm a desert now, lmao."
         ],
         "min": 1000,
         "max": 3000
@@ -32,11 +36,13 @@
         "name": "Gamer",
         "s": [
             "You won a tournament and earned {AMT} coins.",
-            "You sold a rare item for a high price and earned {AMT} coins."
+            "You sold a rare item for a high price and earned {AMT} coins.",
+            "You won a MrBaste Mynecraft competition and received {AMT} coins, as the price."
         ],
         "f": [
             "You lost all your progress in a game due to a bug.",
-            "You got scammed by someone promising to sell you in-game currency."
+            "You got scammed by someone promising to sell you in-game currency.",
+            "You were planning on making a Tarreria series, but some unnamed flying monster one shot you."
         ],
         "min": 100,
         "max": 4200
@@ -46,11 +52,13 @@
         "name": "YouTuber",
         "s": [
             "Your latest video went viral and earned you {AMT} coins from ad revenue.",
-            "You got a brand deal for your channel and earned {AMT} coins."
+            "You got a brand deal for your channel and earned {AMT} coins.",
+            "You cracked 1M views, racking in {AMT} coins from ad revenue"
         ],
         "f": [
             "Your channel got demonetized for violating community guidelines.",
-            "Your latest video got a lot of dislikes and negative comments."
+            "Your latest video got a lot of dislikes and negative comments.",
+            "You said a bad word in the first 30 seconds of your video. No money for you :-1:"
         ],
         "min": 2000,
         "max": 5000

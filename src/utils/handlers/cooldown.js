@@ -21,7 +21,11 @@ const newCooldown = async (time, interaction, name, complex = false) => {
     let cooldown = user.cooldown;
 
     if (complex === false || complex === undefined) {
-        if (cooldown && cooldown[name] && new Date(cooldown[name]).getTime() > date) {
+        if (
+            cooldown &&
+            cooldown[name] &&
+            new Date(cooldown[name]).getTime() > date
+        ) {
             return;
         }
     } else {
@@ -98,7 +102,7 @@ const checkCooldown = async (
     complex = false,
     custom = null
 ) => {
-    if (interaction.client.token == process.env.TOKEN) {
+    if (interaction.client.token === process.env.TOKEN) {
         // beta bot, so dont cooldown devs for testing reasons.
         if (devs.includes(interaction.user.id)) return;
     }

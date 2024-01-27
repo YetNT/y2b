@@ -68,8 +68,9 @@ const buy = new SlashCommandObject({
                     );
                 if (inventory.shield.hp + amount > 500 && item == "shieldhp")
                     return interaction.editReply(
-                        new EmbedError("You can't buy more than 500 ShieldHP")
-                            .output
+                        new EmbedError(
+                            `You can't have more than 500 ShieldHP (You have \`${inventory.shield.hp}\` and you're trying to get \`${amount}\` more)`
+                        ).output
                     );
                 user.balance -= cost;
                 if (item == "shield") {

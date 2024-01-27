@@ -84,7 +84,6 @@ const newCooldown = async (time, interaction, name, complex = false) => {
             }
         }
         user.cooldown = cooldown;
-        console.log(cooldown);
         await User.save(user);
     }
 };

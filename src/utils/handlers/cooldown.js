@@ -6,7 +6,7 @@ const { devs } = require("../../../config.json");
 
 /**
  *
- * @param {String} time Can be a strin glike '2min' or '9d'
+ * @param {String | number} time Can be a strin glike '2min' or '9d'
  * @param {Interaction} interaction
  * @param {String} name The command's name, if it is complex, set to the object name
  * @param {String} complex If the name is complex like "challenge.lol" set name to "challenge" and this to "lol"
@@ -51,6 +51,7 @@ const newCooldown = async (time, interaction, name, complex = false) => {
         complex === false || complex === undefined
             ? (cooldown[name] = new Date(date + cooldownTime))
             : (cooldown[name][complex] = new Date(date + cooldownTime));
+        user.cooldown = cooldown;
         await User.save(user);
     } else {
         if (!user) {
@@ -82,6 +83,8 @@ const newCooldown = async (time, interaction, name, complex = false) => {
                 };
             }
         }
+        user.cooldown = cooldown;
+        console.log(cooldown);
         await User.save(user);
     }
 };
@@ -103,14 +106,18 @@ const checkCooldown = async (
     complex = false,
     custom = null
 ) => {
-    if (client.token === process.env.TOKEN) {
+    if (
+        client.token === process.env.TOKEN &&
+        devs.includes(interaction.user.id)
+    ) {
+        console.log("mhm");
         // beta bot, so dont cooldown devs for testing reasons.
-        if (devs.includes(interaction.user.id)) return;
+        return;
     }
     let query = {
         userId: interaction.user.id,
     };
-    let date = Date.now();
+    let date = new Date(Date.now());
     let description = ``;
 
     let user = await User.findOne(query);
@@ -122,6 +129,7 @@ const checkCooldown = async (
         complex === false || complex === undefined
             ? cooldown[name]
             : cooldown[name][complex];
+    result = new Date(result) /*.getMilliseconds()*/;
 
     if (cooldown && result) {
         let remainingTime = result - date;

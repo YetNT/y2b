@@ -140,11 +140,11 @@ class CachedSchema {
     /**
      * This method is purely for commands that just fucking refuse to work with the cache in any sort of way. So just give access to the model.
      * Run a db command with the provided model. Intended for leaderboard only
-     * @param {(model: model) => {}} func 
+     * @param {(model: model) => {}} func
      * @returns {any}
      */
     async runDb(func) {
-        return (await func(this.model))
+        return await func(this.model);
     }
 
     // (only the functions i need will be added)

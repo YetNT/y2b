@@ -24,6 +24,7 @@ const daily = new SlashCommandObject({
             await interaction.deferReply();
             const cooldownResult = await checkCooldown(
                 "daily",
+                client,
                 interaction,
                 EmbedBuilder
             );

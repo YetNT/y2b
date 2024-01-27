@@ -109,6 +109,7 @@ module.exports = {
         try {
             const cooldownResult = await checkCooldown(
                 "challenge",
+                client,
                 interaction,
                 EmbedBuilder,
                 "buttons"

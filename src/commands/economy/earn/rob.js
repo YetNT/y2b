@@ -90,6 +90,7 @@ const rob = new SlashCommandObject({
 
             const cooldownResult = await checkCooldown(
                 "rob",
+                client,
                 interaction,
                 EmbedBuilder,
                 false,

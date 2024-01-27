@@ -97,12 +97,13 @@ const newCooldown = async (time, interaction, name, complex = false) => {
  */
 const checkCooldown = async (
     name,
+    client,
     interaction,
     EmbedBuilder,
     complex = false,
     custom = null
 ) => {
-    if (interaction.client.token === process.env.TOKEN) {
+    if (client.token === process.env.TOKEN) {
         // beta bot, so dont cooldown devs for testing reasons.
         if (devs.includes(interaction.user.id)) return;
     }

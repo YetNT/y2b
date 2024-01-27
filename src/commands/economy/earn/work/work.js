@@ -10,7 +10,6 @@ const errorHandler = require("../../../../utils/handlers/errorHandler");
 const { SlashCommandObject } = require("ic4d");
 const { makeChoices, rnd } = require("./workUtil");
 
-
 const work = new SlashCommandObject({
     name: "work",
     description: "Work for cash",
@@ -35,6 +34,7 @@ const work = new SlashCommandObject({
         try {
             const cooldownResult = await checkCooldown(
                 "work",
+                client,
                 interaction,
                 EmbedBuilder
             );
@@ -49,7 +49,7 @@ const work = new SlashCommandObject({
 
             let option = interaction.options.get("job").value;
             let reply = rnd(earn, option);
-            let payment = reply.payment
+            let payment = reply.payment;
             let work = reply.answer.replace("{AMT}", `${coin(payment)}`);
 
             earn == true

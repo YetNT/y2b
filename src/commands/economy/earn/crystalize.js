@@ -90,6 +90,7 @@ const crystalize = new SlashCommandObject({
 
             const cooldownResult = await checkCooldown(
                 "crystalize",
+                client,
                 interaction,
                 EmbedBuilder,
                 false,

@@ -87,6 +87,7 @@ const share = new SlashCommandObject({
 
             const cooldownResult = await checkCooldown(
                 "share",
+                client,
                 interaction,
                 EmbedBuilder
             );

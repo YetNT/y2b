@@ -1,5 +1,12 @@
-const { ActivityType } = require("discord.js");
+// eslint-disable-next-line no-unused-vars
+const { ActivityType, Client } = require("discord.js");
 
+/**
+ *
+ * @param {Client} client
+ * @param {*} status
+ * @returns
+ */
 const presences = (client, status) => {
     let st = {};
     if (client.token === process.env.MAIN) {
@@ -18,6 +25,10 @@ const presences = (client, status) => {
     return st;
 };
 
+/**
+ *
+ * @param {Client} client
+ */
 module.exports = (client) => {
     // eslint-disable-next-line no-unused-vars
     let totalMembers = 0;
@@ -60,7 +71,7 @@ module.exports = (client) => {
                 type: ActivityType.Competing,
             },
             {
-                name: "click (=) on bot's main page",
+                name: "click (y) on bot's main page",
                 type: ActivityType.Listening,
             },
         ],

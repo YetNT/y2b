@@ -3,11 +3,16 @@ const { AutoPoster } = require("topgg-autoposter");
 const express = require("express");
 const Topgg = require("@top-gg/sdk");
 const User = require("../models/User");
-const { EmbedBuilder } = require("discord.js");
+// eslint-disable-next-line no-unused-vars
+const { EmbedBuilder, Client } = require("discord.js");
 const { coin } = require("../utils/formatters/beatify");
 
 const webhook = new Topgg.Webhook(process.env.TOPGG_auth);
 
+/**
+ *
+ * @param {Client} client
+ */
 const post = async (client) => {
     const commands = await client.application?.commands.fetch();
     const dbl = createDjsClient(process.env.DBL_TOKEN, client);
@@ -71,6 +76,11 @@ const response = async (client, userId, siteName) => {
         .catch((/*Bot couldnt dm user*/) => null);
 };
 
+/**
+ *
+ * @param {Client} client
+ * @returns
+ */
 const setRoutes = (client) => {
     const app = express();
 

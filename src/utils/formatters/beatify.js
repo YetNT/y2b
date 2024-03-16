@@ -14,7 +14,7 @@ const comma = (input) => {
  * @returns string with the coin emoji
  */
 const coin = (input) => {
-    return `${coinEmoji}**${comma(input)}**`;
+    return `⛃**${comma(input)}**`;
 };
 
 /**
@@ -23,7 +23,7 @@ const coin = (input) => {
  * @returns string that has been shopified (Separated with commas and linked.)
  */
 const shopify = (input) => {
-    return `${coinEmoji}**[${comma(input)}](https://discord.com)**`;
+    return `⛃**[${comma(input)}](https://discord.com)**`;
 };
 
 module.exports = { comma, coin, shopify, coinEmoji };

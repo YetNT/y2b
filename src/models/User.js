@@ -1,4 +1,4 @@
-const {CachedSchema} = require("./cache.js");
+const { CachedSchema } = require("./cache.js");
 let Badges = require("../utils/misc/badges/badges.json");
 // eslint-disable-next-line no-unused-vars
 let { shield, shieldhp, ...newInv } = require("../utils/misc/items/items");
@@ -120,16 +120,16 @@ let scheme = {
     }
 })();
 
-const user = new CachedSchema("user", scheme)
+const user = new CachedSchema("user", scheme);
 
 function invPlace() {
-	let obj = {shield:{amt:0,hp:0}}
-	for (let item in newInv) {
+    let obj = { shield: { amt: 0, hp: 0 } };
+    for (let item in newInv) {
         let defaultAmount = newInv[item].id === "rock" ? 10 : 0;
-        obj[newInv[item].id] = 0
+        obj[newInv[item].id] = defaultAmount;
     }
 }
 
-user.invPlace = invPlace
+user.invPlace = invPlace;
 
 module.exports = user;

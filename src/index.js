@@ -45,6 +45,7 @@ const ints = new InteractionHandler(
     },
     true
 );
+
 const ready = new ReadyHandler(
     client,
     () => {
@@ -145,6 +146,13 @@ async function editMessage() {
         })
         .catch(console.error);
 }
+
+ints.on("error", (msg) => {
+    console.log(msg);
+});
+handler.on("error", (msg) => {
+    console.log(msg);
+});
 
 setInterval(editMessage, 120000);
 client.login(process.env.TOKEN);

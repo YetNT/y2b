@@ -119,7 +119,9 @@ const buy = new SlashCommandObject(
                     );
                 if (amount < 0)
                     return interaction.editReply(
-                        new EmbedError("Don't buy amounts lower than 0").output
+                        new EmbedError(
+                            "Tf is u tryna buy a negative item :skull:"
+                        ).output
                     );
                 if (cost > user.balance)
                     return interaction.editReply(

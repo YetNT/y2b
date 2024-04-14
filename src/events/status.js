@@ -9,7 +9,8 @@ const { ActivityType, Client } = require("discord.js");
  */
 const presences = (client, status) => {
     let st = {};
-    if (client.token === process.env.MAIN) {
+    let isMain = require("../beta").isMain(client);
+    if (isMain) {
         let random = Math.floor(Math.random() * status.main.length);
         st = {
             status: "dnd",

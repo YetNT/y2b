@@ -17,6 +17,8 @@ const items = require("./utils/misc/items/items.js");
 const { emojiToImage } = require("./utils/misc/emojiManipulation");
 require("moment-duration-format");
 
+const isMain = require("./beta.js").isMain(process.env.MAIN);
+
 const express = require("express");
 const { setRoutes } = require("./events/dbPost.js");
 
@@ -53,7 +55,7 @@ const ready = new ReadyHandler(
         cache.flushAll();
     },
     (client) => {
-        if (client.token === process.env.MAIN) {
+        if (isMain) {
             const routes = setRoutes(client);
 
             app.use(routes);
@@ -115,15 +117,15 @@ const ready = new ReadyHandler(
     }
 })();
 
-// Assuming you have a message ID and channel ID stored in variables
-const channelId = "920947757613735966";
-// const mainMessageId = "920947874156658688";
+const mainMessageId = "920947874156658688";
 const betaMessageId = "1015333980725313558";
 
+const messageId = isMain ? mainMessageId : betaMessageId;
+
 async function editMessage() {
-    const channel = client.channels.cache.get(channelId);
+    const channel = client.channels.cache.get("920947757613735966");
     await channel.messages
-        .fetch(betaMessageId)
+        .fetch(messageId)
         .then((message) => {
             message.edit({
                 content: "_ _",
@@ -155,4 +157,5 @@ handler.on("error", (msg) => {
 });
 
 setInterval(editMessage, 120000);
-client.login(process.env.TOKEN);
+
+client.login(process.env.MAIN);

@@ -19,19 +19,19 @@
         "dotenv": "^16.4.5",
         "emoji-name-map": "^1.2.9",
         "emoji-unicode": "^2.0.1",
-        "express": "^4.18.3",
+        "express": "^4.19.2",
         "ic4d": "^2.4.0",
         "lodash": "^4.17.21",
         "moment": "^2.30.1",
         "moment-duration-format": "^2.3.2",
-        "mongoose": "^8.2.2",
+        "mongoose": "^8.3.1",
         "node-cache": "^5.1.2",
         "path": "^0.12.7",
         "topgg-autoposter": "^2.0.2"
     },
     "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^7.3.1",
-        "@typescript-eslint/parser": "^7.3.1",
-        "eslint": "^8.57.0"
+        "@typescript-eslint/eslint-plugin": "^7.6.0",
+        "@typescript-eslint/parser": "^7.6.0",
+        "eslint": "^9.0.0"
     }
 }

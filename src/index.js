@@ -17,6 +17,18 @@ const items = require("./utils/misc/items/items.js");
 const { emojiToImage } = require("./utils/misc/emojiManipulation");
 require("moment-duration-format");
 
+let isBeta = false;
+
+try {
+    // Try requiring the module
+    require.resolve("./beta.js");
+    // If require.resolve doesn't throw an error, the module exists
+    isBeta = true;
+} catch (err) {
+    // If an error is thrown, the module doesn't exist
+    isBeta = false;
+}
+
 const express = require("express");
 const { setRoutes } = require("./events/dbPost.js");
 

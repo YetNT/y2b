@@ -3,6 +3,7 @@
 
 # tests commands that wont be added to the final release.
 src/commands/test/
+src/beta.js
 
 #promocodes
 promocodes.json

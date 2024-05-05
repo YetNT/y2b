@@ -45,17 +45,22 @@ class CachedSchema {
      * Add one document to the class's collection's cache.
      * @param {{*}} doc
      */
-    addDocument(doc) {
+    #addDocument(doc) {
         const existing = this.#cacheGet();
         existing.push(doc);
         this.#cacheSave(existing);
     }
 
-    /**
-     * Get a single document with a mongodb query like {userId: "id"}
-     * @returns {{}}
-     */
-    async getDocument(query) {
+    async #documentExistsInDb(query) {
+        const doc = await this.model.findOne(query);
+        if (doc == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    async #getDocument(query) {
         let existing = this.#cacheGet();
         if (existing.length === 0) {
             const doc = await this.model.findOne(query);
@@ -66,6 +71,7 @@ class CachedSchema {
 
         for (const key of Object.keys(query)) {
             existing = existing.filter((e) => {
+                if (e === null) return false;
                 const isEqual = _.isEqual(e[key], query[key]);
                 return isEqual;
             });
@@ -73,13 +79,17 @@ class CachedSchema {
         if (existing.length > 0) {
             return existing[0];
         } else {
-            const doc = await this.model.findOne(query);
-            this.addDocument(doc);
+            let doc = await this.model.findOne(query);
+            if (doc == null) {
+                doc = null;
+            } else {
+                this.#addDocument(doc);
+            }
             return doc;
         }
     }
 
-    async getDocuments(filter) {
+    async #getDocuments(filter) {
         const existing = this.#cacheGet();
         const docs = await this.model.find();
         if (existing.length === docs.length) {
@@ -97,7 +107,7 @@ class CachedSchema {
      * @returns
      */
     async findOne(query) {
-        return await this.getDocument(query);
+        return await this.#getDocument(query);
     }
 
     /**
@@ -105,7 +115,7 @@ class CachedSchema {
      * @returns {{}[]}
      */
     async find(filter) {
-        let docs = await this.getDocuments(filter);
+        let docs = await this.#getDocuments(filter);
 
         return docs;
     }
@@ -116,13 +126,23 @@ class CachedSchema {
     async save(doc) {
         delete doc._id;
         delete doc.__v;
-        await this.model.updateOne({ [this.id]: doc[this.id] }, { $set: doc }); // since this is a single document, we can just use mongodb's save method
+        if (
+            (await this.#documentExistsInDb({ [this.id]: doc[this.id] })) ==
+            false
+        ) {
+            await this.model.create(doc);
+        } else {
+            await this.model.updateOne(
+                { [this.id]: doc[this.id] },
+                { $set: doc }
+            ); // since this is a single document, we can just use mongodb's save method
+        }
         let existing = this.#cacheGet();
 
         if (existing.length !== 0) {
             existing = existing.filter((e) => {
-                e[this.id] !== doc[this.id];
-            }); // removes old entries (i hope)
+                return e !== null && e[this.id] !== doc[this.id];
+            });
         }
         existing.push(doc);
         this.#cacheSave(existing);

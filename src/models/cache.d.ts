@@ -73,19 +73,26 @@ declare class CachedSchema {
 
     constructor(name: string, body: object);
 
-    addDocument(doc: object): void;
+    #addDocument(doc: { [key: string]: any }): void;
 
-    getDocument(query: object): Promise<User | ServerCommand>;
+    /**
+     * Get a single document
+     */
+    async #getDocument(query: {
+        [key: string]: any;
+    }): Promise<User | ServerCommand>;
 
-    getDocuments(
-        filter: (doc: object) => boolean
+    async #getDocuments(
+        filter: (doc: { [key: string]: any }) => boolean
     ): Promise<User | ServerCommand[]>;
 
-    findOne(query: object): Promise<User | ServerCommand>;
+    async findOne(query: { [key: string]: any }): Promise<User | ServerCommand>;
 
-    find(filter: (doc: object) => boolean): Promise<User | ServerCommand[]>;
+    async find(
+        filter: (doc: { [key: string]: any }) => boolean
+    ): Promise<User | ServerCommand[]>;
 
-    save(doc: object): Promise<void>;
+    async save(doc: object): Promise<void>;
 
     newDoc(obj: object): object;
 

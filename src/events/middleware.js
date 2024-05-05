@@ -27,14 +27,17 @@ async function blacklist(commandObject, interaction) {
             userId: interaction.user.id,
         };
         let user = await User.findOne(query);
+        if (!user) return 0;
         let blacklist = user.blacklist;
 
         if (blacklist) {
             if (blacklist.ed === true) {
                 await interaction.reply({
-			ephemeral: true,
-                    content:"You've been blacklisted. Reason = " + `${blacklist.reason}`
-		});
+                    ephemeral: true,
+                    content:
+                        "You've been blacklisted. Reason = " +
+                        `${blacklist.reason}`,
+                });
                 return 1;
             }
         }

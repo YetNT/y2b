@@ -120,6 +120,10 @@ const checkCooldown = async (
     let description = ``;
 
     let user = await User.findOne(query);
+
+    if (user == null) {
+        return;
+    }
     let cooldown = user.cooldown;
     if (!cooldown) {
         return 0;

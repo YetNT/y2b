@@ -14,12 +14,7 @@ const daily = new SlashCommandObject({
     name: "daily",
     description: "Receive your daily reward of 1000",
 
-    /**
-     *
-     * @param {Client} client
-     * @param {Interaction} interaction
-     */
-    callback: async (client, interaction) => {
+    callback: async function (client, interaction) {
         try {
             await interaction.deferReply();
             const cooldownResult = await checkCooldown(
@@ -33,7 +28,7 @@ const daily = new SlashCommandObject({
             }
 
             const query = {
-                userId: interaction.member.id,
+                userId: interaction.user.id,
             };
 
             let user = await User.findOne(query);
@@ -42,7 +37,7 @@ const daily = new SlashCommandObject({
                 user.balance += dailyAmount;
             } else {
                 user = User.newDoc({
-                    ...query,
+                    userId: query.userId,
                     balance: dailyAmount,
                 });
             }

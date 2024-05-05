@@ -176,7 +176,7 @@ const forge = new SlashCommandObject(
                 }
                 pageArray = joinArrayPairs(pageArray);
                 const pager = new Pager();
-                pager.addDynamicPages(pageArray, 2);
+                pager.addDynamicPages(pageArray, 1);
                 let page = await pager.currentPage();
                 const [field1, field2] = page.raw.content.split(separator.item);
                 let fieldsArray = newFields(field1, field2);

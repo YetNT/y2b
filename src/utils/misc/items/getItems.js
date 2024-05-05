@@ -1,12 +1,9 @@
 const all = require("./items");
 const rndInt = require("../rndInt");
 
-const withoutShield = Object.keys(all).reduce((result, key) => {
-    if (all[key].id != "shield" || all[key].id != "shieldhp") {
-        result[key] = all[key];
-    }
-    return result;
-}, {});
+const withoutShield = all;
+delete withoutShield.shield;
+delete withoutShield.shieldhp;
 
 const itemNames = (onlyForSale = false) => {
     /*

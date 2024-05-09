@@ -78,4 +78,23 @@ async function noSelfAt(commandObject, interaction) {
     return 0;
 }
 
-module.exports = [blacklist, canBeServerDisabled, testOnly, noSelfAt];
+/**
+ *
+ * @param {*} commandObject
+ * @param {CommandInteraction} interaction
+ * @returns
+ */
+async function noBotAt(commandObject, interaction) {
+    if (commandObject.noBotAt) {
+        if (interaction.options.getUser("user").bot) {
+            await interaction.reply({
+                content: "You cannot pick a bot bruh.",
+                ephemeral: true,
+            });
+            return 1;
+        }
+    }
+    return 0;
+}
+
+module.exports = [blacklist, canBeServerDisabled, testOnly, noSelfAt, noBotAt];

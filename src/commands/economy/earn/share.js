@@ -55,10 +55,6 @@ const share = new SlashCommandObject({
             const userToGiveId = interaction.options.get("user").value;
             let utgi = await client.users.fetch(userToGiveId); // cache the user to check if their a bot later on
 
-            if (utgi.bot)
-                return interaction.editReply(
-                    new EmbedError("You can't share with bots.").output
-                );
             const amount = interaction.options.get("amount").value;
             const item = interaction.options.get("item")?.value;
             let shareVar;
@@ -264,4 +260,6 @@ const share = new SlashCommandObject({
 share.category = "economy";
 share.blacklist = true;
 share.noSelfAt = true;
+share.noBotAt = true;
+
 module.exports = share;

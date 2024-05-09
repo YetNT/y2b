@@ -16,8 +16,8 @@ const rob = new SlashCommandObject({
     description: "Rob other people for some quick cash. Can end badly",
     options: [
         {
-            name: "victim",
-            description: "robbery",
+            name: "user",
+            description: "User you'd like to rob",
             type: ApplicationCommandOptionType.User,
             required: true,
         },
@@ -33,7 +33,7 @@ const rob = new SlashCommandObject({
     callback: async (client, interaction) => {
         await interaction.deferReply();
         try {
-            let victimId = interaction.options.get("victim").value;
+            let victimId = interaction.options.get("user").value;
             const sf = rndInt(1, 2); // 2 = success; 1 = failure
 
             let victim = await User.findOne({ userId: victimId });
@@ -47,12 +47,6 @@ const rob = new SlashCommandObject({
                 return interaction.editReply(
                     new EmbedError("You can't rob bots tf").output
                 );
-
-            if (victimId == interaction.user.id)
-                return interaction.editReply(
-                    new EmbedError("don't rob yourself.").output
-                );
-
             if (!author)
                 return interaction.editReply(
                     new EmbedError(
@@ -269,5 +263,6 @@ const rob = new SlashCommandObject({
 rob.category = "economy";
 rob.blacklist = true;
 rob.canBeServerDisabled = true;
+rob.noSelfAt = true;
 
 module.exports = rob;

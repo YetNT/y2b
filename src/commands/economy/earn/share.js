@@ -80,11 +80,6 @@ const share = new SlashCommandObject({
                 return interaction.editReply(
                     new EmbedError("that user is blacklisted.").output
                 );
-            if (userToGiveId == interaction.user.id)
-                return interaction.editReply(
-                    new EmbedError("You cannot share with yourself").output
-                );
-
             const cooldownResult = await checkCooldown(
                 "share",
                 client,
@@ -268,4 +263,5 @@ const share = new SlashCommandObject({
 
 share.category = "economy";
 share.blacklist = true;
+share.noSelfAt = true;
 module.exports = share;

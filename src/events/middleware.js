@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const User = require("../models/User");
 const ServerCommand = require("../models/ServerCommand");
+const { CommandInteraction } = require("discord.js");
 
 async function canBeServerDisabled(commandObject, interaction) {
     if (commandObject.canBeServerDisabled) {
@@ -44,6 +45,7 @@ async function blacklist(commandObject, interaction) {
     }
     return 0;
 }
+
 async function testOnly(commandObject, interaction) {
     if (commandObject.testOnly) {
         if (interaction.guild.id != testServer) {
@@ -57,4 +59,23 @@ async function testOnly(commandObject, interaction) {
     return 0;
 }
 
-module.exports = [blacklist, canBeServerDisabled, testOnly];
+/**
+ *
+ * @param {*} commandObject
+ * @param {CommandInteraction} interaction
+ * @returns
+ */
+async function noSelfAt(commandObject, interaction) {
+    if (commandObject.noSelfAt) {
+        if (interaction.options.get("user").value == interaction.user.id) {
+            await interaction.reply({
+                content: "You cannot choose yourself bru.",
+                ephemeral: true,
+            });
+            return 1;
+        }
+    }
+    return 0;
+}
+
+module.exports = [blacklist, canBeServerDisabled, testOnly, noSelfAt];

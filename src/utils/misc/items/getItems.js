@@ -1,9 +1,7 @@
 const all = require("./items");
 const rndInt = require("../rndInt");
 
-const withoutShield = all;
-delete withoutShield.shield;
-delete withoutShield.shieldhp;
+let { shield, shieldhp, ...withoutShield } = all;
 
 const itemNames = (onlyForSale = false) => {
     /*

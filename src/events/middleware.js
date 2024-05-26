@@ -3,6 +3,23 @@ const User = require("../models/User");
 const ServerCommand = require("../models/ServerCommand");
 const { CommandInteraction } = require("discord.js");
 
+/**
+ *
+ * @param {*} commandObject
+ * @param {CommandInteraction} interaction
+ */
+async function noDm(commandObject, interaction) {
+    if (!interaction.inGuild()) {
+        await interaction.reply({
+            ephemeral: true,
+            content:
+                "Commands cannot be used in DMs. Try run this command again in a server.",
+        });
+        return 1;
+    }
+    return 0;
+}
+
 async function canBeServerDisabled(commandObject, interaction) {
     if (commandObject.canBeServerDisabled) {
         let query = {
@@ -97,4 +114,11 @@ async function noBotAt(commandObject, interaction) {
     return 0;
 }
 
-module.exports = [blacklist, canBeServerDisabled, testOnly, noSelfAt, noBotAt];
+module.exports = [
+    noDm,
+    blacklist,
+    canBeServerDisabled,
+    testOnly,
+    noSelfAt,
+    noBotAt,
+];

@@ -2,7 +2,7 @@ const isCommand = false;
 const rndInt = require("../../../../utils/misc/rndInt");
 const { EmbedBuilder, Client, CommandInteraction } = require("discord.js");
 const { comma } = require("../../../../utils/formatters/beatify");
-const User = require("../../../../models/User");
+const User1 = require("../../../../models/User");
 const { Inventory, User } = require("../../../../models/cache");
 
 /**
@@ -55,7 +55,7 @@ async function shieldStop(client, interaction, inventory, victim, errorMsg) {
                 ],
             })
             .catch(() => null);
-        await User.save(victim);
+        await User1.save(victim);
         if (inventory.shield.hp == 0) {
             inventory.shield.amt -= 1;
             inventory.shield.hp = 500;

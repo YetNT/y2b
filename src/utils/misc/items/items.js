@@ -1,5 +1,5 @@
 const sellPercentage = 0.45;
-const { r } = require("./raridty");
+const { r } = require("./rarity");
 
 class Item {
     /**

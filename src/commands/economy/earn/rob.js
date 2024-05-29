@@ -94,14 +94,10 @@ const rob = new SlashCommandObject({
 
             await newCooldown(Cooldowns.rob, interaction, "rob"); // Anything below this code should have a cooldown.
 
-            let s = await shieldStop(
-                client,
-                interaction,
-                User,
-                inventory,
-                victim,
-                ["You tried to rob them", "to rob you"]
-            );
+            let s = await shieldStop(client, interaction, inventory, victim, [
+                "You tried to rob them",
+                "to rob you",
+            ]);
 
             if (s) {
                 return;

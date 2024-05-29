@@ -28,7 +28,6 @@ interface Cache<T> {
     get(key: string): T | undefined;
 }
 
-import { withoutShield } from "../utils/misc/items/getItems";
 import { default as badges } from "../utils/misc/badges/badges.json";
 import { default as promocodes } from "../../promocodes.json";
 import * as cooldowns from "../utils/misc/cooldowns";
@@ -38,7 +37,21 @@ interface Inventory {
         amt: number;
         hp: number;
     };
-    [key: keyof typeof withoutShield]: number;
+    rock: number;
+    stick: number;
+    gem: number;
+    coal: number;
+    donut: number;
+    battery: number;
+    greenCrystal: number;
+    whiteCrystal: number;
+    orangeCrystal: number;
+    floCoin: number;
+    floBirthday: number;
+    a: number;
+    b: number;
+    c: number;
+    pythagorean: number;
 }
 
 interface User {

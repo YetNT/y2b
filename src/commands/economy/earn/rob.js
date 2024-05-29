@@ -2,6 +2,7 @@ const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
 const User = require("../../../models/User");
 const rndInt = require("../../../utils/misc/rndInt");
 const { comma, coin } = require("../../../utils/formatters/beatify");
+const { shieldStop } = require("./_lib/shieldStop");
 const {
     newCooldown,
     checkCooldown,
@@ -93,69 +94,17 @@ const rob = new SlashCommandObject({
 
             await newCooldown(Cooldowns.rob, interaction, "rob"); // Anything below this code should have a cooldown.
 
-            if (inventory) {
-                // check if they have an inventory
-                if (inventory.shield.amt > 0 && inventory.shield.hp > 0) {
-                    let damage = rndInt(
-                        Math.floor(inventory.shield.hp / 2),
-                        inventory.shield.hp
-                    );
-                    await interaction.editReply({
-                        embeds: [
-                            new EmbedBuilder().setDescription(
-                                `You tried to rob them but this user had a shield! You damaged their shield by **${comma(
-                                    damage
-                                )}%**`
-                            ),
-                        ],
-                    });
-                    inventory.shield.hp -= damage;
+            let s = await shieldStop(
+                client,
+                interaction,
+                User,
+                inventory,
+                victim,
+                ["You tried to rob them", "to rob you"]
+            );
 
-                    await victimDm
-                        .send({
-                            embeds: [
-                                new EmbedBuilder()
-                                    .setTitle("Your shield has been damaged!")
-                                    .setDescription(
-                                        `<@${
-                                            interaction.user.id
-                                        }> tried robbing you but instead damaged your shield by **${comma(
-                                            damage
-                                        )}%**`
-                                    )
-                                    .setFooter({
-                                        text: `Server = ${interaction.member.guild.name}`,
-                                    }),
-                            ],
-                        })
-                        .catch(() => null);
-                    await User.save(victim);
-                    if (inventory.shield.hp == 0) {
-                        inventory.shield.amt -= 1;
-                        await interaction.followUp(
-                            "You broke this user's shield."
-                        );
-                        await User.save(victim);
-
-                        await victimDm
-                            .send({
-                                embeds: [
-                                    new EmbedBuilder()
-                                        .setTitle(
-                                            "Your shield has been broken!"
-                                        )
-                                        .setDescription(
-                                            `<@${interaction.user.id}> managed to break your shield! You know have **${inventory.inv.shield.amt}** shields left.`
-                                        )
-                                        .setFooter({
-                                            text: `Server = ${interaction.member.guild.name}`,
-                                        }),
-                                ],
-                            })
-                            .catch(() => null);
-                    }
-                    return;
-                }
+            if (s) {
+                return;
             }
 
             const max = Math.floor(victim.balance / 2); // doing this so mfs dont get their whole ass robbed.

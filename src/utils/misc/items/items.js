@@ -252,7 +252,6 @@ let pythagorean = new Item(
     "Pythagorean Theorem",
     "The Pythagorean Theorem is a formula that can be used to calculate the length of the hypotenuse of a right triangle. a² + b² = c²",
     [
-        "Allows your wallet to be protected by a random mathematical equation.",
         "Allows your inventory to be protected by a random mathematical equation.",
     ],
     -1,

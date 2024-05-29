@@ -97,7 +97,7 @@ const rob = new SlashCommandObject({
                 // check if they have an inventory
                 if (inventory.shield.amt > 0 && inventory.shield.hp > 0) {
                     let damage = rndInt(
-                        Math.ceil(inventory.shield.hp / 2),
+                        Math.floor(inventory.shield.hp / 2),
                         inventory.shield.hp
                     );
                     await interaction.editReply({

@@ -2,25 +2,19 @@ const isCommand = false;
 const rndInt = require("../../../../utils/misc/rndInt");
 const { EmbedBuilder, Client, CommandInteraction } = require("discord.js");
 const { comma } = require("../../../../utils/formatters/beatify");
+const User = require("../../../../models/User");
 const { Inventory, User } = require("../../../../models/cache");
 
 /**
  *
  * @param {Client} client
  * @param {CommandInteraction} interaction
- * @param {*} inventory
- * @param {*} victim
+ * @param {Inventory} inventory
+ * @param {User} victim
  * @param {string[]} errorMsg The first one in the string array is the returned string, and the other is the one returned in the victim's DM
  * @returns
  */
-async function shieldStop(
-    client,
-    interaction,
-    User,
-    inventory,
-    victim,
-    errorMsg
-) {
+async function shieldStop(client, interaction, inventory, victim, errorMsg) {
     let shieldStop = false;
     const victimDm = await client.users
         .fetch(interaction.options.get("user").value)

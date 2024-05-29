@@ -1,12 +1,5 @@
 const sellPercentage = 0.45;
-const r = Object.freeze({
-    common: "Common",
-    uncommon: "Uncommon",
-    rare: "Rare",
-    epic: "Epic",
-    insane: "Insane",
-    godly: "Godly",
-});
+const { r } = require("./raridty");
 
 class Item {
     /**

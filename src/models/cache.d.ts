@@ -126,4 +126,4 @@ declare class CachedSchema {
 
 declare const cache: Cache<string>;
 
-export { CachedSchema, cache, Inventory };
+export { CachedSchema, cache, Inventory, User };

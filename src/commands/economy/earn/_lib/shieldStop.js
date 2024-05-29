@@ -2,6 +2,7 @@ const isCommand = false;
 const rndInt = require("../../../../utils/misc/rndInt");
 const { EmbedBuilder, Client, CommandInteraction } = require("discord.js");
 const { comma } = require("../../../../utils/formatters/beatify");
+const { Inventory, User } = require("../../../../models/cache");
 
 /**
  *

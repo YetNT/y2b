@@ -33,6 +33,14 @@ import { default as badges } from "../utils/misc/badges/badges.json";
 import { default as promocodes } from "../../promocodes.json";
 import * as cooldowns from "../utils/misc/cooldowns";
 
+interface Inventory {
+    shield: {
+        amt: number;
+        hp: number;
+    };
+    [key: keyof typeof withoutShield]: number;
+}
+
 interface User {
     userId: string;
     balance?: number;
@@ -40,13 +48,7 @@ interface User {
     badges?: {
         [key: keyof typeof badges]: boolean;
     };
-    inventory: {
-        shield: {
-            amt: number;
-            hp: number;
-        };
-        [key: keyof typeof withoutShield]: number;
-    };
+    inventory: Inventory;
     blacklist?: {
         ed: boolean;
         reason: string;
@@ -82,23 +84,46 @@ declare class CachedSchema {
         [key: string]: any;
     }): Promise<User | ServerCommand>;
 
+    /**
+     * Get a single document
+     */
+    async #getDocument(query: { userId: string }): Promise<User>;
+
+    /**
+     * Get a single document
+     */
+    async #getDocument(query: { guildId: string }): Promise<ServerCommand>;
+
+    async #getDocuments(
+        filter: (doc: { userId: string }) => boolean
+    ): Promise<User[]>;
+    async #getDocuments(
+        filter: (doc: { guildId: string }) => boolean
+    ): Promise<ServerCommand[]>;
     async #getDocuments(
         filter: (doc: { [key: string]: any }) => boolean
     ): Promise<User | ServerCommand[]>;
 
-    async findOne(query: { [key: string]: any }): Promise<User | ServerCommand>;
+    async findOne(query: { userId: string }): Promise<User>;
+    async findOne(query: { guildId: string }): Promise<ServerCommand>;
+    //async findOne(query: { [key: string]: any }): Promise<User | ServerCommand>;
 
+    // async find(
+    //     filter: (doc: { [key: string]: any }) => boolean
+    // ): Promise<User | ServerCommand[]>;
+    async find(filter: (doc: { userId: string }) => boolean): Promise<User[]>;
     async find(
-        filter: (doc: { [key: string]: any }) => boolean
-    ): Promise<User | ServerCommand[]>;
+        filter: (doc: { guildId: string }) => boolean
+    ): Promise<ServerCommand[]>;
 
     async save(doc: object): Promise<void>;
 
-    newDoc(obj: object): object;
+    newDoc(obj: User): object;
+    newDoc(obj: ServerCommand): object;
 
     runDb(func: (model: any) => any): Promise<any>;
 }
 
 declare const cache: Cache<string>;
 
-export { CachedSchema, cache };
+export { CachedSchema, cache, Inventory };

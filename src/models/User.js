@@ -101,6 +101,10 @@ let scheme = {
                 default: new Date(0),
             },
         },
+        steal: {
+            type: Date,
+            default: new Date(0),
+        },
     },
 };
 (async () => {

@@ -9,4 +9,5 @@ module.exports = {
     daily: "23h",
     rob: "55mins",
     crystalize: "20mins",
+    steal: "1h",
 };

@@ -3,6 +3,7 @@ const strToMilli = require("../formatters/strToMilli");
 const cds = require("../misc/cooldowns");
 require("dotenv").config();
 const { devs } = require("../../../config.json");
+const { CommandInteraction } = require("discord.js");
 
 /**
  *
@@ -91,10 +92,11 @@ const newCooldown = async (time, interaction, name, complex = false) => {
 /**
  *
  * @param {String} name The command's name.
- * @param {Interaction} interaction
+ * @param {CommandInteraction} interaction
  * @param {EmbedBuilder} EmbedBuilder
  * @param {any} complex If the name is complex like "challenge.lol" set name to "challenge" and this to "lol"
  * @param {String} custom Set's a custom cooldown message
+ * @param {boolean} reply If true, replies to the given interaction, If false, edits the reply.
  * @returns
  */
 const checkCooldown = async (
@@ -103,8 +105,10 @@ const checkCooldown = async (
     interaction,
     EmbedBuilder,
     complex = false,
-    custom = null
+    custom = null,
+    reply = false
 ) => {
+    const func = reply ? interaction.reply : interaction.editReply;
     if (
         client.token === process.env.TOKEN &&
         devs.includes(interaction.user.id)
@@ -143,7 +147,7 @@ const checkCooldown = async (
             description = `Slow down bro. This command has a cooldown, you will be able to run this command <t:${endTime}:R>`;
         }
         if (remainingTime > 0) {
-            interaction.editReply({
+            func({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Cooldown")

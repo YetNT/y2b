@@ -1,9 +1,7 @@
 const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
 const User = require("../../../models/User");
-const { withoutShield, all } = require("../../../utils/misc/items/getItems");
 const errorHandler = require("../../../utils/handlers/errorHandler");
 const { SlashCommandObject } = require("ic4d");
-const { r } = require("../../../utils/misc/items/rarity");
 const { EmbedError } = require("../../../utils/handlers/embedError");
 const { shieldStop } = require("./_lib/shieldStop");
 const { pythStop, pythStopFailMessage } = require("./_lib/pythStop");
@@ -12,54 +10,11 @@ const {
     checkCooldown,
     Cooldowns,
 } = require("../../../utils/handlers/cooldown");
-
-/**
- *
- * @param {{*}} obj
- */
-function pickRandomItem(obj) {
-    // Get all keys except "shield" and filter out those with value 0
-    const keys = Object.keys(obj).filter(
-        (key) =>
-            key !== "shield" && obj[key] !== 0 && all[key].canBeStolen !== false
-    );
-
-    // Randomly select from the filtered keys
-    const randomIndex = Math.floor(Math.random() * keys.length);
-
-    // Return the selected key
-    return keys[randomIndex];
-}
-
-function getRandomNumberBasedOnRarity(rarity) {
-    let min = 1;
-    let max;
-
-    switch (rarity) {
-        case r.common:
-            max = 20;
-            break;
-        case r.uncommon:
-            max = 15;
-            break;
-        case r.rare:
-            max = 10;
-            break;
-        case r.epic:
-            max = 6;
-            break;
-        case r.insane:
-            max = 3;
-            break;
-        case r.godly:
-            max = 1;
-            break;
-        default:
-            throw new Error("Invalid rarity level");
-    }
-
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+const {
+    pickRandomItem,
+    getRandomItem,
+    getRandomNumberBasedOnRarity,
+} = require("./_lib/stealFuncs");
 
 const steal = new SlashCommandObject({
     name: "steal",
@@ -114,13 +69,6 @@ const steal = new SlashCommandObject({
                     ).output
                 );
             }
-            /**
-             * @type string
-             */
-            let randomItem;
-
-            randomItem = pickRandomItem(inventory);
-            let num = Math.random() * 100;
 
             // try shield stop
             let s = await shieldStop(client, interaction, inventory, victim, [
@@ -144,7 +92,6 @@ const steal = new SlashCommandObject({
                 case true:
                     if (pythResult[1]) {
                         // Pyth stopped, user failed the equation.
-                        console.log("true true");
                         return await pythStopFailMessage(interaction);
                     }
                     break;
@@ -161,6 +108,14 @@ const steal = new SlashCommandObject({
                         return await pythStopFailMessage(interaction);
                     }
             }
+            /**
+             * @type string
+             */
+            let randomItem;
+
+            randomItem = getRandomItem(inventory);
+
+            await interaction.editReply("Ur gonna steal " + randomItem);
         } catch (error) {
             await errorHandler(error, client, interaction, EmbedBuilder, true);
         }

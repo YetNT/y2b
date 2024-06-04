@@ -1,5 +1,4 @@
 const isCommand = false;
-const rndInt = require("../../../../utils/misc/rndInt");
 const {
     ButtonStyle,
     EmbedBuilder,
@@ -19,19 +18,26 @@ const { comma } = require("../../../../utils/formatters/beatify");
 const User1 = require("../../../../models/User");
 const { Inventory, User } = require("../../../../models/cache");
 
-const modal = new ModalBuilder()
-    .setCustomId("pythStopModal")
-    .setTitle("This inventory is protected!");
-const answerInput = new TextInputBuilder()
-    .setCustomId("answer")
-    .setLabel("Answer the following question:")
-    .setStyle(TextInputStyle.Short);
-modal.addComponents(new ActionRowBuilder().addComponents(answerInput));
-
 const ids = {
     answer: "answer",
     igiveup: "igiveup",
 };
+
+/**
+ * Parses somethig like 1,1 to 1.1
+ * @param {string} input
+ * @returns
+ */
+function parseNumber(input) {
+    // Replace commas with dots and remove any non-digit or non-dot characters
+    let normalized = input.replace(",", ".").replace(/[^\d.]/g, "");
+
+    // Parse the normalized string to a float, then to an integer
+    let number = parseFloat(normalized);
+
+    // Return the integer part of the number
+    return Math.round(number);
+}
 
 const cmdIntObjs = [
     new CommandInteractionObject({
@@ -59,6 +65,36 @@ const actionrow = new ActionRowBuilder().addComponents(
         .setStyle(ButtonStyle.Danger)
 );
 
+function generateEquation() {
+    const operators = ["+", "-", "*"];
+    const operator = operators[Math.floor(Math.random() * operators.length)];
+
+    const a = Math.floor(Math.random() * 10) + 1; // coefficient of x (1 to 10)
+    const b = Math.floor(Math.random() * 10); // constant on the left-hand side (0 to 9)
+    const c = Math.floor(Math.random() * 20) + 1; // constant on the right-hand side (1 to 20)
+
+    let equation, solution;
+
+    switch (operator) {
+        case "+":
+            equation = `Solve for x: ${a}x + ${b} = ${c}`;
+            solution = (c - b) / a;
+            break;
+        case "-":
+            equation = `Solve for x: ${a}x - ${b} = ${c}`;
+            solution = (c + b) / a;
+            break;
+        case "*":
+            equation = `Solve for x: ${a} * x = ${c}`;
+            solution = c / a;
+            break;
+    }
+
+    solution = Math.round(solution);
+
+    return { equation, solution };
+}
+
 /**
  * Info: Since this uses a modal, you cannot defer the reply before sending it to the user. Therefore you have to move the defer reply AFTER this executes, whether it does or not. You can use editreply since this makes a reply.
  * @param {Client} client
@@ -82,6 +118,18 @@ async function pythStop(
             .catch(() => null); // to dm the user.
 
         if (inventory && inventory.pythagorean > 0) {
+            const math = generateEquation();
+            const modal = new ModalBuilder()
+                .setCustomId("pythStopModal")
+                .setTitle("Math! (Round to whole number.)");
+            const answerInput = new TextInputBuilder()
+                .setCustomId("answer")
+                .setStyle(TextInputStyle.Short)
+                .setLabel(math.equation);
+
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(answerInput)
+            );
             const res = await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
@@ -122,7 +170,7 @@ async function pythStop(
                                     );
 
                                 if (!filter(modalInteraction)) return;
-                                if (input == "qwerty") {
+                                if (parseNumber(input) == math.solution) {
                                     // correct answer, return false
                                     await modalInteraction.reply({
                                         content: "_ _",

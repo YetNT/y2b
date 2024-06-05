@@ -104,7 +104,7 @@ const blacklist = new SlashCommandObject({
                 }
             }
 
-            await user.save();
+            await User.save(user);
 
             if (code === "add") {
                 interaction.editReply({

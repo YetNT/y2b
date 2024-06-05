@@ -105,12 +105,10 @@ const checkCooldown = async (
     interaction,
     EmbedBuilder,
     complex = false,
-    custom = null,
-    reply = false
+    custom = null
 ) => {
-    const func = reply ? interaction.reply : interaction.editReply;
     if (
-        client.token === process.env.TOKEN &&
+        client.token === process.env.BETA &&
         devs.includes(interaction.user.id)
     ) {
         console.log("mhm");
@@ -147,7 +145,7 @@ const checkCooldown = async (
             description = `Slow down bro. This command has a cooldown, you will be able to run this command <t:${endTime}:R>`;
         }
         if (remainingTime > 0) {
-            func({
+            interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Cooldown")

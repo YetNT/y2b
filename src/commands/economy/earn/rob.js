@@ -2,6 +2,7 @@ const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
 const User = require("../../../models/User");
 const rndInt = require("../../../utils/misc/rndInt");
 const { comma, coin } = require("../../../utils/formatters/beatify");
+const { getMaxValue } = require("./_lib/robFuncs");
 const { shieldStop } = require("./_lib/shieldStop");
 const {
     newCooldown,
@@ -70,10 +71,10 @@ const rob = new SlashCommandObject({
 
             let authorInventory = author.inventory; //author's inventory.
 
-            if (author.balance < 1000)
+            if (author.balance < 100)
                 return interaction.editReply(
                     new EmbedError(
-                        "You cannot rob people when your balance is lower than 1000."
+                        "You cannot rob people when your balance is lower than 100. brokey."
                     ).output
                 );
 
@@ -113,8 +114,8 @@ const rob = new SlashCommandObject({
             if (s) {
                 return;
             }
-
-            const max = Math.floor(victim.balance / 2); // doing this so mfs dont get their whole ass robbed.
+            const maxOutput = getMaxValue(victim.balance);
+            const max = maxOutput.max; // doing this so mfs dont get their whole ass robbed.
             let sRob = rndInt(1, max); // user can only be robbed random amounts from 1 to half their balance
             let fRob = rndInt(Math.floor(author.balance / 2), author.balance); // if robbery failed deduct random amt between author/2 and author
 
@@ -145,11 +146,11 @@ const rob = new SlashCommandObject({
                         new EmbedBuilder()
                             .setTitle("Robbery :money_with_wings:")
                             .setDescription(
-                                `You stole a grand total of ${coin(
-                                    sRob
-                                )} from <@${victimId}>. Leaving them with ${coin(
+                                maxOutput.outputFunction(
+                                    victimId,
+                                    sRob,
                                     victim.balance
-                                )}`
+                                )
                             )
                             .setColor("Green")
                             .setFooter({ text: "You monster" }),

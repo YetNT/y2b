@@ -38,9 +38,7 @@ const rob = new SlashCommandObject({
             const sf = rndInt(1, 2); // 2 = success; 1 = failure
 
             let victim = await User.findOne({ userId: victimId });
-            let inventory = victim.inventory; // victim's inventory
             let author = await User.findOne({ userId: interaction.user.id });
-            let authorInventory = author.inventory; //author's inventory.
             const victimDm = await client.users
                 .fetch(victimId)
                 .catch(() => null); // to dm the user.
@@ -51,6 +49,8 @@ const rob = new SlashCommandObject({
                         "You cannot rob people when you've got nothing"
                     ).output
                 );
+
+            let authorInventory = author.inventory; //author's inventory.
 
             if (author.balance < 1000)
                 return interaction.editReply(
@@ -65,6 +65,10 @@ const rob = new SlashCommandObject({
                         "Leave them alone, they've got nothing :sob:"
                     ).output
                 );
+
+            let inventory = victim.hasOwnProperty("inventory")
+                ? victim.inventory
+                : null; // victim's inventory
 
             if (victim.balance < 0)
                 return interaction.editReply(

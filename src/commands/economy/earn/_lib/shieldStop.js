@@ -16,6 +16,7 @@ const { Inventory, User } = require("../../../../models/cache");
  */
 async function shieldStop(client, interaction, inventory, victim, errorMsg) {
     let shieldStop = false;
+    if (!inventory) return shieldStop;
     const victimDm = await client.users
         .fetch(interaction.options.get("user").value)
         .catch(() => null); // to dm the user.

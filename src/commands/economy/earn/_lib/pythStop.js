@@ -113,6 +113,7 @@ async function pythStop(
 ) {
     return new Promise(async (resolve, reject) => {
         let pythStop = false;
+        if (!inventory) return shieldStop;
         const victimDm = await client.users
             .fetch(interaction.options.get("user").value)
             .catch(() => null); // to dm the user.

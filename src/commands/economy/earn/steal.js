@@ -2,6 +2,7 @@ const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
 const User = require("../../../models/User");
 const errorHandler = require("../../../utils/handlers/errorHandler");
 const { SlashCommandObject } = require("ic4d");
+const { all } = require("../../../utils/misc/items/getItems");
 const { EmbedError } = require("../../../utils/handlers/embedError");
 const { shieldStop } = require("./_lib/shieldStop");
 const { pythStop, pythStopFailMessage } = require("./_lib/pythStop");
@@ -59,16 +60,24 @@ const steal = new SlashCommandObject({
                 userId: interaction.options.get("user").value,
             });
 
-            let authorInventory = user.inventory;
-            let inventory = victim.inventory;
+            if (!user || !user.hasOwnProperty("inventory"))
+                return interaction.editReply(
+                    new EmbedError(
+                        "You cannot steal from other people when you've got nothing. That's just unfair :skull:"
+                    ).output
+                );
 
-            if (!inventory) {
-                return interaction.reply(
+            let authorInventory = user.inventory;
+
+            if (!victim || !victim.hasOwnProperty("inventory")) {
+                return interaction.editReply(
                     new EmbedError(
                         "You cannot steal from a someone who has absolutely nothing to steal."
                     ).output
                 );
             }
+
+            let inventory = victim.inventory; // victim's inventory
 
             // try shield stop
             let s = await shieldStop(client, interaction, inventory, victim, [
@@ -111,11 +120,14 @@ const steal = new SlashCommandObject({
             /**
              * @type string
              */
-            let randomItem;
+            let randomItem = getRandomItem(inventory);
 
-            randomItem = getRandomItem(inventory);
+            let randomNum =
+                Math.floor(Math.random() * inventory[randomItem]) + 1;
 
-            await interaction.editReply("Ur gonna steal " + randomItem);
+            await interaction.editReply(
+                `Ur gonna steal ${randomNum} ${all[randomItem].name}`
+            );
         } catch (error) {
             await errorHandler(error, client, interaction, EmbedBuilder, true);
         }

@@ -1,6 +1,8 @@
 const { withoutShield, all } = require("../../../../utils/misc/items/getItems");
 const { r } = require("../../../../utils/misc/items/rarity");
 
+// Helper functions for steal.js
+
 /**
  *
  * @param {{*}} obj

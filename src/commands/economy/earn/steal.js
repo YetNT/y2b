@@ -1,4 +1,9 @@
-const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
+const {
+    EmbedBuilder,
+    ApplicationCommandOptionType,
+    Embed,
+} = require("discord.js");
+const { emojiToImage } = require("../../../utils/misc/emojiManipulation");
 const User = require("../../../models/User");
 const errorHandler = require("../../../utils/handlers/errorHandler");
 const { SlashCommandObject } = require("ic4d");
@@ -11,11 +16,8 @@ const {
     checkCooldown,
     Cooldowns,
 } = require("../../../utils/handlers/cooldown");
-const {
-    pickRandomItem,
-    getRandomItem,
-    getRandomNumberBasedOnRarity,
-} = require("./_lib/stealFuncs");
+const { getRandomItem } = require("./_lib/stealFuncs");
+const { comma } = require("../../../utils/formatters/beatify");
 
 const steal = new SlashCommandObject({
     name: "steal",
@@ -26,7 +28,7 @@ const steal = new SlashCommandObject({
     options: [
         {
             name: "user",
-            description: "robbery",
+            description: "User to steal from.",
             type: ApplicationCommandOptionType.User,
             required: true,
         },
@@ -34,36 +36,40 @@ const steal = new SlashCommandObject({
     // blacklist: true,
     callback: async function (client, interaction) {
         await interaction.deferReply();
+        const origInt = interaction;
         if (interaction.user.bot) {
             return interaction.editReply(
                 new EmbedError("You can't rob bots tf").output
             );
         }
 
-        //        const cooldownResult = await checkCooldown(
-        //            "steal",
-        //            client,
-        //            interaction,
-        //            EmbedBuilder,
-        //            false,
-        //            "Ay dawg u've robbed good cash. Wait a while."
-        //        );
-        //        if (cooldownResult === 0) {
-        //            return;
-        //        }
-        //
-        //        await newCooldown(Cooldowns.steal, interaction, "steal");
+        const cooldownResult = await checkCooldown(
+            "steal",
+            client,
+            interaction,
+            EmbedBuilder,
+            false,
+            "Ay dawg u've stolen good loot. Wait a while."
+        );
+        if (cooldownResult === 0) {
+            return;
+        }
+
+        await newCooldown(Cooldowns.steal, interaction, "steal");
 
         try {
             let user = await User.findOne({ userId: interaction.user.id });
             let victim = await User.findOne({
                 userId: interaction.options.get("user").value,
             });
+            const victimDm = await client.users
+                .fetch(interaction.options.get("user").value)
+                .catch(() => null); // to dm the user.
 
-            if (!victim || !victim.hasOwnProperty("inventory")) {
+            if (!victim) {
                 return interaction.editReply(
                     new EmbedError(
-                        "You cannot steal from a someone who has absolutely nothing to steal."
+                        "Unfortunately for you they have absolutely nothing for you to steal."
                     ).output
                 );
             }
@@ -74,7 +80,7 @@ const steal = new SlashCommandObject({
                     new EmbedError("That user is blacklisted.").output
                 );
 
-            let inventory = victim.inventory; // victim's inventory
+            let inventory = victim.inventory ?? {}; // victim's inventory
 
             if (!user || !user.hasOwnProperty("inventory"))
                 return interaction.editReply(
@@ -126,16 +132,56 @@ const steal = new SlashCommandObject({
             /**
              * @type string
              */
-            let randomItem = getRandomItem(inventory);
+            let randomItemId = getRandomItem(inventory);
 
             let randomNum =
-                Math.floor(Math.random() * inventory[randomItem]) + 1;
+                Math.floor(Math.random() * inventory[randomItemId]) + 1;
 
-            await interaction.editReply(
-                `Ur gonna steal ${randomNum} ${all[randomItem].name}`
-            );
+            inventory[randomItemId] -= randomNum;
+            authorInventory[randomItemId] += randomNum;
+
+            await victimDm
+                .send({
+                    content: "Stolen fr.",
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle("You have been stolen from!")
+                            .setDescription(
+                                `<@${interaction.user.id}> stole ${comma(
+                                    randomNum
+                                )} ${all[randomItemId].name}${
+                                    randomNum > 1 ? "s" : ""
+                                } from you!`
+                            )
+                            .setFooter({
+                                text: `Server = ${interaction.member.guild.name}`,
+                            }),
+                    ],
+                })
+                .catch(() => null);
+
+            const image = await emojiToImage(client, all[randomItemId].emoji);
+
+            await interaction.editReply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Thief.")
+                        .setDescription(
+                            `You just stole ${randomNum}  ${
+                                all[randomItemId].name
+                            }${randomNum > 1 ? "s" : ""} from <@${
+                                origInt.options.get("user").value
+                            }>!`
+                        )
+                        .setColor("Green")
+                        .setThumbnail(image),
+                ],
+            });
+
+            await User.save(user);
+            await User.save(victim);
         } catch (error) {
-            await errorHandler(error, client, interaction, EmbedBuilder, true);
+            await errorHandler(error, client, origInt, EmbedBuilder);
         }
     },
 });

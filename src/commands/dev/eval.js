@@ -5,6 +5,7 @@ const { SlashCommandObject } = require("ic4d");
 const ev = new SlashCommandObject({
     name: "eval",
     description: "evaluate",
+    deleted: true,
     options: [
         {
             name: "eval",

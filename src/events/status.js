@@ -54,7 +54,7 @@ module.exports = (client) => {
                 type: ActivityType.Playing,
             },
             {
-                name: "made with teardrops by @yet",
+                name: "made with teardrops by @yetnt",
                 type: ActivityType.Playing,
             },
             {

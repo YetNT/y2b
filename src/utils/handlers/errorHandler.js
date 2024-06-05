@@ -21,15 +21,8 @@ const send = async (client, input) => {
  * @param {EmbedBuilder} EmbedBuilder EmbedBuilder
  * @param {boolean} followUp Whether to follow the interaction after the interaction has been created.
  */
-module.exports = async (
-    error,
-    client,
-    interaction,
-    EmbedBuilder,
-    followUp = false
-) => {
-    const func = followUp ? interaction.followUp : interaction.editReply;
-    await func({
+module.exports = async (error, client, interaction, EmbedBuilder) => {
+    await interaction.editReply({
         embeds: [
             new EmbedBuilder()
                 .setTitle("An Error Occured!")

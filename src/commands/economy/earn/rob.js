@@ -43,6 +43,24 @@ const rob = new SlashCommandObject({
                 .fetch(victimId)
                 .catch(() => null); // to dm the user.
 
+            if (!victim)
+                return interaction.editReply(
+                    new EmbedError(
+                        "Leave them alone, they've got nothing :sob:"
+                    ).output
+                );
+
+            let blacklist = victim.blacklist;
+
+            if (blacklist && blacklist.ed == true)
+                return interaction.editReply(
+                    new EmbedError("That user is blacklisted.").output
+                );
+
+            let inventory = victim.hasOwnProperty("inventory")
+                ? victim.inventory
+                : null; // victim's inventory
+
             if (!author)
                 return interaction.editReply(
                     new EmbedError(
@@ -58,17 +76,6 @@ const rob = new SlashCommandObject({
                         "You cannot rob people when your balance is lower than 1000."
                     ).output
                 );
-
-            if (!victim)
-                return interaction.editReply(
-                    new EmbedError(
-                        "Leave them alone, they've got nothing :sob:"
-                    ).output
-                );
-
-            let inventory = victim.hasOwnProperty("inventory")
-                ? victim.inventory
-                : null; // victim's inventory
 
             if (victim.balance < 0)
                 return interaction.editReply(

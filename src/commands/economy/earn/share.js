@@ -63,18 +63,20 @@ const share = new SlashCommandObject({
             let t = await coin(amount);
 
             let user = await User.findOne({ userId: userToGiveId });
-            let userInv = user.inventory ?? {};
+            let userInv = user.hasOwnProperty("inventory")
+                ? user.inventory
+                : null;
             let author = await User.findOne({ userId: interaction.user.id });
             let authorInv = author.inventory;
             let blacklist = user.blacklist;
 
-            if (!author || author.balance < 0 || !authorInv)
+            if (!author || (item ? !authorInv : author.balance < 0))
                 return interaction.editReply(
                     new EmbedError("You've got nothing to give.").output
                 );
             if (blacklist && blacklist.ed == true)
                 return interaction.editReply(
-                    new EmbedError("that user is blacklisted.").output
+                    new EmbedError("That user is blacklisted.").output
                 );
             const cooldownResult = await checkCooldown(
                 "share",

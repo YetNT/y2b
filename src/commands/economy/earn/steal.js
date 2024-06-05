@@ -60,6 +60,22 @@ const steal = new SlashCommandObject({
                 userId: interaction.options.get("user").value,
             });
 
+            if (!victim || !victim.hasOwnProperty("inventory")) {
+                return interaction.editReply(
+                    new EmbedError(
+                        "You cannot steal from a someone who has absolutely nothing to steal."
+                    ).output
+                );
+            }
+            let blacklist = victim.blacklist;
+
+            if (blacklist && blacklist.ed == true)
+                return interaction.editReply(
+                    new EmbedError("That user is blacklisted.").output
+                );
+
+            let inventory = victim.inventory; // victim's inventory
+
             if (!user || !user.hasOwnProperty("inventory"))
                 return interaction.editReply(
                     new EmbedError(
@@ -68,16 +84,6 @@ const steal = new SlashCommandObject({
                 );
 
             let authorInventory = user.inventory;
-
-            if (!victim || !victim.hasOwnProperty("inventory")) {
-                return interaction.editReply(
-                    new EmbedError(
-                        "You cannot steal from a someone who has absolutely nothing to steal."
-                    ).output
-                );
-            }
-
-            let inventory = victim.inventory; // victim's inventory
 
             // try shield stop
             let s = await shieldStop(client, interaction, inventory, victim, [
@@ -136,5 +142,6 @@ const steal = new SlashCommandObject({
 
 steal.noSelfAt = true;
 steal.noBotAt = true;
+steal.blacklist = true;
 
 module.exports = steal;

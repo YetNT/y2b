@@ -44,7 +44,7 @@ const report = new SlashCommandManager({
             let subcommand = interaction.options.getSubcommand();
             switch (subcommand) {
                 case "bug":
-                    await subcommands.bug.callback(
+                    await subcommands.bug.execute(
                         interaction,
                         client,
                         forum,
@@ -52,7 +52,7 @@ const report = new SlashCommandManager({
                     );
                     break;
                 case "user":
-                    await subcommands.user.callback(
+                    await subcommands.user.execute(
                         interaction,
                         client,
                         forum,
@@ -60,7 +60,7 @@ const report = new SlashCommandManager({
                     );
                     break;
                 case "server":
-                    await subcommands.server.callback(
+                    await subcommands.server.execute(
                         interaction,
                         client,
                         forum,

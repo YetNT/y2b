@@ -8,7 +8,7 @@ const dep = new SlashCommandManager({
     data: new SlashCommandBuilder()
         .setName("deposit")
         .setDescription("Deposit coins into your bank")
-        .addUserOption((option) =>
+        .addIntegerOption((option) =>
             option
                 .setName("amount")
                 .setDescription("how much to deposit")

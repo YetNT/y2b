@@ -34,7 +34,7 @@ const command = new SlashCommandManager({
                     return;
                 }
 
-                await subcommands.list.callback(
+                await subcommands.list.execute(
                     interaction,
                     client,
                     ServerCommand,
@@ -52,7 +52,7 @@ const command = new SlashCommandManager({
                     return;
                 }
 
-                await subcommands.enable.callback(
+                await subcommands.enable.execute(
                     interaction,
                     client,
                     ServerCommand,
@@ -76,7 +76,7 @@ const command = new SlashCommandManager({
                     });
                 }
 
-                subcommands.disable.callback(
+                subcommands.disable.execute(
                     interaction,
                     client,
                     ServerCommand,

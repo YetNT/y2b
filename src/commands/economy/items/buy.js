@@ -92,6 +92,7 @@ const buy = new SlashCommandManager({
                 .setName("amount")
                 .setDescription("How much of this item are you buying?")
                 .setRequired(true)
+                .setMinValue(1)
         ),
     async execute(interaction, client) {
         await interaction.deferReply();

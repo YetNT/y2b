@@ -1,27 +1,24 @@
 const {
     EmbedBuilder,
     ApplicationCommandOptionType,
+    SlashCommandSubcommandBuilder,
     codeBlock,
 } = require("discord.js");
 
 const errorHandler = require("../../../utils/handlers/errorHandler");
 
 module.exports = {
-    body: {
-        name: "server",
-        description: "Report a server for ToS breaking activities",
-        type: ApplicationCommandOptionType.Subcommand,
-        options: [
-            {
-                name: "reason",
-                description: "Why are you reporting (this) server?",
-                type: ApplicationCommandOptionType.String,
-                required: true,
-            },
-        ],
-    },
+    data: new SlashCommandSubcommandBuilder()
+        .setName("server")
+        .setDescription("Report a server for ToS breaking activities.")
+        .addStringOption((option) =>
+            option
+                .setName("reason")
+                .setDescription("Why are you reporting (this) server?")
+                .setRequired(true)
+        ),
     isCommand: false,
-    callback: async (client, i, forum, postTags) => {
+    async execute(i, client, forum, postTags) {
         try {
             const reason = i.options.get("reason");
             await forum.threads.create({

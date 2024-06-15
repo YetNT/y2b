@@ -3,7 +3,7 @@ const {
     ButtonBuilder,
     ActionRowBuilder,
     ButtonStyle,
-    ApplicationCommandOptionType,
+    SlashCommandSubcommandBuilder,
 } = require("discord.js");
 const errorHandler = require("../../../../utils/handlers/errorHandler");
 const rndInt = require("../../../../utils/misc/rndInt");
@@ -99,13 +99,11 @@ const createButtonActionRows = (rightButton) => {
 };
 
 module.exports = {
-    body: {
-        name: "buttons",
-        description: "Click the right button for a reward!",
-        type: ApplicationCommandOptionType.Subcommand,
-    },
+    data: new SlashCommandSubcommandBuilder()
+        .setName("buttons")
+        .setDescription("Click the right button for a reward!"),
     isCommand: false,
-    callback: async (client, interaction) => {
+    async execute(interaction, client) {
         try {
             const cooldownResult = await checkCooldown(
                 "challenge",

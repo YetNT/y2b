@@ -1,16 +1,20 @@
-const { EmbedBuilder, ComponentType, ButtonStyle } = require("discord.js");
+const {
+    EmbedBuilder,
+    ComponentType,
+    ButtonStyle,
+    SlashCommandBuilder,
+} = require("discord.js");
 const items = require("../../../utils/misc/items/items");
 const { shopify } = require("../../../utils/formatters/beatify");
 const errorHandler = require("../../../utils/handlers/errorHandler");
-const { SlashCommandObject } = require("ic4d");
+const { SlashCommandManager } = require("ic4d");
 const { Pager } = require("@fyleto/dpager");
 
-const shop = new SlashCommandObject({
-    name: "shop",
-    description: "Shop for items that are definitely not overpriced",
-    blacklist: true,
-
-    callback: async (client, interaction) => {
+const shop = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("shop")
+        .setDescription("Shop for items that are definitely not overpriced"),
+    async execute(interaction, client) {
         await interaction.deferReply();
         const pages = new Pager();
         try {
@@ -74,6 +78,7 @@ const shop = new SlashCommandObject({
         }
     },
 });
+
 shop.category = "economy";
 shop.blacklist = true;
 

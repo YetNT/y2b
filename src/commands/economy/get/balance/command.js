@@ -1,27 +1,26 @@
-const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
+const {
+    EmbedBuilder,
+    SlashCommandBuilder,
+} = require("discord.js");
 const errorHandler = require("../../../../utils/handlers/errorHandler");
-const { SlashCommandObject } = require("ic4d");
+const { SlashCommandManager } = require("ic4d");
 const { EmbedError } = require("../../../../utils/handlers/embedError");
 const { balance } = require("./func");
 
-const bal = new SlashCommandObject({
-    name: "balance",
-    description: "View your or another user's coin balance, bank and networth",
-    blacklist: true,
-    options: [
-        {
-            name: "user",
-            description:
-                "view another user's balance (leave blank to view yours)",
-            type: ApplicationCommandOptionType.User,
-        },
-    ],
-    /**
-     *
-     * @param {Client} client
-     * @param {Interaction} interaction
-     */
-    callback: async (client, interaction) => {
+const bal = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("balance")
+        .setDescription(
+            "View your or another user's coin balance, bank and networth"
+        )
+        .addUserOption((option) =>
+            option
+                .setName("user")
+                .setDescription(
+                    "view another user's balance (leave blank to view yours)"
+                )
+        ),
+    async execute(interaction, client) {
         await interaction.deferReply();
         try {
             let option = interaction.options.get("user")?.value;

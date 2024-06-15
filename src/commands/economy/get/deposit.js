@@ -1,27 +1,20 @@
-const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 const User = require("../../../models/User");
 const { coin } = require("../../../utils/formatters/beatify");
 const errorHandler = require("../../../utils/handlers/errorHandler");
-const { SlashCommandObject } = require("ic4d");
+const { SlashCommandManager } = require("ic4d");
 
-const dep = new SlashCommandObject({
-    name: "deposit",
-    description: "Deposit coins into your bank",
-    options: [
-        {
-            name: "amount",
-            description: "how much to deposit",
-            required: true,
-            type: ApplicationCommandOptionType.Number,
-        },
-    ],
-    blacklist: true,
-
-    /**
-     * @param {Client} client
-     * @param {Interaction} interaction
-     */
-    callback: async (client, interaction) => {
+const dep = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("deposit")
+        .setDescription("Deposit coins into your bank")
+        .addUserOption((option) =>
+            option
+                .setName("amount")
+                .setDescription("how much to deposit")
+                .setRequired(true)
+        ),
+    async execute(interaction, client) {
         await interaction.deferReply();
 
         try {
@@ -87,6 +80,7 @@ const dep = new SlashCommandObject({
         }
     },
 });
+
 dep.category = "economy";
 dep.blacklist = "economy";
 

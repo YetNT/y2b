@@ -5,9 +5,10 @@ const {
     ButtonBuilder,
     ActionRowBuilder,
     ButtonStyle,
+    SlashCommandBuilder,
 } = require("discord.js");
 
-const { SlashCommandObject } = require("ic4d");
+const { SlashCommandManager } = require("ic4d");
 const links = {
     dbl: "https://discordbotlist.com/bots/yet-20/upvote",
     top: "https://top.gg/bot/701280304182067251/vote",
@@ -15,11 +16,11 @@ const links = {
 
 let amt = 10_000;
 
-const vote = new SlashCommandObject({
-    name: "vote",
-    description: "Vote for the bot on top.gg and discordbotlist",
-
-    callback: async (client, interaction) => {
+const vote = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("vote")
+        .setDescription("Vote for the bot on top.gg and discordbotlist"),
+    async execute(interaction, client) {
         await interaction.deferReply();
 
         try {

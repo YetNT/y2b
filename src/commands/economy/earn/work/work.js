@@ -1,4 +1,4 @@
-const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 const User = require("../../../../models/User");
 const { coin } = require("../../../../utils/formatters/beatify");
 const {
@@ -7,29 +7,23 @@ const {
     Cooldowns,
 } = require("../../../../utils/handlers/cooldown");
 const errorHandler = require("../../../../utils/handlers/errorHandler");
-const { SlashCommandObject } = require("ic4d");
+const { SlashCommandManager } = require("ic4d");
 const { makeChoices, rnd } = require("./workUtil");
 
-const work = new SlashCommandObject({
-    name: "work",
-    description: "Work for cash",
-    blacklist: true,
-    options: [
-        {
-            name: "job",
-            description: "Where do you want to work.",
-            required: true,
-            choices: makeChoices(),
-            type: ApplicationCommandOptionType.String,
-        },
-    ],
+const choices = makeChoices();
 
-    /**
-     *
-     * @param {Client} client
-     * @param {Interaction} interaction
-     */
-    callback: async (client, interaction) => {
+const work = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("work")
+        .setDescription("Work for cash")
+        .addStringOption((option) =>
+            option
+                .setName("job")
+                .setDescription("Where do you want to work.")
+                .setRequired(true)
+                .setChoices(...choices)
+        ),
+    async execute(interaction, client) {
         await interaction.deferReply();
         try {
             const cooldownResult = await checkCooldown(
@@ -110,6 +104,7 @@ const work = new SlashCommandObject({
         }
     },
 });
+
 work.blacklist = true;
 work.category = "economy";
 

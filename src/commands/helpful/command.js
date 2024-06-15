@@ -1,27 +1,24 @@
-const { PermissionFlagsBits, EmbedBuilder } = require("discord.js");
+const {
+    PermissionFlagsBits,
+    EmbedBuilder,
+    SlashCommandBuilder,
+} = require("discord.js");
 const ServerCommand = require("../../models/ServerCommand");
 const errorHandler = require("../../utils/handlers/errorHandler");
-const { SlashCommandObject } = require("ic4d");
+const { SlashCommandManager } = require("ic4d");
 
 const subcommands = require("./commandSubcommands/index");
 
-const command = new SlashCommandObject({
-    name: "command",
-    description:
-        "Server Command Disbale/Enable/List (This command has subcommands.)",
-    options: [
-        subcommands.list.body,
-        subcommands.enable.body,
-        subcommands.disable.body,
-    ],
-
-    permissionsRequired: [PermissionFlagsBits.ManageMessages],
-    /**
-     *
-     * @param {Client} client
-     * @param {Interaction} interaction
-     */
-    callback: async (client, interaction) => {
+const command = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("command")
+        .setDescription(
+            "Server Command Disbale/Enable/List (This command has subcommands.)"
+        )
+        .addSubcommand(subcommands.list.data)
+        .addSubcommand(subcommands.enable.data)
+        .addSubcommand(subcommands.disable.data),
+    async execute(interaction, client) {
         await interaction.deferReply();
         try {
             const guildId = interaction.guild.id;
@@ -38,8 +35,8 @@ const command = new SlashCommandObject({
                 }
 
                 await subcommands.list.callback(
-                    client,
                     interaction,
+                    client,
                     ServerCommand,
                     serverCommand
                 );
@@ -56,8 +53,8 @@ const command = new SlashCommandObject({
                 }
 
                 await subcommands.enable.callback(
-                    client,
                     interaction,
+                    client,
                     ServerCommand,
                     serverCommand,
                     command
@@ -80,8 +77,8 @@ const command = new SlashCommandObject({
                 }
 
                 subcommands.disable.callback(
-                    client,
                     interaction,
+                    client,
                     ServerCommand,
                     serverCommand,
                     command
@@ -91,7 +88,8 @@ const command = new SlashCommandObject({
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-});
+}).setUserPermissions(PermissionFlagsBits.ManageGuild);
+
 command.category = "mod";
 
 module.exports = command;

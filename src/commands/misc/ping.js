@@ -1,25 +1,13 @@
-const { /*PermissionFlagsBits,*/ EmbedBuilder } = require("discord.js");
+const {
+    /*PermissionFlagsBits,*/ EmbedBuilder,
+    SlashCommandBuilder,
+} = require("discord.js");
 const errorHandler = require("../../utils/handlers/errorHandler");
-const { SlashCommandObject } = require("ic4d");
+const { SlashCommandObject, SlashCommandManager } = require("ic4d");
 
-const ping = new SlashCommandObject({
-    name: "ping",
-    description: "Pong!",
-    // devOnly: true,
-    // testOnly: true,
-    // options: Object[],
-    // deleted: Boolean,
-    // blacklist: true,
-    // permissionsRequired: [PermissionFlagsBits.Administrator],
-    // botPermissions: [PermissionFlagsBits.Administrator],
-    // canBeServerDisabled: true,
-
-    /**
-     *
-     * @param {Client} client
-     * @param {Interaction} interaction
-     */
-    callback: async (client, interaction) => {
+const ping = new SlashCommandManager({
+    data: new SlashCommandBuilder().setName("ping").setDescription("Pong!"),
+    async execute(interaction, client) {
         try {
             const sent = await interaction.reply({
                 embeds: [new EmbedBuilder().setDescription("Pinging...")],
@@ -52,6 +40,7 @@ const ping = new SlashCommandObject({
         }
     },
 });
+
 ping.category = "misc";
 
 module.exports = ping;

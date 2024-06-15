@@ -13,7 +13,11 @@ const {
     MessageComponentInteraction,
     Embed,
 } = require("discord.js");
-const { InteractionType, CommandInteractionObject } = require("ic4d");
+const {
+    InteractionType,
+    CommandInteractionObject,
+    InteractionBuilder,
+} = require("ic4d");
 const { comma } = require("../../../../utils/formatters/beatify");
 const User1 = require("../../../../models/User");
 const { Inventory, User } = require("../../../../models/cache");
@@ -40,18 +44,16 @@ function parseNumber(input) {
 }
 
 const cmdIntObjs = [
-    new CommandInteractionObject({
-        customId: ids.answer,
-        authorOnly: true,
-        type: InteractionType.Button,
-        callback: async (interaction) => {},
-    }),
-    new CommandInteractionObject({
-        customId: ids.igiveup,
-        authorOnly: true,
-        type: InteractionType.Button,
-        callback: async (interaction) => {},
-    }),
+    new InteractionBuilder()
+        .setCustomId(ids.answer)
+        .setOnlyAuthor(true)
+        .setType("button")
+        .setCallback(async (interaction) => {}),
+    new InteractionBuilder()
+        .setCustomId(ids.igiveup)
+        .setOnlyAuthor(true)
+        .setType("button")
+        .setCallback(async (interaction) => {}),
 ];
 
 const actionrow = new ActionRowBuilder().addComponents(
@@ -104,13 +106,7 @@ function generateEquation() {
  * @param {User} authorInventory
  * @returns {Promise<[boolean, ModalSubmitInteraction | null, boolean?]>} A promise that resolves to an array containing a boolean and an interaction or null
  */
-async function pythStop(
-    client,
-    interaction,
-    inventory,
-    victim,
-    authorInventory
-) {
+async function pythStop(client, interaction, inventory) {
     return new Promise(async (resolve, reject) => {
         let pythStop = false;
         if (!inventory) return shieldStop;

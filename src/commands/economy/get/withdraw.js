@@ -1,27 +1,21 @@
-const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 const User = require("../../../models/User");
 const { coin } = require("../../../utils/formatters/beatify");
 const errorHandler = require("../../../utils/handlers/errorHandler");
-const { SlashCommandObject } = require("ic4d");
+const { SlashCommandManager } = require("ic4d");
 
-const withdraw = new SlashCommandObject({
-    name: "withdraw",
-    description: "Withdraw coins from your bank",
-    blacklist: true,
-    options: [
-        {
-            name: "amount",
-            description: "how much to withdraw",
-            required: true,
-            type: ApplicationCommandOptionType.Number,
-        },
-    ],
-
-    /**
-     * @param {Client} client
-     * @param {Interaction} interaction
-     */
-    callback: async (client, interaction) => {
+const withdraw = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("withdraw")
+        .setDescription("Withdraw coins from your bank")
+        .addIntegerOption((option) =>
+            option
+                .setName("amount")
+                .setDescription("how much to withdraw")
+                .setMinValue(0)
+                .setRequired(true)
+        ),
+    async execute(interaction, client) {
         await interaction.deferReply();
 
         try {

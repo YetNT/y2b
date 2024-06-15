@@ -4,6 +4,7 @@ const {
     ButtonBuilder,
     ButtonStyle,
     ActionRowBuilder,
+    SlashCommandBuilder,
 } = require("discord.js");
 const User = require("../../../models/User");
 const Items = require("../../../utils/misc/items/items");
@@ -13,7 +14,7 @@ const {
 } = require("../../../utils/misc/items/getItems");
 // const { comma, coin, shopify } = require("../../../utils/formatters/beatify");
 const errorHandler = require("../../../utils/handlers/errorHandler");
-const { SlashCommandObject, CommandInteractionObject } = require("ic4d");
+const { InteractionBuilder, SlashCommandManager } = require("ic4d");
 const { Pager } = require("@fyleto/dpager");
 const { emojiToUnicode } = require("../../../utils/misc/emojiManipulation");
 const { EmbedError } = require("../../../utils/handlers/embedError");
@@ -62,13 +63,12 @@ function newFields(field1, field2) {
 let f = getForgableItemNames();
 
 const makeInteractions = () => {
-    let arr = [];
-    for (const item of f) {
-        const int = new CommandInteractionObject({
-            type: "button",
-            authorOnly: true,
-            customId: `forge-${item.item.name}`,
-            callback: async (interaction) => {
+    return f.map((item) => {
+        const int = new InteractionBuilder()
+            .setCustomId(`forge-${item.item.name}`)
+            .setOnlyAuthor(true)
+            .setType("button")
+            .setCallback(async (interaction) => {
                 await interaction.update({
                     content: "Trying to purchase....",
                     embeds: [],
@@ -132,56 +132,91 @@ const makeInteractions = () => {
                     components: [],
                     content: "_ _",
                 });
-            },
-        });
+            });
         let emoji = emojiToUnicode(item.item.emoji);
         int.button = new ButtonBuilder()
             .setLabel(`Forge ${item.item.name}`)
             .setCustomId(`forge-${item.item.name}`)
             .setStyle(ButtonStyle.Secondary)
             .setEmoji(emoji);
-        arr.push(int);
-    }
-    return arr;
+        return int;
+    });
 };
 
 const buttons = makeInteractions();
 
-const forge = new SlashCommandObject(
-    {
-        name: "forge",
-        description: "Forge a new item from other items!",
-        callback: async (c, interaction) => {
-            await interaction.deferReply();
-            try {
-                const user = await User.findOne({
-                    userId: interaction.user.id,
-                });
-                if (!user)
-                    return interaction.editReply(
-                        new EmbedError(
-                            "You cannot forge items when you've got nothing."
-                        ).output
-                    );
-                let pageArray = [];
-                for (let i in f) {
-                    let recipe = f[i].recipe;
-                    let item = f[i].item;
-                    let recipeStr = getRecipeItems(recipe, user);
-                    let forgeStr = `Forges \`${recipe._amt}\` ${item.emoji} ${item.name}`;
+const forge = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("forge")
+        .setDescription("Forge a new item from other items!"),
+    async execute(interaction, c) {
+        await interaction.deferReply();
+        try {
+            const user = await User.findOne({
+                userId: interaction.user.id,
+            });
+            if (!user)
+                return interaction.editReply(
+                    new EmbedError(
+                        "You cannot forge items when you've got nothing."
+                    ).output
+                );
+            let pageArray = [];
+            for (let i in f) {
+                let recipe = f[i].recipe;
+                let item = f[i].item;
+                let recipeStr = getRecipeItems(recipe, user);
+                let forgeStr = `Forges \`${recipe._amt}\` ${item.emoji} ${item.name}`;
 
-                    pageArray.push(
-                        `${item.name}${separator.title}${forgeStr}\n\n**Recipe:**${recipeStr}`
-                    );
-                }
-                pageArray = joinArrayPairs(pageArray);
-                const pager = new Pager();
-                pager.addDynamicPages(pageArray, 1);
-                let page = await pager.currentPage();
+                pageArray.push(
+                    `${item.name}${separator.title}${forgeStr}\n\n**Recipe:**${recipeStr}`
+                );
+            }
+            pageArray = joinArrayPairs(pageArray);
+            const pager = new Pager();
+            pager.addDynamicPages(pageArray, 1);
+            let page = await pager.currentPage();
+            const [field1, field2] = page.raw.content.split(separator.item);
+            let fieldsArray = newFields(field1, field2);
+
+            await interaction.editReply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Forge!")
+                        .setFields(...fieldsArray),
+                ],
+                components: [
+                    ...page.components,
+                    new ActionRowBuilder().addComponents(
+                        ...(buttons[1] !== undefined
+                            ? [buttons[0].button, buttons[1].button]
+                            : [buttons[0].button])
+                    ),
+                ],
+            });
+
+            const res = await interaction.fetchReply();
+
+            const collector = res.createMessageComponentCollector({
+                componentType: ComponentType.Button,
+                time: 3_600_600,
+            });
+
+            collector.on("collect", async (interaction) => {
+                if (
+                    ![
+                        "prevMaxPage",
+                        "prevPage",
+                        "nextPage",
+                        "nextMaxpage",
+                    ].includes(interaction.customId)
+                )
+                    return; // only listen for page changes and not custom buttons
+                let page = await pager.currentPage(interaction.customId);
                 const [field1, field2] = page.raw.content.split(separator.item);
                 let fieldsArray = newFields(field1, field2);
 
-                await interaction.editReply({
+                await interaction.update({
                     embeds: [
                         new EmbedBuilder()
                             .setTitle("Forge!")
@@ -190,62 +225,22 @@ const forge = new SlashCommandObject(
                     components: [
                         ...page.components,
                         new ActionRowBuilder().addComponents(
-                            ...(buttons[1] !== undefined
-                                ? [buttons[0].button, buttons[1].button]
-                                : [buttons[0].button])
+                            ...(buttons[pager.index * 2 + 1] !== undefined
+                                ? [
+                                      buttons[pager.index * 2].button,
+                                      buttons[pager.index * 2 + 1].button,
+                                  ]
+                                : [buttons[pager.index * 2].button])
                         ),
                     ],
                 });
-
-                const res = await interaction.fetchReply();
-
-                const collector = res.createMessageComponentCollector({
-                    componentType: ComponentType.Button,
-                    time: 3_600_600,
-                });
-
-                collector.on("collect", async (interaction) => {
-                    if (
-                        ![
-                            "prevMaxPage",
-                            "prevPage",
-                            "nextPage",
-                            "nextMaxpage",
-                        ].includes(interaction.customId)
-                    )
-                        return; // only listen for page changes and not custom buttons
-                    let page = await pager.currentPage(interaction.customId);
-                    const [field1, field2] = page.raw.content.split(
-                        separator.item
-                    );
-                    let fieldsArray = newFields(field1, field2);
-
-                    await interaction.update({
-                        embeds: [
-                            new EmbedBuilder()
-                                .setTitle("Forge!")
-                                .setFields(...fieldsArray),
-                        ],
-                        components: [
-                            ...page.components,
-                            new ActionRowBuilder().addComponents(
-                                ...(buttons[pager.index * 2 + 1] !== undefined
-                                    ? [
-                                          buttons[pager.index * 2].button,
-                                          buttons[pager.index * 2 + 1].button,
-                                      ]
-                                    : [buttons[pager.index * 2].button])
-                            ),
-                        ],
-                    });
-                });
-            } catch (error) {
-                errorHandler(error, c, interaction, EmbedBuilder);
-            }
-        },
+            });
+        } catch (error) {
+            errorHandler(error, c, interaction, EmbedBuilder);
+        }
     },
-    ...buttons
-);
+}).addInteractions(...buttons);
+
 forge.category = "economy";
 forge.blacklist = true;
 

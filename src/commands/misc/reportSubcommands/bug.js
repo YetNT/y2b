@@ -1,6 +1,7 @@
 const {
     EmbedBuilder,
     ApplicationCommandOptionType,
+    SlashCommandSubcommandBuilder,
     codeBlock,
 } = require("discord.js");
 
@@ -8,6 +9,35 @@ const errorHandler = require("../../../utils/handlers/errorHandler");
 const cb = codeBlock;
 
 module.exports = {
+    data: new SlashCommandSubcommandBuilder()
+        .setName("bug")
+        .setDescription(
+            "Report a bug you've found or saw. Make sure to be as descriptive as possible"
+        )
+        .addStringOption((option) =>
+            option
+                .setName("type")
+                .setDescription("Bug type")
+                .addChoices(
+                    {
+                        name: "Command",
+                        value: "commmand",
+                    },
+                    {
+                        name: "Button/Select Menu/",
+                        value: "interaction",
+                    }
+                )
+                .setRequired(true)
+        )
+        .addStringOption((option) =>
+            option
+                .setName("description")
+                .setDescription(
+                    "Say exactly what you were doing or saw before the bug happened and describe it."
+                )
+                .setRequired(true)
+        ),
     body: {
         name: "bug",
         description:
@@ -40,7 +70,7 @@ module.exports = {
         ],
     },
     isCommand: false,
-    callback: async (client, i, forum, postTags) => {
+    async execute(i, client, forum, postTags) {
         try {
             let desc = i.options.get("description"); // desc.value is the value
             let type = i.options.getString("type");

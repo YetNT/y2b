@@ -1,16 +1,16 @@
 const {
-    ApplicationCommandOptionType,
     EmbedBuilder,
     ButtonBuilder,
     ButtonStyle,
     ActionRowBuilder,
+    SlashCommandBuilder,
 } = require("discord.js");
 const User = require("../../../models/User");
 const Items = require("../../../utils/misc/items/items");
 const { itemNames } = require("../../../utils/misc/items/getItems");
 const { comma, coin, shopify } = require("../../../utils/formatters/beatify");
 const errorHandler = require("../../../utils/handlers/errorHandler");
-const { SlashCommandObject, CommandInteractionObject } = require("ic4d");
+const { SlashCommandManager, InteractionBuilder } = require("ic4d");
 const { EmbedError } = require("../../../utils/handlers/embedError");
 
 async function buyItem(inventory, user, item, obj, interaction) {
@@ -74,118 +74,103 @@ async function buyItem(inventory, user, item, obj, interaction) {
     });
 }
 
-const buy = new SlashCommandObject(
-    {
-        name: "buy",
-        description: "Buy from the shop",
-        blacklist: true,
-        options: [
-            {
-                name: "item",
-                description: "Which item you buying?",
-                required: true,
-                type: ApplicationCommandOptionType.String,
-                choices: itemNames(true),
-            },
-            {
-                name: "amount",
-                description: "How much of this item are you buying?",
-                required: true,
-                type: ApplicationCommandOptionType.Integer,
-            },
-        ],
+const items = itemNames(true);
 
-        callback: async (client, interaction) => {
-            await interaction.deferReply();
+const buy = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("buy")
+        .setDescription("Buy from the shop")
+        .addStringOption((option) =>
+            option
+                .setName("item")
+                .setDescription("Which item you buying?")
+                .addChoices(...items)
+                .setRequired(true)
+        )
+        .addIntegerOption((option) =>
+            option
+                .setName("amount")
+                .setDescription("How much of this item are you buying?")
+                .setRequired(true)
+        ),
+    async execute(interaction, client) {
+        await interaction.deferReply();
 
-            try {
-                const item = interaction.options.get("item").value;
-                const amount = interaction.options.get("amount").value;
-                const cost = Items[item].price * amount;
-                let emoji =
-                    Items[item].emoji != undefined ? Items[item].emoji : "";
-                let query = {
-                    userId: interaction.user.id,
-                };
+        try {
+            const item = interaction.options.get("item").value;
+            const amount = interaction.options.get("amount").value;
+            const cost = Items[item].price * amount;
+            let emoji = Items[item].emoji != undefined ? Items[item].emoji : "";
+            let query = {
+                userId: interaction.user.id,
+            };
 
-                let user = await User.findOne(query);
-                let inventory = user.inventory;
+            let user = await User.findOne(query);
+            let inventory = user.inventory;
 
-                if (!user)
-                    return interaction.editReply(
-                        new EmbedError(
-                            "You cannot buy items when you've got nothing"
-                        ).output
-                    );
-                if (amount < 0)
-                    return interaction.editReply(
-                        new EmbedError(
-                            "Tf is u tryna buy a negative item :skull:"
-                        ).output
-                    );
-                if (cost > user.balance)
-                    return interaction.editReply(
-                        new EmbedError(
-                            `You cannot afford ${comma(amount)} ${emoji} ${
+            if (!user)
+                return interaction.editReply(
+                    new EmbedError(
+                        "You cannot buy items when you've got nothing"
+                    ).output
+                );
+            if (amount < 0)
+                return interaction.editReply(
+                    new EmbedError("Tf is u tryna buy a negative item :skull:")
+                        .output
+                );
+            if (cost > user.balance)
+                return interaction.editReply(
+                    new EmbedError(
+                        `You cannot afford ${comma(amount)} ${emoji} ${
+                            Items[item].name
+                        }s\nyou need ${coin(cost - user.balance)} more coins`
+                    ).output
+                );
+
+            buy.user = user;
+            buy.inventory = inventory;
+            buy.item = item;
+            buy.obj = {
+                amount: amount,
+                cost: cost,
+                emoji: emoji,
+            };
+
+            const confirm = new ButtonBuilder()
+                .setCustomId("acceptBuy")
+                .setLabel("Yes")
+                .setStyle(ButtonStyle.Success);
+            const cancel = new ButtonBuilder()
+                .setCustomId("cancelBuy")
+                .setLabel("Cancel")
+                .setStyle(ButtonStyle.Danger);
+
+            await interaction.editReply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setTitle("Confirmation")
+                        .setDescription(
+                            `Are you sure you'd like to buy \`${amount}\` ${emoji} ${
                                 Items[item].name
-                            }s\nyou need ${coin(
-                                cost - user.balance
-                            )} more coins`
-                        ).output
-                    );
-
-                buy.user = user;
-                buy.inventory = inventory;
-                buy.item = item;
-                buy.obj = {
-                    amount: amount,
-                    cost: cost,
-                    emoji: emoji,
-                };
-
-                const confirm = new ButtonBuilder()
-                    .setCustomId("acceptBuy")
-                    .setLabel("Yes")
-                    .setStyle(ButtonStyle.Success);
-                const cancel = new ButtonBuilder()
-                    .setCustomId("cancelBuy")
-                    .setLabel("Cancel")
-                    .setStyle(ButtonStyle.Danger);
-
-                await interaction.editReply({
-                    embeds: [
-                        new EmbedBuilder()
-                            .setTitle("Confirmation")
-                            .setDescription(
-                                `Are you sure you'd like to buy \`${amount}\` ${emoji} ${
-                                    Items[item].name
-                                } for ${shopify(cost)}`
-                            ),
-                    ],
-                    components: [
-                        new ActionRowBuilder().addComponents(confirm, cancel),
-                    ],
-                });
-            } catch (error) {
-                errorHandler(error, client, interaction, EmbedBuilder);
-            }
-        },
+                            } for ${shopify(cost)}`
+                        ),
+                ],
+                components: [
+                    new ActionRowBuilder().addComponents(confirm, cancel),
+                ],
+            });
+        } catch (error) {
+            errorHandler(error, client, interaction, EmbedBuilder);
+        }
     },
-    new CommandInteractionObject({
-        customId: "acceptBuy",
-        type: "button",
-        onlyAuthor: true,
-        callback: async (interaction) => {
-            await buyItem(
-                buy.inventory,
-                buy.user,
-                buy.item,
-                buy.obj,
-                interaction
-            );
-        },
-        timeout: 20_000,
-        onTimeout: (i) => {
+}).addInteractions(
+    // Accept Buy Button.
+    new InteractionBuilder()
+        .setCustomId("acceptBuy")
+        .setType("button")
+        .setOnlyAuthor(true)
+        .setTimeout(() => {
             i.update({
                 embeds: [
                     new EmbedBuilder().setDescription(
@@ -194,19 +179,26 @@ const buy = new SlashCommandObject(
                 ],
                 components: [],
             });
-        },
-    }),
-    new CommandInteractionObject({
-        customId: "cancelBuy",
-        type: "button",
-        onlyAuthor: true,
-        callback: async (i) => {
+        }, 20_000)
+        .setCallback(async (interaction) => {
+            await buyItem(
+                buy.inventory,
+                buy.user,
+                buy.item,
+                buy.obj,
+                interaction
+            );
+        }),
+    new InteractionBuilder()
+        .setCustomId("cancelBuy")
+        .setType("button")
+        .setOnlyAuthor(true)
+        .setCallback(async (i) => {
             i.update({
                 embeds: [new EmbedBuilder().setDescription("Cancelled.")],
                 components: [],
             });
-        },
-    })
+        })
 );
 
 buy.category = "economy";

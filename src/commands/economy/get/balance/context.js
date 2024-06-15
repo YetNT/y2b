@@ -1,13 +1,18 @@
-const { ApplicationCommandType, EmbedBuilder } = require("discord.js");
+const {
+    ApplicationCommandType,
+    EmbedBuilder,
+    ContextMenuCommandBuilder,
+} = require("discord.js");
 const errorHandler = require("../../../../utils/handlers/errorHandler");
 const { EmbedError } = require("../../../../utils/handlers/embedError");
 const { balance } = require("./func");
+const { ContextMenuBuilder } = require("ic4d");
 
-module.exports = {
-    name: "User Balance",
-    type: ApplicationCommandType.User,
-    isCommand: false,
-    callback: async (interaction, client) => {
+const context = new ContextMenuBuilder({
+    data: new ContextMenuCommandBuilder()
+        .setName("User Balance")
+        .setType(ApplicationCommandType.User),
+    async execute(interaction, client) {
         await interaction.deferReply();
         try {
             const option = interaction.targetUser;
@@ -27,4 +32,6 @@ module.exports = {
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-};
+});
+
+module.exports = context;

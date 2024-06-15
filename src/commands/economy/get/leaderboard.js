@@ -1,26 +1,26 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 const User = require("../../../models/User");
 const { coin } = require("../../../utils/formatters/beatify");
 const errorHandler = require("../../../utils/handlers/errorHandler");
-const { SlashCommandObject } = require("ic4d");
+const { SlashCommandManager } = require("ic4d");
 
-const lb = new SlashCommandObject({
-    name: "leaderboard",
-    description: "View the coins leaderboard and a random leaderboard",
-    blacklist: true,
-
-    callback: async (client, interaction) => {
+const lb = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("leaderboard")
+        .setDescription("View the coins leaderboard and a random leaderboard"),
+    async execute(interaction, client) {
         await interaction.deferReply();
         try {
             const server = await client.guilds.cache.get(interaction.guild.id);
-            const leaderboard = await User.runDb(async m=>{
-                return (await m.find({ balance: { $exists: true } })
-                .sort({ balance: -1 })
-                .limit(5)
-                .select("userId balance -_id"))
-            })
-            
-				leaderboard.sort((a, b) => b.balance - a.balance)
+            const leaderboard = await User.runDb(async (m) => {
+                return await m
+                    .find({ balance: { $exists: true } })
+                    .sort({ balance: -1 })
+                    .limit(5)
+                    .select("userId balance -_id");
+            });
+
+            leaderboard.sort((a, b) => b.balance - a.balance);
 
             let serverLeaderboard = [];
             /* const sL = await User.find(
@@ -60,7 +60,7 @@ const lb = new SlashCommandObject({
                     globalPos = i + 1;
                 }
             }
-/*
+            /*
             let serverLb = [];
             let serverPos = 0;
             for (let i = 0; i < 5; i++) {
@@ -97,15 +97,15 @@ const lb = new SlashCommandObject({
                                 name: "Global",
                                 value: globalLb.join("\n"),
                                 inline: true,
-                            },/*
+                            } /*
                             {
                                 name: "Server",
                                 value: serverLb.join("\n"),
                                 inline: true,
-                            },*/
+                            },*/,
                         ])
                         .setFooter({
-                            text: /*`Server Position: #${serverPos}`*/` Global Position: #${globalPos}`,
+                            text: /*`Server Position: #${serverPos}`*/ ` Global Position: #${globalPos}`,
                         }),
                 ],
             });

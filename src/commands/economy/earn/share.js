@@ -1,9 +1,9 @@
 const {
-    ApplicationCommandOptionType,
     EmbedBuilder,
     ActionRowBuilder,
     ButtonBuilder,
     ButtonStyle,
+    SlashCommandBuilder,
 } = require("discord.js");
 const User = require("../../../models/User");
 const { itemNamesNoShield } = require("../../../utils/misc/items/getItems");
@@ -16,40 +16,35 @@ const errorHandler = require("../../../utils/handlers/errorHandler");
 const Items = require("../../../utils/misc/items/items");
 const { emojiToUnicode } = require("../../../utils/misc/emojiManipulation");
 const { EmbedError } = require("../../../utils/handlers/embedError");
+const { SlashCommandManager } = require("ic4d");
 
-const { SlashCommandObject } = require("ic4d");
-const share = new SlashCommandObject({
-    name: "share",
-    description: "Share your wealth (or items) with other people",
-    options: [
-        {
-            name: "user",
-            description: "Who are you sharing to?",
-            required: true,
-            type: ApplicationCommandOptionType.User,
-        },
-        {
-            name: "amount",
-            description: "How much are you sharing to this person?",
-            required: true,
-            type: ApplicationCommandOptionType.Integer,
-        },
-        {
-            name: "item",
-            description: "Are you sharing an item? (If not leave this empty)",
-            requred: false,
-            type: ApplicationCommandOptionType.String,
-            choices: itemNamesNoShield(),
-        },
-    ],
+const items = itemNamesNoShield();
 
-    /**
-     *
-     * @param {Client} client
-     * @param {Interaction} interaction
-     * @returns
-     */
-    callback: async (client, interaction) => {
+const share = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("share")
+        .setDescription("Share you wealth (or items) with other people.")
+        .addUserOption((option) =>
+            option
+                .setName("user")
+                .setDescription("Who are you sharing to?")
+                .setRequired(true)
+        )
+        .addIntegerOption((option) =>
+            option
+                .setName("amount")
+                .setDescription("How much are you sharing to this person?")
+                .setRequired(true)
+        )
+        .addStringOption((option) =>
+            option
+                .setName("item")
+                .setDescription(
+                    "Are you sharing an item? (If not leave this empty)"
+                )
+                .setChoices(...items)
+        ),
+    async execute(interaction, client) {
         await interaction.deferReply();
         try {
             const userToGiveId = interaction.options.get("user").value;
@@ -199,7 +194,7 @@ const share = new SlashCommandObject({
                     let response;
                     if (item) {
                         response = `Shared ${comma(amount)} ${
-                            Items[item]
+                            Items[item].name
                         } with <@${userToGiveId}>`;
                     } else {
                         response = `Shared ${coin(

@@ -1,27 +1,31 @@
-const { EmbedBuilder, ApplicationCommandOptionType } = require("discord.js");
+const {
+    EmbedBuilder,
+    ApplicationCommandOptionType,
+    SlashCommandSubcommandBuilder,
+} = require("discord.js");
 
 module.exports = {
-    isCommand: false,
-    body: {
-        name: "disable",
-        description: "Disable a command in this server",
-        type: ApplicationCommandOptionType.Subcommand,
-        options: [
-            {
-                name: "command",
-                description: "Which command you disablin?",
-                choices: [
+    data: new SlashCommandSubcommandBuilder()
+        .setName("disable")
+        .setDescription("Disable a command in this server")
+        .addStringOption((option) =>
+            option
+                .setName("command")
+                .setDescription("Which command you disablin?")
+                .addChoices(
                     {
                         name: "Rob",
                         value: "rob",
                     },
-                ],
-                type: ApplicationCommandOptionType.String,
-                required: true,
-            },
-        ],
-    },
-    callback: async (client, interaction, sc, serverCommand, command) => {
+                    {
+                        name: "Steal",
+                        value: "steal",
+                    }
+                )
+                .setRequired(true)
+        ),
+    isCommand: false,
+    async execute(interaction, client, sc, serverCommand, command) {
         await interaction.editReply({
             embeds: [
                 new EmbedBuilder()

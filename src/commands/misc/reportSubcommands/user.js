@@ -1,5 +1,6 @@
 const {
     EmbedBuilder,
+    SlashCommandSubcommandBuilder,
     ApplicationCommandOptionType,
     codeBlock,
 } = require("discord.js");
@@ -7,27 +8,25 @@ const {
 const errorHandler = require("../../../utils/handlers/errorHandler");
 
 module.exports = {
-    body: {
-        name: "user",
-        description: "Report a user for breaking ToS",
-        type: ApplicationCommandOptionType.Subcommand,
-        options: [
-            {
-                name: "who",
-                description: "Who are you reporting?",
-                required: true,
-                type: ApplicationCommandOptionType.User,
-            },
-            {
-                name: "reason",
-                description: "What have they done?",
-                required: true,
-                type: ApplicationCommandOptionType.String,
-            },
-        ],
-    },
+    data: new SlashCommandSubcommandBuilder()
+        .setName("user")
+        .setDescription(
+            "Report a user for breaking ToS or something else appropriate."
+        )
+        .addUserOption((option) =>
+            option
+                .setName("who")
+                .setDescription("Who are you reporting?")
+                .setRequired(true)
+        )
+        .addStringOption((option) =>
+            option
+                .setName("reason")
+                .setDescription("What have they done?")
+                .setRequired(true)
+        ),
     isCommand: false,
-    callback: async (client, i, forum, postTags) => {
+    async execute(i, client, forum, postTags) {
         try {
             const reason = i.options.get("reason");
             const who = i.options.get("who");

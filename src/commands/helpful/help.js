@@ -1,20 +1,14 @@
-/* eslint-disable no-undef */
 const {
     EmbedBuilder,
-    StringSelectMenuBuilder,
-    StringSelectMenuOptionBuilder,
     ActionRowBuilder,
     ButtonBuilder,
     ButtonStyle,
     ComponentType,
+    SlashCommandBuilder,
 } = require("discord.js");
 const path = require("path");
 const errorHandler = require("../../utils/handlers/errorHandler");
-const {
-    SlashCommandObject,
-    CommandInteractionObject,
-    getLocalCommands,
-} = require("ic4d");
+const { getLocalCommands, SlashCommandManager } = require("ic4d");
 const { Pager } = require("@fyleto/dpager");
 
 const localCommandsObject = () => {
@@ -129,50 +123,6 @@ const createVars = (commands) => {
 };
 
 // eslint-disable-next-line no-unused-vars
-const makeWebsiteObject = (commands, eco, other) => {
-    let outputObject = {
-        economy: [],
-        other: [],
-    };
-    let r;
-    eco.forEach((n) => {
-        r = commands.find((l) => l.name === n);
-        outputObject.economy.push({
-            name: r.name,
-            description: r.description,
-        });
-    });
-
-    other.forEach((n) => {
-        r = commands.find((l) => l.name === n);
-        outputObject.other.push({
-            name: r.name,
-            description: r.description,
-        });
-    });
-
-    return outputObject;
-};
-
-const select = new StringSelectMenuBuilder()
-    .setCustomId("help")
-    .setPlaceholder("Pick a category")
-    .addOptions(
-        new StringSelectMenuOptionBuilder()
-            .setLabel("Economy")
-            .setDescription("All the economy commands")
-            .setValue("eco")
-            .setEmoji("💸"),
-        new StringSelectMenuOptionBuilder()
-            .setLabel("Misc commands")
-            .setDescription("Commands that don't really fall under anything")
-            .setValue("misc")
-            .setEmoji("ℹ️"), // this is the emoji `ℹ️` not letter
-        new StringSelectMenuOptionBuilder()
-            .setLabel("Mod commandds")
-            .setDescription("Some comands mods can use")
-            .setValue("mod")
-    );
 
 const invite = new ButtonBuilder()
     .setLabel("Invite")
@@ -188,67 +138,53 @@ const support = new ButtonBuilder()
 //const row1 = new ActionRowBuilder().addComponents(select);
 const linkButtons = new ActionRowBuilder().addComponents(invite, support);
 
-const helpSelect = new CommandInteractionObject({
-    type: "selectMenu",
-    customId: "help",
-    onlyAuthor: true,
-    timeout: 1_000_000,
-    timeoutMsg: "This interaction timed out.",
-    callback: (interaction) => {
-        interaction.update("k");
-    },
-});
+const help = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("help")
+        .setDescription(
+            "Get help with commands. List commands and their description"
+        ),
+    async execute(interaction, client) {
+        await interaction.deferReply();
+        try {
+            let commands = await client.application.commands.fetch({
+                locale: "en-GB",
+            });
+            const cmds = createVars(commands);
+            const pager = new Pager("Help! (Commands list)");
+            pager.addDynamicPages(cmds.arr, 6, "\n\n");
+            let page = await pager.currentPage();
+            let components = [...page.components, linkButtons];
 
-const help = new SlashCommandObject(
-    {
-        name: "help",
-        description:
-            "Get help with commands. List commands and their description",
+            await interaction.editReply({
+                content: `Page ${pager.index + 1}/${pager.pages.length}`,
+                embeds: [page.embed],
+                components: components,
+            });
 
-        callback: async (client, interaction) => {
-            await interaction.deferReply();
-            try {
-                let commands = await client.application.commands.fetch({
-                    locale: "en-GB",
-                });
-                const cmds = createVars(commands);
-                const pager = new Pager("Help! (Commands list)");
-                pager.addDynamicPages(cmds.arr, 6, "\n\n");
-                let page = await pager.currentPage();
+            const res = await interaction.fetchReply();
+
+            const collector = res.createMessageComponentCollector({
+                componentType: ComponentType.Button,
+                time: 3_600_000,
+            });
+
+            collector.on("collect", async (i) => {
+                let page = await pager.currentPage(i.customId);
                 let components = [...page.components, linkButtons];
 
-                await interaction.editReply({
+                await i.update({
                     content: `Page ${pager.index + 1}/${pager.pages.length}`,
                     embeds: [page.embed],
                     components: components,
                 });
-
-                const res = await interaction.fetchReply();
-
-                const collector = res.createMessageComponentCollector({
-                    componentType: ComponentType.Button,
-                    time: 3_600_000,
-                });
-
-                collector.on("collect", async (i) => {
-                    let page = await pager.currentPage(i.customId);
-                    let components = [...page.components, linkButtons];
-
-                    await i.update({
-                        content: `Page ${pager.index + 1}/${
-                            pager.pages.length
-                        }`,
-                        embeds: [page.embed],
-                        components: components,
-                    });
-                });
-            } catch (error) {
-                errorHandler(error, client, interaction, EmbedBuilder);
-            }
-        },
+            });
+        } catch (error) {
+            errorHandler(error, client, interaction, EmbedBuilder);
+        }
     },
-    helpSelect
-);
+});
+
 help.category = "misc";
 
 module.exports = help;

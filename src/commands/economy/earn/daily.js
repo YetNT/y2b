@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 const User = require("../../../models/User");
 const { comma, coin } = require("../../../utils/formatters/beatify");
 const {
@@ -9,12 +9,13 @@ const {
 const errorHandler = require("../../../utils/handlers/errorHandler");
 
 const dailyAmount = 1000;
-const { SlashCommandObject } = require("ic4d");
-const daily = new SlashCommandObject({
-    name: "daily",
-    description: "Receive your daily reward of 1000",
+const { SlashCommandManager } = require("ic4d");
 
-    callback: async function (client, interaction) {
+const daily = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("daily")
+        .setDescription("Receive your daily reward of 100"),
+    async execute(interaction, client) {
         try {
             await interaction.deferReply();
             const cooldownResult = await checkCooldown(
@@ -65,6 +66,7 @@ const daily = new SlashCommandObject({
         }
     },
 });
+
 daily.category = "economy";
 daily.blacklist = true;
 

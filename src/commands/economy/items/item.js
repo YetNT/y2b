@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 const Items = require("../../../utils/misc/items/items");
 const {
     itemNames,
@@ -7,28 +7,22 @@ const {
 const { coin } = require("../../../utils/formatters/beatify");
 const errorHandler = require("../../../utils/handlers/errorHandler");
 const { emojiToImage } = require("../../../utils/misc/emojiManipulation");
-const { SlashCommandObject } = require("ic4d");
+const { SlashCommandManager } = require("ic4d");
 
-const item = new SlashCommandObject({
-    name: "item",
-    description: "View an item's information.",
-    blacklist: true,
-    options: [
-        {
-            name: "item",
-            description: "Which item you buying?",
-            required: true,
-            type: ApplicationCommandOptionType.String,
-            choices: itemNames(),
-        },
-    ],
+const items = itemNames();
 
-    /**
-     *
-     * @param {Client} client
-     * @param {Interaction} interaction
-     */
-    callback: async (client, interaction) => {
+const item = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("item")
+        .setDescription("View an item's information.")
+        .addStringOption((option) =>
+            option
+                .setName("item")
+                .setDescription("Which item you tryna view cuh?")
+                .setRequired(true)
+                .setChoices(...items)
+        ),
+    async execute(interaction, client) {
         await interaction.deferReply();
         try {
             const itemName = interaction.options.get("item").value;

@@ -1,27 +1,21 @@
-const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 const errorHandler = require("../../../../utils/handlers/errorHandler");
-const { SlashCommandObject } = require("ic4d");
+const { SlashCommandManager } = require("ic4d");
 const { EmbedError } = require("../../../../utils/handlers/embedError");
 const { inventory } = require("./func");
 
-const inv = new SlashCommandObject({
-    name: "inventory",
-    description: "View your or another user's inventory",
-    blacklist: true,
-    options: [
-        {
-            name: "user",
-            description: "Select which user's inventory you'd like to see",
-            type: ApplicationCommandOptionType.User,
-        },
-    ],
-
-    /**
-     *
-     * @param {Client} client
-     * @param {Interaction} interaction
-     */
-    callback: async (client, interaction) => {
+const inv = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("inventory")
+        .setDescription("View your or another user's inventory")
+        .addUserOption((option) =>
+            option
+                .setName("user")
+                .setDescription(
+                    "Select which user's inventory you'd like to see"
+                )
+        ),
+    async execute(interaction, client) {
         await interaction.deferReply();
         try {
             let query;
@@ -53,6 +47,7 @@ const inv = new SlashCommandObject({
         }
     },
 });
+
 inv.category = "economy";
 inv.blacklist = true;
 

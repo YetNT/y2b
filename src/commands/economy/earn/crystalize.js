@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 const wait = require("node:timers/promises").setTimeout;
 const errorHandler = require("../../../utils/handlers/errorHandler");
 const User = require("../../../models/User");
@@ -8,7 +8,7 @@ const {
     checkCooldown,
     Cooldowns,
 } = require("../../../utils/handlers/cooldown");
-const { SlashCommandObject } = require("ic4d");
+const { SlashCommandManager } = require("ic4d");
 
 /**
  *
@@ -47,20 +47,18 @@ async function crystalizeRocks(inventory, amt, user) {
     };
 }
 
-const crystalize = new SlashCommandObject({
-    name: "crystalize",
-    description: "Crystalize your rocks.",
-    options: [
-        {
-            name: "amount",
-            description: "Amount of rocks you'd like to crystalize",
-            required: true,
-            type: ApplicationCommandOptionType.Number,
-            min_value: 50,
-        },
-    ],
-
-    callback: async (client, interaction) => {
+const crystalize = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("crystalize")
+        .setDescription("Crystalize your rocks.")
+        .addIntegerOption((option) =>
+            option
+                .setName("amount")
+                .setDescription("mount of rocks you'd like to crystalize")
+                .setMinValue(10)
+                .setRequired(true)
+        ),
+    async execute(interaction, client) {
         await interaction.deferReply();
         try {
             const amt = interaction.options.get("amount").value;
@@ -123,6 +121,7 @@ const crystalize = new SlashCommandObject({
         }
     },
 });
+
 crystalize.category = "economy";
 crystalize.blacklist = true;
 

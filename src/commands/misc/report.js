@@ -1,6 +1,6 @@
 const errorHandler = require("../../utils/handlers/errorHandler");
-const { EmbedBuilder } = require("discord.js");
-const { SlashCommandObject } = require("ic4d");
+const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
+const { SlashCommandObject, SlashCommandManager } = require("ic4d");
 
 const subcommands = require("./reportSubcommands/index");
 
@@ -22,16 +22,14 @@ function arrToObj(originalArray) {
     return transformedObject;
 }
 
-const report = new SlashCommandObject({
-    name: "report",
-    description: "Report stuff (Contains subcommands)",
-    options: [
-        subcommands.bug.body,
-        subcommands.user.body,
-        subcommands.server.body,
-    ],
-
-    callback: async (client, interaction) => {
+const report = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("report")
+        .setDescription("Report stuff (Contains subcommands)")
+        .addSubcommand(subcommands.bug.data)
+        .addSubcommand(subcommands.user.data)
+        .addSubcommand(subcommands.server.data),
+    async execute(interaction, client) {
         await interaction.deferReply({ ephemeral: true });
         try {
             const forum = client.channels.cache.get("1172574488362242098");
@@ -47,24 +45,24 @@ const report = new SlashCommandObject({
             switch (subcommand) {
                 case "bug":
                     await subcommands.bug.callback(
-                        client,
                         interaction,
+                        client,
                         forum,
                         tags
                     );
                     break;
                 case "user":
                     await subcommands.user.callback(
-                        client,
                         interaction,
+                        client,
                         forum,
                         tags
                     );
                     break;
                 case "server":
                     await subcommands.server.callback(
-                        client,
                         interaction,
+                        client,
                         forum,
                         tags
                     );

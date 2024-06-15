@@ -3,8 +3,9 @@ const {
     ButtonBuilder,
     ButtonStyle,
     ActionRowBuilder,
+    SlashCommandBuilder,
 } = require("discord.js");
-const { SlashCommandObject } = require("ic4d");
+const { SlashCommandObject, SlashCommandManager } = require("ic4d");
 const pkg = require("../../../package.json");
 const errorHandler = require("../../utils/handlers/errorHandler");
 const moment = require("moment");
@@ -24,16 +25,11 @@ const support = new ButtonBuilder()
 //const row1 = new ActionRowBuilder().addComponents(select);
 const linkButtons = new ActionRowBuilder().addComponents(invite, support);
 
-const info = new SlashCommandObject({
-    name: "info",
-    description: "Bot's info and other stuff",
-
-    /**
-     *
-     * @param {Client} client
-     * @param {Interaction} interaction
-     */
-    callback: async (client, interaction) => {
+const info = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("info")
+        .setDescription("Bot's info and other stuff"),
+    async execute(interaction, client) {
         try {
             interaction.reply({
                 embeds: [

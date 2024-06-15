@@ -1,12 +1,8 @@
-const {
-    EmbedBuilder,
-    ApplicationCommandOptionType,
-    Embed,
-} = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 const { emojiToImage } = require("../../../utils/misc/emojiManipulation");
 const User = require("../../../models/User");
 const errorHandler = require("../../../utils/handlers/errorHandler");
-const { SlashCommandObject } = require("ic4d");
+const { SlashCommandManager } = require("ic4d");
 const { all } = require("../../../utils/misc/items/getItems");
 const { EmbedError } = require("../../../utils/handlers/embedError");
 const { shieldStop } = require("./_lib/shieldStop");
@@ -19,22 +15,17 @@ const {
 const { getRandomItem } = require("./_lib/stealFuncs");
 const { comma } = require("../../../utils/formatters/beatify");
 
-const steal = new SlashCommandObject({
-    name: "steal",
-    description: "Steal from user's inventory!",
-    // devOnly: true,
-    // testOnly: true,
-
-    options: [
-        {
-            name: "user",
-            description: "User to steal from.",
-            type: ApplicationCommandOptionType.User,
-            required: true,
-        },
-    ],
-    // blacklist: true,
-    callback: async function (client, interaction) {
+const steal = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("steal")
+        .setDescription("Steal from user's inventory!")
+        .addUserOption((option) =>
+            option
+                .setName("user")
+                .setDescription("User to steal from.")
+                .setRequired(true)
+        ),
+    async execute(interaction, client) {
         await interaction.deferReply();
         const origInt = interaction;
         if (interaction.user.bot) {
@@ -189,5 +180,6 @@ const steal = new SlashCommandObject({
 steal.noSelfAt = true;
 steal.noBotAt = true;
 steal.blacklist = true;
+steal.canBeServerDisabled = true;
 
 module.exports = steal;

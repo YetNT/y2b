@@ -1,7 +1,7 @@
-const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 const User = require("../../../models/User");
 const rndInt = require("../../../utils/misc/rndInt");
-const { comma, coin } = require("../../../utils/formatters/beatify");
+const { coin } = require("../../../utils/formatters/beatify");
 const { getMaxValue } = require("./_lib/robFuncs");
 const { shieldStop } = require("./_lib/shieldStop");
 const {
@@ -10,29 +10,20 @@ const {
     Cooldowns,
 } = require("../../../utils/handlers/cooldown");
 const errorHandler = require("../../../utils/handlers/errorHandler");
-const { SlashCommandObject } = require("ic4d");
+const { SlashCommandManager } = require("ic4d");
 const { EmbedError } = require("../../../utils/handlers/embedError");
 
-const rob = new SlashCommandObject({
-    name: "rob",
-    description: "Rob other people for some quick cash. Can end badly",
-    options: [
-        {
-            name: "user",
-            description: "User you'd like to rob",
-            type: ApplicationCommandOptionType.User,
-            required: true,
-        },
-    ],
-    blacklist: true,
-    canBeServerDisabled: true,
-
-    /**
-     *
-     * @param {Client} client
-     * @param {Interaction} interaction
-     */
-    callback: async (client, interaction) => {
+const rob = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("rob")
+        .setDescription("Rob other people for some quick cash. Can end badly")
+        .addUserOption((option) =>
+            option
+                .setName("user")
+                .setDescription("user you'd like to rob")
+                .setRequired(true)
+        ),
+    async execute(interaction, client) {
         await interaction.deferReply();
         try {
             let victimId = interaction.options.get("user").value;
@@ -214,6 +205,7 @@ const rob = new SlashCommandObject({
         }
     },
 });
+
 rob.category = "economy";
 rob.blacklist = true;
 rob.canBeServerDisabled = true;

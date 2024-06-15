@@ -1,10 +1,12 @@
-const { ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 const User = require("../../../models/User");
 const Items = require("../../../utils/misc/items/items");
 const { itemNames } = require("../../../utils/misc/items/getItems");
 const { comma, shopify } = require("../../../utils/formatters/beatify");
 const errorHandler = require("../../../utils/handlers/errorHandler");
-const { SlashCommandObject } = require("ic4d");
+const { SlashCommandManager } = require("ic4d");
+
+const sellable = itemNames(2);
 
 class EmbedError {
     constructor(text) {
@@ -13,28 +15,25 @@ class EmbedError {
         };
     }
 }
-
-const sell = new SlashCommandObject({
-    name: "sell",
-    description: "Sell an item for some coins",
-    blacklist: true,
-    options: [
-        {
-            name: "item",
-            description: "Which item you selling?",
-            required: true,
-            type: ApplicationCommandOptionType.String,
-            choices: itemNames(2),
-        },
-        {
-            name: "amount",
-            description: "How much of this item are you selling?",
-            required: true,
-            type: ApplicationCommandOptionType.Integer,
-        },
-    ],
-
-    callback: async (client, interaction) => {
+const sell = new SlashCommandManager({
+    data: new SlashCommandBuilder()
+        .setName("sell")
+        .setDescription("Sell an item for some coins")
+        .addStringOption((option) =>
+            option
+                .setName("item")
+                .setDescription("Which item you selling?")
+                .setRequired(true)
+                .setChoices(...sellable)
+        )
+        .addIntegerOption((option) =>
+            option
+                .setName("amount")
+                .setDescription("How much of this item are you selling?")
+                .setRequired(true)
+                .setMinValue(1)
+        ),
+    async execute(interaction, client) {
         await interaction.deferReply();
 
         try {

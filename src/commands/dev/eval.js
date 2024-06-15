@@ -74,7 +74,7 @@ ${error}
             interaction.editReply({ embeds: [embed] });
         }
     },
-}).setDeleted(false);
+}).setDeleted(true);
 
 const evOld = new SlashCommandObject({
     name: "eval",

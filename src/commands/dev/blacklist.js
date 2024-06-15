@@ -206,7 +206,7 @@ const blacklist = new SlashCommandManager({
             errorHandler(error, client, interaction, EmbedBuilder);
         }
     },
-}).setDeleted(false);
+}).setDeleted(true);
 /**  Old blacklist
 const blacklistOld = new SlashCommandObject({
     deleted: true, // set to true by default, but another file will change it depending on bot.

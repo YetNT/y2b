@@ -1,12 +1,8 @@
 // ONLY AVAILABLE ON BETA BOT!!!!!!!
-const {
-    ApplicationCommandOptionType,
-    EmbedBuilder,
-    SlashCommandBuilder,
-} = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 const User = require("../../models/User");
 const errorHandler = require("../../utils/handlers/errorHandler");
-const { SlashCommandObject, SlashCommandManager } = require("ic4d");
+const { SlashCommandManager } = require("ic4d");
 
 const blacklist = new SlashCommandManager({
     data: new SlashCommandBuilder()

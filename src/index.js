@@ -32,9 +32,22 @@ const client = new Client({
     ],
 });
 
-const handler = new CommandHandler(client, path.join(__dirname, "commands"), {
-    devs: [...config.devs],
-});
+console.log(isMain);
+
+const handler = new CommandHandler(
+    client,
+    path.join(__dirname, "commands"),
+    {
+        devs: [...config.devs],
+    },
+    { loaded: "Loaded NAME!" },
+    {
+        debugger: true,
+        production: isMain,
+        logToFile: path.join(__dirname, "..", "run.log"),
+    }
+);
+
 const ints = new InteractionHandler(
     client,
     path.join(__dirname, "commands"),
@@ -89,12 +102,12 @@ const ready = new ReadyHandler(
             items,
             await client.application.commands.fetch({ locale: "en-GB" }),
         ];
-        fetch("http://dono-03.danbot.host:5297/y2b/update", {
-            method: "POST",
-            headers: {
+        fetch("https://y2b.vercel.app/api/cmds", {
+            method: "PUT",
+            headers: new Headers({
+                Authorization: process.env.Y2B_API_KEY,
                 "Content-Type": "application/json",
-                "api-authority-key": process.env.Y2B_API_KEY,
-            },
+            }),
             body: JSON.stringify(b),
         }).catch((err) => console.error(err));
     },
@@ -148,13 +161,6 @@ async function editMessage() {
         })
         .catch(console.error);
 }
-
-ints.on("error", (msg) => {
-    console.log(msg);
-});
-handler.on("error", (msg) => {
-    console.log(msg);
-});
 
 setInterval(editMessage, 120000);
 

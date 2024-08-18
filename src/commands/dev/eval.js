@@ -70,7 +70,7 @@ ${error}
             interaction.editReply({ embeds: [embed] });
         }
     },
-}).setDeleted(true);
+}).setDev(true);
 
 ev.devOnly = true;
 ev.category = "dev";

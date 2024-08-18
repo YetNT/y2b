@@ -171,8 +171,8 @@ const buy = new SlashCommandManager({
         .setCustomId("acceptBuy")
         .setType("button")
         .setOnlyAuthor(true)
-        .setTimeout(() => {
-            i.update({
+        .setTimeout((i) => {
+            i.editReply({
                 embeds: [
                     new EmbedBuilder().setDescription(
                         "Answer not given in 20 seconds. Cancelled operation."
@@ -180,7 +180,7 @@ const buy = new SlashCommandManager({
                 ],
                 components: [],
             });
-        }, 20_000)
+        }, 4_000)
         .setCallback(async (interaction) => {
             await buyItem(
                 buy.inventory,

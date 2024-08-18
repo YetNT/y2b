@@ -25,6 +25,8 @@ const { setRoutes } = require("./events/dbPost.js");
 const app = express();
 app.use(express.json());
 
+const debuggerFile = path.join(__dirname, "..", "run.log");
+
 const client = new Client({
     intents: [
         IntentsBitField.Flags.Guilds,
@@ -32,19 +34,17 @@ const client = new Client({
     ],
 });
 
-console.log(isMain);
-
 const handler = new CommandHandler(
     client,
     path.join(__dirname, "commands"),
     {
         devs: [...config.devs],
     },
-    { loaded: "Loaded NAME!" },
+    {},
     {
         debugger: true,
         production: isMain,
-        logToFile: path.join(__dirname, "..", "run.log"),
+        logToFile: debuggerFile,
     }
 );
 
@@ -58,7 +58,10 @@ const ints = new InteractionHandler(
         skipped: "(cm) NAME was skipped",
         edited: "(cm) NAME was edited",
     },
-    true
+    {
+        debugger: true,
+        logToFile: debuggerFile,
+    }
 );
 
 const ready = new ReadyHandler(
@@ -98,10 +101,9 @@ const ready = new ReadyHandler(
                     ? await emojiToImage(client, emoji)
                     : undefined;
         });
-        const b = [
-            items,
-            await client.application.commands.fetch({ locale: "en-GB" }),
-        ];
+        const b = (
+            await client.application.commands.fetch({ locale: "en-GB" })
+        ).map((command) => command);
         fetch("https://y2b.vercel.app/api/cmds", {
             method: "PUT",
             headers: new Headers({

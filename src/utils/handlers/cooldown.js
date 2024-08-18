@@ -111,7 +111,7 @@ const checkCooldown = async (
         client.token === process.env.BETA &&
         devs.includes(interaction.user.id)
     ) {
-        console.log("mhm");
+        console.log("we seem to be on beta bot. No cooldown.");
         // beta bot, so dont cooldown devs for testing reasons.
         return;
     }

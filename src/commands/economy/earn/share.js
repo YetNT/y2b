@@ -162,7 +162,6 @@ const share = new SlashCommandManager({
                 if (confirmation.customId === "confirm") {
                     if (user) {
                         // If the user exists
-                        console.log(userInv);
                         if (item) {
                             userInv[item] += amount;
                             authorInv[item] -= amount;
@@ -245,7 +244,6 @@ const share = new SlashCommandManager({
                         ),
                     ],
                 });
-                console.log(e);
             }
 
             await newCooldown("15s", interaction, "share");

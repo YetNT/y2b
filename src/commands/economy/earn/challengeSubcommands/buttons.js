@@ -200,7 +200,6 @@ module.exports = {
                     ],
                     components: [],
                 });
-                console.log(e);
             }
         } catch (error) {
             errorHandler(error, client, interaction, EmbedBuilder);

@@ -15,7 +15,7 @@
 
 # Commands
 
-**[Commands](https://y2b.pages.dev/commands)**
+**[Commands](https://y2b.vercel.app/commands)**
 
 # Contributions
 

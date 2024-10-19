@@ -1,5 +1,5 @@
 const { withoutShield, all } = require("../../../../utils/misc/items/getItems");
-const { r } = require("../../../../utils/misc/items/rarity");
+const { Rarity } = require("y2b-shared");
 
 // Helper functions for steal.js
 
@@ -26,22 +26,22 @@ function getRandomNumberBasedOnRarity(rarity) {
     let max;
 
     switch (rarity) {
-        case r.common:
+        case Rarity.common:
             max = 20;
             break;
-        case r.uncommon:
+        case Rarity.uncommon:
             max = 15;
             break;
-        case r.rare:
+        case Rarity.rare:
             max = 10;
             break;
-        case r.epic:
+        case Rarity.epic:
             max = 6;
             break;
-        case r.insane:
+        case Rarity.insane:
             max = 3;
             break;
-        case r.godly:
+        case Rarity.godly:
             max = 1;
             break;
         default:

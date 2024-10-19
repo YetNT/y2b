@@ -1,5 +1,6 @@
 const getUnicode = require("emoji-unicode");
 const Emojis = require("emoji-name-map");
+const { Client } = require("discord.js");
 
 function extractEmojiName(input) {
     // Match both <:name:id> and :name: formats
@@ -12,6 +13,12 @@ function extractEmojiName(input) {
     }
 }
 
+/**
+ * turns discord input like :gem: or <:gem:2345> to an image form discord cdn or twitter emoji if its not discord native.
+ * @param {Client} client
+ * @param {string} input
+ * @returns
+ */
 const emojiToImage = async (client, input) => {
     const inputName = extractEmojiName(input);
 
@@ -32,6 +39,12 @@ const emojiToImage = async (client, input) => {
     return `${baseUrl}${emoji.id}.${emoji.animated ? "gif" : "png"}`;
 };
 
+/**
+ * Converts a stirng like :gem: to it's unicode emoji. But if its a discord native emoji with the <> (example <:gem:123231>) then it just returns it as discord does all the rendering.
+ * This is mostly for buttons with emojis where the input for the emoji only works with unicode stuff.
+ * @param {string} input
+ * @returns
+ */
 const emojiToUnicode = (input) => {
     let inputName;
 

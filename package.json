@@ -14,25 +14,26 @@
         "@fyleto/dpager": "^1.0.0",
         "@yetnt/progressbar": "^3.0.1",
         "@yetnt/ump": "^6.0.0",
-        "discord.js": "^14.15.3",
+        "discord.js": "^14.16.3",
         "discordbotlist": "^1.1.1",
         "disgamekit": "^2.2.0",
         "dotenv": "^16.4.5",
         "emoji-name-map": "^1.2.9",
         "emoji-unicode": "^2.0.1",
-        "express": "^4.19.2",
+        "express": "^5.0.0",
         "ic4d": "^3.0.0",
         "lodash": "^4.17.21",
         "moment": "^2.30.1",
         "moment-duration-format": "^2.3.2",
-        "mongoose": "^8.5.2",
+        "mongoose": "^8.7.0",
         "node-cache": "^5.1.2",
         "path": "^0.12.7",
-        "topgg-autoposter": "^2.0.2"
+        "topgg-autoposter": "^2.0.2",
+        "y2b-shared": "git+https://github.com/YetNT/y2b-shared.git"
     },
     "devDependencies": {
-        "@typescript-eslint/eslint-plugin": "^7.18.0",
-        "@typescript-eslint/parser": "^7.18.0",
-        "eslint": "^9.8.0"
+        "@typescript-eslint/eslint-plugin": "^8.8.0",
+        "@typescript-eslint/parser": "^8.8.0",
+        "eslint": "^9.12.0"
     }
 }

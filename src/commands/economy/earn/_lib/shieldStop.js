@@ -6,13 +6,17 @@ const User1 = require("../../../../models/User");
 const { Inventory, User } = require("../../../../models/cache");
 
 /**
+ * Handles the shield stop interaction, processing the shield damage
+ * inflicted on the victim's shield and sending appropriate messages
+ * to both the command issuer and the victim.
  *
- * @param {Client} client
- * @param {CommandInteraction} interaction
- * @param {Inventory} inventory
- * @param {User} victim
- * @param {string[]} errorMsg The first one in the string array is the returned string, and the other is the one returned in the victim's DM
- * @returns
+ * @param {Client} client - The Discord client instance used to interact with the API.
+ * @param {CommandInteraction} interaction - The interaction object containing information about the command.
+ * @param {Inventory} inventory - The inventory of the command issuer, containing details about shields.
+ * @param {User} victim - The user object representing the victim of the interaction.
+ * @param {string[]} errorMsg - An array of error messages; the first element is the returned string for the command issuer,
+ * and the second is the message to be sent to the victim's DM.
+ * @returns {Promise<boolean>} - A promise that resolves to a boolean indicating whether the shield interaction was successful.
  */
 async function shieldStop(client, interaction, inventory, victim, errorMsg) {
     let shieldStop = false;

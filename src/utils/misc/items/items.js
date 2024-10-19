@@ -1,55 +1,5 @@
 const sellPercentage = 0.45;
-const { r } = require("./rarity");
-
-class Item {
-    /**
-     *
-     * @param {boolean} canBeStolen
-     * @param {string} name
-     * @param {string} description
-     * @param {string[]} uses
-     * @param {number} price
-     * @param {boolean|number} canBeSold
-     * @param {string} id
-     * @param {string} rarity
-     * @param {string} emoji
-     */
-    constructor(
-        canBeStolen,
-        name,
-        description,
-        uses,
-        price,
-        canBeSold = false,
-        id,
-        rarity,
-        emoji = undefined,
-        useable = false,
-        craftingRecipe = {}
-    ) {
-        this.canBeStolen = canBeStolen == true ? true : false;
-        this.craftingRecipe =
-            Object.entries(craftingRecipe).length === 0
-                ? undefined
-                : craftingRecipe;
-        this.name = name;
-        this.description = description;
-        this.uses = uses;
-        this.price = price;
-        this.sell =
-            canBeSold == false
-                ? -1
-                : typeof canBeSold == "number"
-                ? canBeSold
-                : Math.round(price * sellPercentage);
-        this.id = id;
-        this.rarity = rarity;
-        this.emoji = emoji !== undefined ? emoji : undefined;
-        this.useable = useable === false ? false : true;
-        this.image = undefined;
-    }
-}
-
+const { Item, Rarity } = require("y2b-shared");
 let shield = new Item(
     false,
     "Shield",
@@ -58,7 +8,7 @@ let shield = new Item(
     1500,
     false,
     "shield",
-    r.common
+    Rarity.common
 );
 let shieldhp = new Item(
     false,
@@ -68,7 +18,7 @@ let shieldhp = new Item(
     150,
     false,
     "shieldhp",
-    r.common
+    Rarity.common
 );
 let rock = new Item(
     true,
@@ -78,7 +28,7 @@ let rock = new Item(
     50,
     false,
     "rock",
-    r.common,
+    Rarity.common,
     "<:rock:1106937815738110055>"
 );
 let stick = new Item(
@@ -89,7 +39,7 @@ let stick = new Item(
     100,
     false,
     "stick",
-    r.common,
+    Rarity.common,
     "<:stick:1106945454572314695>"
 );
 let gem = new Item(
@@ -100,7 +50,7 @@ let gem = new Item(
     -1,
     2.8e4,
     "gem",
-    r.rare,
+    Rarity.rare,
     ":gem:",
     false,
     {
@@ -117,7 +67,7 @@ let coal = new Item(
     1200,
     true,
     "coal",
-    r.uncommon,
+    Rarity.uncommon,
     "<:coal:1106946918954827956>"
 );
 let donut = new Item(
@@ -128,7 +78,7 @@ let donut = new Item(
     -1,
     false,
     "donut",
-    r.rare,
+    Rarity.rare,
     "<:donut:1109381339947487374>",
     false,
     {
@@ -145,30 +95,19 @@ let battery = new Item(
     500,
     true,
     "battery",
-    r.common,
+    Rarity.common,
     ":battery:"
 );
 let gCrystal = new Item(
     false,
     "Green Crystal",
-    "DAMN DAT SHI RARE!",
-    [],
-    -1,
-    2_000_000,
-    "greenCrystal",
-    r.epic,
-    "<:greencrystal:1137408975470600272>"
-);
-let wCrystal = new Item(
-    true,
-    "White Crystal",
-    "Woah a white crystal. Not bad, not bad",
+    "*Villager Noises*",
     [],
     -1,
     rock.price + 5,
-    "whiteCrystal",
-    r.rare,
-    "<:whitecrystal:1137408970391310447>"
+    "greenCrystal",
+    Rarity.rare,
+    "<:greencrystal:1137408975470600272>"
 );
 let oCrystal = new Item(
     false,
@@ -178,8 +117,19 @@ let oCrystal = new Item(
     -1,
     rock.price + 10,
     "orangeCrystal",
-    r.rare,
+    Rarity.rare,
     "<:orangecrystal:1137408967681769492>"
+);
+let wCrystal = new Item(
+    true,
+    "White Crystal",
+    "Holy Moly Shiny!",
+    [],
+    -1,
+    400_000,
+    "whiteCrystal",
+    Rarity.epic,
+    "<:whitecrystal:1137408970391310447>"
 );
 let floCoin = new Item(
     false,
@@ -189,7 +139,7 @@ let floCoin = new Item(
     27_000_000,
     false,
     "floCoin",
-    r.godly,
+    Rarity.godly,
     "<a:flocoin:1138787029560336474>"
 );
 let flobirthday = new Item(
@@ -200,7 +150,7 @@ let flobirthday = new Item(
     27_119_000,
     true,
     "floBirthday",
-    r.insane,
+    Rarity.insane,
     ":gift:"
 );
 
@@ -212,7 +162,7 @@ let a = new Item(
     1_450_000,
     true,
     "a",
-    r.rare,
+    Rarity.rare,
     "<:_aa_:1234557798432636989>"
 );
 
@@ -224,7 +174,7 @@ let b = new Item(
     1_000_000,
     true,
     "b",
-    r.rare,
+    Rarity.rare,
     "<:b_:1234557821954297937>"
 );
 
@@ -236,21 +186,21 @@ let c = new Item(
     1_100_000,
     true,
     "c",
-    r.rare,
+    Rarity.rare,
     "<:c_:1234557839230631959>"
 );
 
 let pythagorean = new Item(
     false,
     "Pythagorean Theorem",
-    "The Pythagorean Theorem is a formula that can be used to calculate the length of the hypotenuse of a right triangle. a² + b² = c²",
+    "a² + b² = c²",
     [
         "Allows your inventory to be protected by a random mathematical equation.",
     ],
     -1,
     2_000_000,
     "pythagorean",
-    r.rare,
+    Rarity.rare,
     ":triangular_ruler:",
     false,
     {

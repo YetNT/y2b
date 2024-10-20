@@ -13,7 +13,7 @@ async function noDm(commandObject, interaction) {
         await interaction.reply({
             ephemeral: true,
             content:
-                "Commands cannot be used in DMs. Try run this command again in a server.",
+                "Commands cannot be used in DMs. Try run this command again in a server.\n(I'm too lazy to make this work in dm. If you really want it, **[pls make a pr :pray:](https://github.com/YetNT/y2b)**)",
         });
         return 1;
     }

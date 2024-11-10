@@ -1,5 +1,6 @@
 const all = require("./items"); // JSON values. it's essentially { [key:[string(item's id)]]: itemObject }
 const rndInt = require("../rndInt");
+const { CraftingRecipe } = require("y2b-shared");
 
 let { shield, shieldhp, ...withoutShield } = all;
 
@@ -64,7 +65,7 @@ const randomItem = () => {
 
 /**
  *
- * @param {*} obj Recipe object
+ * @param {CraftingRecipe} obj Recipe object
  * @param {User} user User object
  */
 function getRecipeItems(obj, user = undefined) {

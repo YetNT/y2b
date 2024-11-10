@@ -127,7 +127,7 @@ let battery = new Item(
     Rarity.common,
     ":battery:"
 );
-let gCrystal = new Item(
+let greenCrystal = new Item(
     false,
     "Green Crystal",
     "*Villager Noises*",
@@ -138,7 +138,7 @@ let gCrystal = new Item(
     Rarity.rare,
     "<:greencrystal:1137408975470600272>"
 );
-let oCrystal = new Item(
+let orangeCrystal = new Item(
     false,
     "Orange Crystal",
     "Shii an orange crystal, reflective!",
@@ -149,7 +149,7 @@ let oCrystal = new Item(
     Rarity.rare,
     "<:orangecrystal:1137408967681769492>"
 );
-let wCrystal = new Item(
+let whiteCrystal = new Item(
     true,
     "White Crystal",
     "Holy Moly Shiny!",
@@ -172,7 +172,7 @@ let floCoin = new Item(
     "<a:flocoin:1138787029560336474>",
     true
 );
-let flobirthday = new Item(
+let floBirthday = new Item(
     false,
     "Flo's Lost birthday present",
     "Once upon a time, a guy named Flo got a birthday present from his friend yet",
@@ -240,7 +240,9 @@ let pythagorean = new Item(
         c: 9,
     }
 );
-
+/**
+ * @type {[key: string]: Item}
+ */
 module.exports = {
     shield,
     shieldhp,
@@ -250,11 +252,11 @@ module.exports = {
     coal,
     donut,
     battery,
-    gCrystal,
-    wCrystal,
-    oCrystal,
+    greenCrystal,
+    whiteCrystal,
+    orangeCrystal,
     floCoin,
-    flobirthday,
+    floBirthday,
     a,
     b,
     c,

@@ -1,7 +1,17 @@
-const all = require("./items");
+const all = require("./items"); // JSON values. it's essentially { [key:[string(item's id)]]: itemObject }
 const rndInt = require("../rndInt");
 
 let { shield, shieldhp, ...withoutShield } = all;
+
+const withoutShieldArr = (() => {
+    return Object.values(all).filter(
+        (v) => v.id !== "shield" && v.id !== "shieldhp"
+    );
+})();
+
+const items = (() => {
+    return Object.values(all);
+})();
 
 const itemNames = (onlyForSale = false) => {
     /*
@@ -9,52 +19,30 @@ const itemNames = (onlyForSale = false) => {
     if onlyForSale = 1 / true | Get only items For Sale
     if onlyForSale = 2 | Get only items that you can sell
     */
-    // let { shield, shieldhp, ...newInv } = all;
 
-    let r = [];
-    for (let item in all) {
-        if (onlyForSale === true || onlyForSale === 1) {
-            if (all[item].price == -1) continue;
-        }
-        if (onlyForSale === 2) {
-            if (all[item].sell == -1) continue;
-        }
-        r.push({
-            name: all[item].name,
-            value: all[item].id,
-        });
-    }
-
-    return r;
+    return (
+        onlyForSale === true || onlyForSale === 1
+            ? Object.values(all).filter((v) => v.price !== -1)
+            : onlyForSale === 2
+            ? Object.values(all).filter((v) => v.sell !== -1)
+            : Object.values(all)
+    ).map((v) => {
+        return { name: v.name, value: v.id };
+    });
 };
 
 const getForgableItemNames = () => {
-    let r = [];
-    for (let i in all) {
-        let item = all[i];
-        if (item.craftingRecipe === undefined) continue;
-        r.push({
-            recipe: item.craftingRecipe,
-            item: item,
+    return Object.values(all)
+        .filter((v) => v.craftingRecipe !== undefined)
+        .map((v) => {
+            return { recipe: v.craftingRecipe, item: v };
         });
-    }
-
-    return r;
 };
 
 const itemNamesNoShield = () => {
-    // eslint-disable-next-line no-unused-vars
-    let { shield, shieldhp, ...newInv } = all;
-
-    let r = [];
-    for (let item in newInv) {
-        r.push({
-            name: newInv[item].name,
-            value: newInv[item].id,
-        });
-    }
-
-    return r;
+    return withoutShieldArr.map((v) => {
+        return { name: v.name, value: v.id };
+    });
 };
 
 /**
@@ -63,9 +51,8 @@ const itemNamesNoShield = () => {
  */
 const randomItem = () => {
     // eslint-disable-next-line no-unused-vars
-    let { shield, shieldhp, ...newInv } = all;
-    const itemIds = Object.values(newInv).map((item) => item.id);
-    const itemNames = Object.values(newInv).map((item) => item.name);
+    const itemIds = withoutShieldArr.map((item) => item.id);
+    const itemNames = withoutShieldArr.map((item) => item.name);
 
     const int = rndInt(1, itemIds.length);
 
@@ -81,28 +68,31 @@ const randomItem = () => {
  * @param {User} user User object
  */
 function getRecipeItems(obj, user = undefined) {
-    let str = ["\n"];
-    let keys = Object.keys(obj);
-    for (const key of keys) {
-        if (key == "_amt" || key == "amt") continue;
-        let amtNeeded = obj[key]; // amount needed by the recipe
-        let userAmt = user !== undefined ? user.inventory[key] : undefined; // amount the user has
-        let amtStr =
-            userAmt !== undefined
-                ? `\`${userAmt}/${amtNeeded}\``
-                : `\`${amtNeeded}\``;
+    return [
+        "\n",
+        ...Object.keys(obj)
+            .filter((v) => v !== "_amt" && v !== "amt")
+            .map((key) => {
+                let amtNeeded = obj[key]; // amount needed by the recipe
+                let userAmt =
+                    user !== undefined ? user.inventory[key] : undefined; // amount the user has
+                let amtStr =
+                    userAmt !== undefined
+                        ? `\`${userAmt}/${amtNeeded}\``
+                        : `\`${amtNeeded}\``;
 
-        let emoji = all[key].emoji;
-        let itemName = all[key].name;
-        let itemStr = `${amtStr} ${emoji} ___${itemName}___`;
-        str.push(itemStr);
-    }
-
-    return str.join("\n");
+                let emoji = all[key].emoji;
+                let itemName = all[key].name;
+                let itemStr = `${amtStr} ${emoji} ___${itemName}___`;
+                return itemStr;
+            }),
+    ].join("\n");
 }
 
 module.exports = {
+    withoutShieldArr,
     all,
+    items,
     withoutShield,
     itemNames,
     getRecipeItems,

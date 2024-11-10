@@ -31,6 +31,7 @@ interface Cache<T> {
 import { default as badges } from "../utils/misc/badges/badges.json";
 import { default as promocodes } from "../../promocodes.json";
 import * as cooldowns from "../utils/misc/cooldowns";
+import { withoutShield } from "../utils/misc/items/items";
 
 interface Inventory {
     shield: {
@@ -52,16 +53,36 @@ interface Inventory {
     b: number;
     c: number;
     pythagorean: number;
+    string: number;
+    slingshot: number;
 }
 
 interface User {
+    /**
+     * The user id of the person.
+     */
     userId: string;
+    /**
+     * Balance of the person.
+     */
     balance?: number;
+    /**
+     * Safe balance of the person.
+     */
     bank?: number;
+    /**
+     * Person's badges.
+     */
     badges?: {
         [key: keyof typeof badges]: boolean;
     };
+    /**
+     * user's inventory
+     */
     inventory: Inventory;
+    /**
+     * Blacklist info.
+     */
     blacklist?: {
         ed: boolean;
         reason: string;

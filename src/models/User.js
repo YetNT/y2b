@@ -1,7 +1,7 @@
 const { CachedSchema } = require("./cache.js");
 let Badges = require("../utils/misc/badges/badges.json");
 // eslint-disable-next-line no-unused-vars
-let { shield, shieldhp, ...newInv } = require("../utils/misc/items/items");
+let { withoutShield } = require("../utils/misc/items/getItems");
 /**
  * @typedef {Object} user
  * @property {string} userId User's ID
@@ -108,30 +108,30 @@ let scheme = {
     },
 };
 (async () => {
-    for (let badge in Badges) {
-        scheme.badges[Badges[badge].id] = {
+    Object.entries(Badges).forEach(([, badge]) => {
+        scheme.badges[badge.id] = {
             type: Boolean,
             default: false,
         };
-    }
+    });
 
-    for (let item in newInv) {
-        let defaultAmount = newInv[item].id === "rock" ? 10 : 0;
-        scheme.inventory[newInv[item].id] = {
+    Object.entries(withoutShield).forEach(([, item]) => {
+        const defaultAmount = item.id === "rock" ? 10 : 0;
+        scheme.inventory[item.id] = {
             type: Number,
             default: defaultAmount,
         };
-    }
+    });
 })();
 
 const user = new CachedSchema("user", scheme);
 
 function invPlace() {
     let obj = { shield: { amt: 0, hp: 0 } };
-    for (let item in newInv) {
+    Object.entries(withoutShield).forEach((item) => {
         let defaultAmount = newInv[item].id === "rock" ? 10 : 0;
         obj[newInv[item].id] = defaultAmount;
-    }
+    });
 }
 
 user.invPlace = invPlace;

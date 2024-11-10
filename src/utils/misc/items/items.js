@@ -29,12 +29,41 @@ let rock = new Item(
     false,
     "rock",
     Rarity.common,
-    "<:rock:1106937815738110055>"
+    "<:rock:1106937815738110055>",
+    true
+);
+let string = new Item(
+    true,
+    "String",
+    "String.",
+    [],
+    70,
+    false,
+    "string",
+    Rarity.common,
+    "<:string:1304768309027405834>"
+);
+let slingshot = new Item(
+    false,
+    "Slingshot!",
+    "Oh damn, a whole slingshot",
+    ["Shoot shi wit a slingshot"],
+    410,
+    false,
+    "slingshot",
+    Rarity.common,
+    "<:slingshot:1305163884184866836>",
+    true,
+    {
+        _amt: 1,
+        stick: 1,
+        string: 2,
+    }
 );
 let stick = new Item(
     true,
     "Stick",
-    "A stick that was torn of abranch. Pretty rare if you ask me",
+    "A stick that was torn of a branch. Pretty rare if you ask me",
     [],
     100,
     false,
@@ -140,7 +169,8 @@ let floCoin = new Item(
     false,
     "floCoin",
     Rarity.godly,
-    "<a:flocoin:1138787029560336474>"
+    "<a:flocoin:1138787029560336474>",
+    true
 );
 let flobirthday = new Item(
     false,
@@ -212,21 +242,23 @@ let pythagorean = new Item(
 );
 
 module.exports = {
-    shield: shield,
-    shieldhp: shieldhp,
-    rock: rock,
-    stick: stick,
-    gem: gem,
-    coal: coal,
-    donut: donut,
-    battery: battery,
-    greenCrystal: gCrystal,
-    whiteCrystal: wCrystal,
-    orangeCrystal: oCrystal,
-    floCoin: floCoin,
-    floBirthday: flobirthday,
-    a: a,
-    b: b,
-    c: c,
-    pythagorean: pythagorean,
+    shield,
+    shieldhp,
+    rock,
+    stick,
+    gem,
+    coal,
+    donut,
+    battery,
+    gCrystal,
+    wCrystal,
+    oCrystal,
+    floCoin,
+    flobirthday,
+    a,
+    b,
+    c,
+    pythagorean,
+    string,
+    slingshot,
 };

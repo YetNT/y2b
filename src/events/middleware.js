@@ -1,12 +1,12 @@
 /* eslint-disable no-undef */
 const User = require("../models/User");
 const ServerCommand = require("../models/ServerCommand");
-const { CommandInteraction } = require("discord.js");
+const { ChatInputCommandInteraction } = require("discord.js");
 
 /**
  *
  * @param {*} commandObject
- * @param {CommandInteraction} interaction
+ * @param {ChatInputCommandInteraction} interaction
  */
 async function noDm(commandObject, interaction) {
     if (!interaction.inGuild()) {
@@ -79,7 +79,7 @@ async function testOnly(commandObject, interaction) {
 /**
  *
  * @param {*} commandObject
- * @param {CommandInteraction} interaction
+ * @param {ChatInputCommandInteraction} interaction
  * @returns
  */
 async function noSelfAt(commandObject, interaction) {
@@ -98,7 +98,7 @@ async function noSelfAt(commandObject, interaction) {
 /**
  *
  * @param {*} commandObject
- * @param {CommandInteraction} interaction
+ * @param {ChatInputCommandInteraction} interaction
  * @returns
  */
 async function noBotAt(commandObject, interaction) {

@@ -9,7 +9,8 @@ const config = require("../config.json");
 const mongoose = require("mongoose");
 const { cache } = require("./models/cache.js");
 const { CommandHandler, ReadyHandler, InteractionHandler } = require("ic4d");
-const middleware = require("./events/middleware");
+const middleWare = require("./events/middleware");
+const postWare = require("./events/postware");
 const status = require("./events/status");
 const moment = require("moment");
 const path = require("path");
@@ -25,7 +26,7 @@ const { setRoutes } = require("./events/dbPost.js");
 const app = express();
 app.use(express.json());
 
-const debuggerFile = path.join(__dirname, "..", "run.log");
+const debuggerFolder = path.join(__dirname, "..", "logs");
 
 const client = new Client({
     intents: [
@@ -44,7 +45,7 @@ const handler = new CommandHandler(
     {
         debugger: true,
         production: isMain,
-        logToFile: debuggerFile,
+        logToFile: debuggerFolder,
     }
 );
 
@@ -60,7 +61,7 @@ const ints = new InteractionHandler(
     },
     {
         debugger: true,
-        logToFile: debuggerFile,
+        logToFile: debuggerFolder,
     }
 );
 
@@ -120,7 +121,7 @@ const ready = new ReadyHandler(
 
 (async () => {
     try {
-        await handler.handleCommands(...middleware);
+        await handler.handleCommands(middleWare, postWare);
         ints.start("This aint your interaction!");
         await ready.execute();
         await mongoose.connect(process.env.MONGODB_URI);

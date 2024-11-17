@@ -14,18 +14,25 @@ const items = (() => {
     return Object.values(all);
 })();
 
-const itemNames = (onlyForSale = false) => {
-    /*
-    if onlyForSale = 0 / false | Get All Items
-    if onlyForSale = 1 / true | Get only items For Sale
-    if onlyForSale = 2 | Get only items that you can sell
-    */
-
+/**
+ * 0 | false = get All items
+ *
+ * 1 | true = get only items for sale
+ *
+ * 2 get only items you can sell
+ *
+ * 3 get only items that can be used.
+ * @param {number|boolean} T
+ * @returns
+ */
+const itemNames = (T = false) => {
     return (
-        onlyForSale === true || onlyForSale === 1
+        T === true || T === 1
             ? Object.values(all).filter((v) => v.price !== -1)
-            : onlyForSale === 2
+            : T === 2
             ? Object.values(all).filter((v) => v.sell !== -1)
+            : T === 3
+            ? Object.values(all).filter((v) => v.useable === true)
             : Object.values(all)
     ).map((v) => {
         return { name: v.name, value: v.id };

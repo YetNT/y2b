@@ -8,7 +8,12 @@ const {
 const config = require("../config.json");
 const mongoose = require("mongoose");
 const { cache } = require("./models/cache.js");
-const { CommandHandler, ReadyHandler, InteractionHandler } = require("ic4d");
+const {
+    CommandHandler,
+    ReadyHandler,
+    InteractionHandler,
+    CoreHandler,
+} = require("ic4d");
 const middleWare = require("./events/middleware");
 const postWare = require("./events/postware");
 const status = require("./events/status");
@@ -35,8 +40,10 @@ const client = new Client({
     ],
 });
 
+const core = new CoreHandler(client, debuggerFolder);
+
 const handler = new CommandHandler(
-    client,
+    core,
     path.join(__dirname, "commands"),
     {
         devs: [...config.devs],
@@ -50,7 +57,7 @@ const handler = new CommandHandler(
 );
 
 const ints = new InteractionHandler(
-    client,
+    core,
     path.join(__dirname, "commands"),
     {
         loadedNoChanges: "(CM) NAME was loaded. No changes were made",
@@ -66,7 +73,8 @@ const ints = new InteractionHandler(
 );
 
 const ready = new ReadyHandler(
-    client,
+    core,
+    undefined,
     () => {
         console.log("clearing cache.");
         cache.flushAll();

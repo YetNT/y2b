@@ -9,6 +9,7 @@ const {
 const errorHandler = require("../../../../utils/handlers/errorHandler");
 const { SlashCommandManager } = require("ic4d");
 const { makeChoices, rnd } = require("./workUtil");
+const battery = require("../../items/use/battery");
 
 const choices = makeChoices();
 
@@ -51,22 +52,29 @@ const work = new SlashCommandManager({
                       new EmbedBuilder()
                           .setTitle("Nice work")
                           .setColor("Green")
-                          .setDescription(`${work}`)
+                          .setDescription(work)
                   )
                 : embed.push(
                       new EmbedBuilder()
                           .setTitle("... work")
                           .setColor("Red")
-                          .setDescription(`${work}`)
+                          .setDescription(work)
                   );
 
             let user = await User.findOne(query);
 
             if (user) {
                 if (earn === true) {
+                    let bActive = battery.info.isActive(user);
+                    let bInfo = battery.info.calc(payment);
+                    embed[0] = bActive
+                        ? embed[0].setDescription(
+                              embed[0].data.description + bInfo.info
+                          )
+                        : embed[0];
                     interaction.editReply({ embeds: embed });
 
-                    user.balance += payment;
+                    user.balance += bActive ? payment + bInfo.num : payment;
                 } else {
                     interaction.editReply({ embeds: embed });
                     if (/\{AMT\}/.test(reply) == true) user.balance -= payment;

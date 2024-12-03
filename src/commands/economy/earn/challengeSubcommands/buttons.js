@@ -15,6 +15,7 @@ const {
     checkCooldown,
     Cooldowns,
 } = require("../../../../utils/handlers/cooldown");
+const battery = require("../../items/use/battery");
 
 const createButtonActionRows = (rightButton) => {
     let wrongButtonArr = [
@@ -94,6 +95,8 @@ const createButtonActionRows = (rightButton) => {
             );
         }
     }
+    // below commented code is to for testing to see the output when clicking the righ button (check console for answer)
+    // console.log(JSON.stringify(correctRow));
 
     return [correctRow, correctRowShow];
 };
@@ -139,12 +142,16 @@ module.exports = {
                     time: 60000,
                 });
 
+                let bInfo = battery.info.calc(reward);
+
                 if (confirmation.customId === "right") {
                     let user = await User.findOne({
                         userId: interaction.user.id,
                     });
                     if (user) {
-                        user.balance += reward;
+                        user.balance += !battery.info.isActive(user)
+                            ? reward
+                            : reward + bInfo.num;
                     } else {
                         user = User.newDoc({
                             userId: interaction.user.id,
@@ -159,7 +166,11 @@ module.exports = {
                                 .setDescription(
                                     `Hmm seems like you clicked the right button, fair game \n**+**${coin(
                                         reward
-                                    )}`
+                                    )}${
+                                        battery.info.isActive(user)
+                                            ? bInfo.info
+                                            : ""
+                                    }`
                                 ),
                         ],
                         components: [],

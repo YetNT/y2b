@@ -124,7 +124,9 @@ async function checkEffects(commandObject, interaction) {
     let effects = user.effects || [];
     if (!effects || effects.length === 0) return 0;
 
-    effects = effects.filter((effect) => effect.endTime.getTime() < Date.now());
+    effects = effects.filter((effect) => {
+        return new Date(effect.endTime).getTime() > Date.now();
+    });
 
     user.effects = effects;
     await User.save(user);

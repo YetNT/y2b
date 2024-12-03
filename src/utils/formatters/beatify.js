@@ -24,7 +24,7 @@ const coin = (input) => {
  * @returns string that has been shopified (Separated with commas and linked.)
  */
 const shopify = (input) => {
-    return `${coinEmoji}**[${comma(input)}](https://discord.com)**`;
+    return `${coinEmoji}**[${comma(input)}](https://y2b.vercel.app)**`;
 };
 
 module.exports = { comma, coin, shopify, coinEmoji };

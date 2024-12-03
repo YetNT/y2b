@@ -7,6 +7,7 @@ const {
     Cooldowns,
 } = require("../../../utils/handlers/cooldown");
 const errorHandler = require("../../../utils/handlers/errorHandler");
+const battery = require("../items/use/battery");
 
 const dailyAmount = 1000;
 const { SlashCommandManager } = require("ic4d");
@@ -33,9 +34,12 @@ const daily = new SlashCommandManager({
             };
 
             let user = await User.findOne(query);
+            let bInfo = battery.info.calc(dailyAmount);
 
             if (user) {
-                user.balance += dailyAmount;
+                user.balance += !battery.info.isActive(user)
+                    ? dailyAmount
+                    : dailyAmount + bInfo.num;
             } else {
                 user = User.newDoc({
                     userId: query.userId,
@@ -54,7 +58,7 @@ const daily = new SlashCommandManager({
                                 dailyAmount
                             )} was added to your balance. Your new balance is ${coin(
                                 user.balance
-                            )}`
+                            )}}${battery.info.isActive(user) ? bInfo.info : ""}`
                         )
                         .setColor("Yellow"),
                 ],

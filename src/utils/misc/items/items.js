@@ -120,7 +120,7 @@ let battery = new Item(
     true,
     "AAA Battery",
     "Wtf a battery. Price seems reasonable, enough.",
-    [],
+    ["When used, gives you +5% in coins earned"],
     -1,
     900_000,
     "battery",

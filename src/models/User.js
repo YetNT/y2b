@@ -14,6 +14,7 @@ let { withoutShield } = require("../utils/misc/items/getItems");
  * @property {Object} blacklist User's Blacklist status
  * @property {Object} badges User's Badges
  * @property {Object} cooldown User's Cooldowns
+ * @property {Array<{name: string, endTime: Date}>} effects
  */
 let scheme = {
     userId: {

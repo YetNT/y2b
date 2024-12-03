@@ -34,14 +34,24 @@ const vote = new SlashCommandManager({
                 .setURL(links.dbl);
 
             const row = new ActionRowBuilder().addComponents(top, dbl);
+            // await interaction.editReply({
+            //     embeds: [
+            //         new EmbedBuilder()
+            //             .setTitle("Vote for the bot!")
+            //             .setDescription(
+            //                 `Thanks for supporting the bot :)\nIn return you'll receive ${coin(
+            //                     amt
+            //                 )}\n\nWait for at least **10mins** before reporting that you didn't receive your rewards.`
+            //             ),
+            //     ],
+            //     components: [row],
+            // });
             await interaction.editReply({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle("Vote for the bot!")
                         .setDescription(
-                            `Thanks for supporting the bot :)\nIn return you'll receive ${coin(
-                                amt
-                            )}\n\nWait for at least **10mins** before reporting that you didn't receive your rewards.`
+                            `**Currently vote rewards are not working so if you do vote you won't receive anything unfortunately**`
                         ),
                 ],
                 components: [row],

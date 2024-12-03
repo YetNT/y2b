@@ -106,6 +106,18 @@ let scheme = {
             default: new Date(0),
         },
     },
+    effects: [
+        {
+            name: {
+                type: String,
+                required: true,
+            },
+            endTime: {
+                type: Date,
+                required: true,
+            },
+        },
+    ],
 };
 (async () => {
     Object.entries(Badges).forEach(([, badge]) => {

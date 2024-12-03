@@ -118,14 +118,19 @@ let donut = new Item(
 );
 let battery = new Item(
     true,
-    "Lithium-ion battery",
-    "Wtf a battery",
+    "AAA Battery",
+    "Wtf a battery. Price seems reasonable, enough.",
     [],
-    500,
-    true,
+    -1,
+    900_000,
     "battery",
     Rarity.common,
-    ":battery:"
+    ":battery:",
+    true,
+    {
+        _amt: 1,
+        a: 3,
+    }
 );
 let greenCrystal = new Item(
     false,
@@ -170,7 +175,7 @@ let floCoin = new Item(
     "floCoin",
     Rarity.godly,
     "<a:flocoin:1138787029560336474>",
-    true
+    false
 );
 let floBirthday = new Item(
     false,
@@ -189,7 +194,7 @@ let a = new Item(
     "a",
     "A. Literally just the letter a",
     [],
-    1_450_000,
+    1_000_000,
     true,
     "a",
     Rarity.rare,

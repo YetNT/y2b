@@ -31,7 +31,8 @@ interface Cache<T> {
 import { default as badges } from "../utils/misc/badges/badges.json";
 import { default as promocodes } from "../../promocodes.json";
 import * as cooldowns from "../utils/misc/cooldowns";
-import { withoutShield } from "../utils/misc/items/items";
+
+type Effects = "battery";
 
 interface Inventory {
     shield: {
@@ -94,6 +95,7 @@ interface User {
     cooldowns?: {
         [key: keyof typeof cooldowns]: boolean;
     };
+    effects?: { name: Effects; endTime: Date }[];
 }
 
 interface ServerCommand {

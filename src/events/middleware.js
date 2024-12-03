@@ -114,6 +114,22 @@ async function noBotAt(commandObject, interaction) {
     return 0;
 }
 
+async function checkEffects(commandObject, interaction) {
+    if (commandObject.category !== "economy") return 0;
+    let query = {
+        userId: interaction.user.id,
+    };
+    let user = await User.findOne(query);
+    if (!user) return 0;
+    let effects = user.effects || [];
+    if (!effects || effects.length === 0) return 0;
+
+    effects = effects.filter((effect) => effect.endTime.getTime() < Date.now());
+
+    user.effects = effects;
+    await User.save(user);
+}
+
 module.exports = [
     noDm,
     blacklist,
@@ -121,4 +137,6 @@ module.exports = [
     testOnly,
     noSelfAt,
     noBotAt,
+    // below functions are probbbly economy stuff
+    checkEffects,
 ];

@@ -8,7 +8,7 @@ const { ChatInputCommandInteraction } = require("discord.js");
  * @param {ChatInputCommandInteraction} interaction
  */
 function postWareTest(commandObject, interaction) {
-    interaction.followUp("ur cool");
+    console.log(commandObject.name);
 }
 
 module.exports = [postWareTest];
